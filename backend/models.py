@@ -1,30 +1,32 @@
-from database import Base
 import enum
 import datetime
-from typing import List, Optional
+from typing import List
 from sqlalchemy import Enum, ForeignKey, DateTime, func, Text
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
+class Base(DeclarativeBase):
+    pass
 class UserRole(enum.Enum):
     User = "User"
     Admin = "Admin"
 
 class FuelType(enum.Enum):
     A95 = "A-95"
-    A93 = "A-92"
+    A92 = "A-92"
     Diesel = "Diesel"
 
 class OilType(enum.Enum):
-    pass
+    SAE_5W30 = "5w-30"
+    SAE_5W40 = "5w-40"
+    SAE_10W40 = "10w-40"
 
-class MaintenanceType(Enum):
+class MaintenanceType(enum.Enum):
     Oil_change = "Заміна мастильних матеріалів"
     Belt_replacement = "Заміна приводних ременів"
     Filter_replacement = "Заміна фільтрів"
     Repair = "Ремонтні роботи"            
     Inspection = "Технічний огляд"        
     Other = "Інше"
-
 
 class Car(Base):
     __tablename__ = "car"
@@ -34,10 +36,16 @@ class Car(Base):
     model: Mapped[str] = mapped_column(nullable=False)
     mileage: Mapped[int] = mapped_column(nullable=False)
     engine_capacity: Mapped[float] = mapped_column(nullable=False)
-    fuel_type: Mapped[FuelType] = mapped_column(Enum(FuelType), default=None)
-    oli_type: Mapped[OilType] = mapped_column(Enum(OilType), default=None)
-    driver_id: Mapped["User"] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
-    maintenance_log_id: Mapped[List["Maintenance_log"]] = relationship(back_populates="maintenance_log", cascade="all, delete-orphan")
+    fuel_type: Mapped[FuelType] = mapped_column(Enum(FuelType))
+    oil_type: Mapped[OilType] = mapped_column(Enum(OilType))
+    
+    driver_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
+    
+    # Зв'язки
+    driver: Mapped["User"] = relationship(back_populates="cars")
+    maintenance_logs: Mapped[List["Maintenance_log"]] = relationship(
+        back_populates="car", cascade="all, delete-orphan"
+    )
 
 class User(Base):
     __tablename__ = "user"
@@ -46,15 +54,17 @@ class User(Base):
     lastname: Mapped[str] = mapped_column(nullable=False)
     login: Mapped[str] = mapped_column(nullable=False, unique=True)
     password: Mapped[str] = mapped_column(nullable=False)
-    role: Mapped[UserRole] = mapped_column(Enum(UserRole), default=UserRole.user)
-    car: Mapped[List["Car"]] = relationship(back_populates="car", cascade="all, delete-orphan")
-
+    role: Mapped[UserRole] = mapped_column(Enum(UserRole), default=UserRole.User)
+    
+    cars: Mapped[List["Car"]] = relationship(back_populates="driver")
 
 class Maintenance_log(Base):
     __tablename__ = "maintenance_log"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    car_id: Mapped["Car"] = mapped_column(ForeignKey("car.id", ondelete="CASCADE"), nullable=False)
-    maintanence_type: Mapped[MaintenanceType] = mapped_column(Enum(MaintenanceType), nullable=False)
+    car_id: Mapped[int] = mapped_column(ForeignKey("car.id", ondelete="CASCADE"), nullable=False)
+    maintenance_type: Mapped[MaintenanceType] = mapped_column(Enum(MaintenanceType), nullable=False)
     date: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     description: Mapped[str] = mapped_column(Text)
     mileage_on_maintain: Mapped[int] = mapped_column(nullable=False)
+    
+    car: Mapped["Car"] = relationship(back_populates="maintenance_logs")
