@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from enums import FuelType, OilType, UserRole, MaintenanceType
+from typing import Optional
 class CarModel(BaseModel):
     vin: str
     brand: str
@@ -22,3 +23,13 @@ class MaintainenceLogModel(BaseModel):
     maintenance_type: MaintenanceType
     description: str
     mileage_on_maintain: int
+
+class CarUpdate(BaseModel):
+    vin: Optional[str] = None
+    brand: Optional[str] = None
+    model: Optional[str] = None
+    mileage: Optional[int] = None
+    engine_capacity: Optional[float] = None
+    fuel_type: Optional[FuelType] = None
+    oil_type: Optional[OilType] = None
+    driver_id: Optional[int] = None

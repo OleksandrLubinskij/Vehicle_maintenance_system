@@ -4,10 +4,12 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from models import Car, User, Maintenance_log
 from get_db import get_db
-from schemas import CarModel, UserModel, MaintainenceLogModel
+from schemas import CarModel, UserModel, MaintainenceLogModel, CarUpdate
 
 app = FastAPI()
-@app.get("/vmc/get_vehicles")
+
+#vehicles
+@app.get("/vms/get_cars")
 async def get_vehcles(car_id: int | None=None, db: Session = Depends(get_db)):
     if car_id is None:
         stmt = select(Car)
@@ -19,7 +21,7 @@ async def get_vehcles(car_id: int | None=None, db: Session = Depends(get_db)):
     cars = res.scalars().all()
     return cars 
 
-@app.post("/vmc/create_car")
+@app.post("/vms/create_car")
 async def create_car(car:CarModel, db: Session = Depends(get_db)):
     new_car_dict = car.model_dump()
     new_car = Car(**new_car_dict)
@@ -32,8 +34,25 @@ async def create_car(car:CarModel, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Помилка бази даних {str(e)}")
 
+@app.patch("/vms/edit_car/{car_id}")
+def edit_car(car:CarUpdate, car_id:int, db:Session = Depends(get_db)):
+    stmt = select(Car).where(Car.id == car_id)
+    car_db = db.execute(stmt).scalar()
+    if not car_db:
+        raise HTTPException(status_code=404, detail="Машину не знайдено")
+    
+    update_data = car.model_dump(exclude_unset=True)
 
-@app.post("/vmc/create_user")
+    for key, value in update_data.items():
+        setattr(car_db, key, value)
+    
+    db.commit()
+    db.refresh(car_db)
+    return car_db
+
+
+#users
+@app.post("/vms/create_user")
 async def create_user(user:UserModel, db: Session = Depends(get_db)):
     new_user_dict = user.model_dump()
     new_user = User(**new_user_dict)
