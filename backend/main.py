@@ -10,11 +10,15 @@ app = FastAPI()
 
 #vehicles
 @app.get("/vms/get_cars")
-async def get_vehcles(car_id: int | None=None, db: Session = Depends(get_db)):
-    if car_id is None:
-        stmt = select(Car)
-    else:
-        stmt = select(Car).where(Car.id == car_id)
+async def get_cars(db: Session = Depends(get_db)):
+    stmt = select(Car)
+    res = db.execute(stmt).scalars().all()
+    print(res)
+    return res
+
+@app.get("/vms/get_car_by_id/{car_id}")
+async def get_car_by_id(car_id: int | None=None, db: Session = Depends(get_db)):
+    stmt = select(Car).where(Car.id == car_id)
 
     res = db.execute(stmt) 
 
