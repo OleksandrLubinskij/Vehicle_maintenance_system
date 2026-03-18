@@ -134,3 +134,12 @@ async def edit_maintainence_record(edited_record: MaintainenceLogUpdate, record_
     db.commit()
     db.refresh(record_obj)
     return record_obj
+
+@app.delete("/vmc/delete_maintainence_record/{record_id}")
+async def delete_maintainence_record(record_id: int, db: Session = Depends(get_db)):
+    record_to_delete = db.get(Maintenance_log, record_id)
+    if not record_to_delete:
+        raise HTTPException(status_code=404, detail="Запис не знайдено")
+
+    db.delete(record_to_delete)
+    db.commit()
