@@ -9,7 +9,6 @@ class CarModel(BaseModel):
     engine_capacity: float
     fuel_type: FuelType
     oil_type: OilType
-    driver_id: int
 
 class UserModel(BaseModel):
     firstname: str
@@ -32,4 +31,3 @@ class CarUpdate(BaseModel):
     engine_capacity: Optional[float] = None
     fuel_type: Optional[FuelType] = None
     oil_type: Optional[OilType] = None
-    driver_id: Optional[int] = None

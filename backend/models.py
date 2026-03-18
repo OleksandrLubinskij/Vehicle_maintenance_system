@@ -18,11 +18,6 @@ class Car(Base):
     engine_capacity: Mapped[float] = mapped_column(nullable=False)
     fuel_type: Mapped[FuelType] = mapped_column(Enum(FuelType))
     oil_type: Mapped[OilType] = mapped_column(Enum(OilType))
-    
-    driver_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
-    
-    # Зв'язки
-    driver: Mapped["User"] = relationship(back_populates="cars")
     maintenance_logs: Mapped[List["Maintenance_log"]] = relationship(
         back_populates="car", cascade="all, delete-orphan"
     )
@@ -35,8 +30,6 @@ class User(Base):
     login: Mapped[str] = mapped_column(nullable=False, unique=True)
     password: Mapped[str] = mapped_column(nullable=False)
     role: Mapped[UserRole] = mapped_column(Enum(UserRole), default=UserRole.User)
-    
-    cars: Mapped[List["Car"]] = relationship(back_populates="driver")
 
 class Maintenance_log(Base):
     __tablename__ = "maintenance_log"

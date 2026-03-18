@@ -13,16 +13,15 @@ app = FastAPI()
 async def get_cars(db: Session = Depends(get_db)):
     stmt = select(Car)
     res = db.execute(stmt).scalars().all()
-    print(res)
     return res
 
 @app.get("/vms/get_car_by_id/{car_id}")
-async def get_car_by_id(car_id: int | None=None, db: Session = Depends(get_db)):
+async def get_car_by_id(car_id: int, db: Session = Depends(get_db)):
     stmt = select(Car).where(Car.id == car_id)
 
     res = db.execute(stmt) 
 
-    cars = res.scalars().all()
+    cars = res.scalar_one_or_none()
     return cars 
 
 @app.post("/vms/create_car")
@@ -54,6 +53,13 @@ def edit_car(car:CarUpdate, car_id:int, db:Session = Depends(get_db)):
     db.refresh(car_db)
     return car_db
 
+@app.delete("/vms/delete_car/{car_id}")
+async def delete_car(car_id:int, db: Session = Depends(get_db)):
+    car_to_delete = db.get(Car, car_id)
+    if not car_to_delete:
+        raise HTTPException(status_code=404, detail="Машину не знайено")
+    db.delete(car_to_delete)
+    db.commit()
 
 #users
 @app.post("/vms/create_user")
