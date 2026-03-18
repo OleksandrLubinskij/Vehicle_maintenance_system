@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from models import Car, User, Maintenance_log
 from get_db import get_db
-from schemas import CarModel, UserModel, MaintainenceLogModel, CarUpdate
+from schemas import CarModel, UserModel, MaintainenceLogModel, CarUpdate, MaintainenceLogUpdate
 
 app = FastAPI()
 
@@ -113,3 +113,24 @@ async def create_maintainence_record(car_id: int, log:MaintainenceLogModel, db: 
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Помилка бази даних {str(e)}")
+    
+@app.patch("/vmc/edit_maintainence_record/{record_id}")
+async def edit_maintainence_record(edited_record: MaintainenceLogUpdate, record_id: int, db: Session = Depends(get_db)):
+    stmt = select(
+        Maintenance_log
+        ).where(
+            Maintenance_log.id == record_id
+        )
+    
+    record_obj = db.execute(stmt).scalar_one()
+    if not record_obj:
+        raise HTTPException(status_code=404, detail="Запис не знайдено!")
+    
+    edited_record = edited_record.model_dump(exclude_unset=True)
+
+    for key, val in edited_record.items():
+        setattr(record_obj, key, val)
+    
+    db.commit()
+    db.refresh(record_obj)
+    return record_obj

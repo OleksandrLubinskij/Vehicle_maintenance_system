@@ -17,12 +17,12 @@ class UserModel(BaseModel):
     password: str
     role: UserRole
 
-class MaintainenceLogModel(BaseModel):
+class MaintainenceLogBaseModel(BaseModel):
     car_id: int
+    mileage_on_maintain: int
+class MaintainenceLogModel(MaintainenceLogBaseModel):
     maintenance_type: MaintenanceType
     description: str
-    mileage_on_maintain: int
-
 class CarUpdate(BaseModel):
     vin: Optional[str] = None
     brand: Optional[str] = None
@@ -31,3 +31,8 @@ class CarUpdate(BaseModel):
     engine_capacity: Optional[float] = None
     fuel_type: Optional[FuelType] = None
     oil_type: Optional[OilType] = None
+
+
+class MaintainenceLogUpdate(BaseModel):
+    maintenance_type: Optional[MaintenanceType] = None
+    description: Optional[str] = None
