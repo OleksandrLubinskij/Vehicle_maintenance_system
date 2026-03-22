@@ -14,9 +14,8 @@ class OilType(enum.Enum):
     SAE_10W40 = "10w-40"
 
 class MaintenanceType(enum.Enum):
-    Oil_change = "Заміна мастильних матеріалів"
-    Belt_replacement = "Заміна приводних ременів"
-    Filter_replacement = "Заміна фільтрів"
+    Oil_and_filters = "Заміна мастильних матеріалів та фільтрів"
+    Belt_replacement = "Заміна ременія ГРМ"
     Repair = "Ремонтні роботи"            
     Inspection = "Технічний огляд"        
     Other = "Інше"

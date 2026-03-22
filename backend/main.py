@@ -1,18 +1,74 @@
 from fastapi import FastAPI, Depends, HTTPException
 from enum import Enum
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 from models import Car, User, Maintenance_log
 from get_db import get_db
 from schemas import CarModel, UserModel, MaintainenceLogModel, CarUpdate, MaintainenceLogUpdate
-
+from datetime import datetime, timezone
+from enums import MaintenanceType
 app = FastAPI()
+
+def calculate_maintenance_delta(car_id, db: Session):
+    subq = (
+        select(
+            Maintenance_log,
+            func.row_number().over(
+                partition_by=Maintenance_log.maintenance_type,
+                order_by=Maintenance_log.date.desc()
+            ).label("rn")
+        ).where(
+            Maintenance_log.car_id == car_id,
+            Maintenance_log.maintenance_type.in_([MaintenanceType.Oil_and_filters, 
+                                                  MaintenanceType.Belt_replacement,
+                                                  MaintenanceType.Inspection])
+        )
+        ).subquery()
+    
+    stmt = select(
+        Car.mileage,
+        subq
+    ).join(
+        Car, Car.id == subq.c.car_id
+    ).where(
+        subq.c.rn == 1
+    )
+
+    res = db.execute(stmt).all()
+    data = {
+        "Oil_filters_mileage": 0,
+        "Belt_mileage": 0,
+        "Inspection_mileage": 0,
+        "Inspection_date": 0,
+        "Current_mileage": res[0].mileage   
+    }
+    for row in res:
+        if row.maintenance_type == MaintenanceType.Oil_and_filters:
+            data["Oil_filters_mileage"] = row.mileage_on_maintain
+        
+        elif row.maintenance_type == MaintenanceType.Belt_replacement:
+            data["Belt_mileage"] = row.mileage_on_maintain
+        
+        elif row.maintenance_type == MaintenanceType.Inspection:
+            data["Inspection_mileage"] = row.mileage_on_maintain
+            data["Inspection_date"] = row.date
+    if data["Inspection_date"]:
+        time_now = datetime.now(data["Inspection_date"].tzinfo)
+        time_diff = (time_now - data["Inspection_date"]).days
+
+    oil_and_filters_mileage_diff = data["Current_mileage"] - data["Oil_filters_mileage"]
+    belt_replacement_mileage_diff = data["Current_mileage"] - data["Belt_mileage"]
+    inspection_mileage_diff = data["Current_mileage"] - data["Inspection_mileage"]
+    
+
+    return (oil_and_filters_mileage_diff, belt_replacement_mileage_diff, inspection_mileage_diff, time_diff)
 
 #vehicles
 @app.get("/vms/get_cars")
 async def get_cars(db: Session = Depends(get_db)):
     stmt = select(Car)
     res = db.execute(stmt).scalars().all()
+    print(res)
     return res
 
 @app.get("/vms/get_car_by_id/{car_id}")
@@ -22,6 +78,7 @@ async def get_car_by_id(car_id: int, db: Session = Depends(get_db)):
     res = db.execute(stmt) 
 
     cars = res.scalar_one_or_none()
+    print(calculate_maintenance_delta(car_id, db))
     return cars 
 
 @app.post("/vms/create_car")
