@@ -4,12 +4,20 @@ from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 from models import Car, User, Maintenance_log
 from get_db import get_db
-from schemas import CarModel, UserModel, MaintainenceLogModel, CarUpdate, MaintainenceLogUpdate
+from schemas import CarModel, UserModel, MaintainenceLogModel, CarUpdate, MaintainenceLogUpdate, CarResponse
 from datetime import datetime, timezone
-from enums import MaintenanceType
+from enums import MaintenanceType, ServiceStatus
+from typing import List
+
 app = FastAPI()
 
-def calculate_maintenance_delta(car_id, db: Session):
+def calculate_maintenance_delta(car_id: int, db: Session):
+    car = db.get(Car, car_id)
+    if not car:
+        return None
+
+    current_mileage = car.mileage
+
     subq = (
         select(
             Maintenance_log,
@@ -19,28 +27,22 @@ def calculate_maintenance_delta(car_id, db: Session):
             ).label("rn")
         ).where(
             Maintenance_log.car_id == car_id,
-            Maintenance_log.maintenance_type.in_([MaintenanceType.Oil_and_filters, 
-                                                  MaintenanceType.Belt_replacement,
-                                                  MaintenanceType.Inspection])
+            Maintenance_log.maintenance_type.in_([
+                MaintenanceType.Oil_and_filters, 
+                MaintenanceType.Belt_replacement,
+                MaintenanceType.Inspection
+            ])
         )
-        ).subquery()
-    
-    stmt = select(
-        Car.mileage,
-        subq
-    ).join(
-        Car, Car.id == subq.c.car_id
-    ).where(
-        subq.c.rn == 1
-    )
+    ).subquery()
 
+    stmt = select(subq).where(subq.c.rn == 1)
     res = db.execute(stmt).all()
+    print(res)
     data = {
-        "Oil_filters_mileage": 0,
-        "Belt_mileage": 0,
-        "Inspection_mileage": 0,
-        "Inspection_date": 0,
-        "Current_mileage": res[0].mileage   
+        "Oil_filters_mileage": None,
+        "Belt_mileage": None,
+        "Inspection_mileage": None,
+        "Inspection_date": None   
     }
     for row in res:
         if row.maintenance_type == MaintenanceType.Oil_and_filters:
@@ -52,23 +54,59 @@ def calculate_maintenance_delta(car_id, db: Session):
         elif row.maintenance_type == MaintenanceType.Inspection:
             data["Inspection_mileage"] = row.mileage_on_maintain
             data["Inspection_date"] = row.date
+
+    oil_and_filters_mileage_diff = belt_replacement_mileage_diff = inspection_mileage_diff = time_diff = -1 
     if data["Inspection_date"]:
         time_now = datetime.now(data["Inspection_date"].tzinfo)
         time_diff = (time_now - data["Inspection_date"]).days
+    if data["Oil_filters_mileage"] is not None:
+        oil_and_filters_mileage_diff = current_mileage - data["Oil_filters_mileage"]
+    if data["Belt_mileage"] is not None:
+        belt_replacement_mileage_diff = current_mileage - data["Belt_mileage"]
+    if data["Inspection_mileage"] is not None:
+        inspection_mileage_diff = current_mileage - data["Inspection_mileage"]
 
-    oil_and_filters_mileage_diff = data["Current_mileage"] - data["Oil_filters_mileage"]
-    belt_replacement_mileage_diff = data["Current_mileage"] - data["Belt_mileage"]
-    inspection_mileage_diff = data["Current_mileage"] - data["Inspection_mileage"]
+    # oil_and_filters_mileage_diff = current_mileage - data["Oil_filters_mileage"] if data["Oil_filters_mileage"] != None else -1
+    # belt_replacement_mileage_diff = current_mileage - data["Belt_mileage"] if data["Belt_mileage"] != None else -1
+    # inspection_mileage_diff = current_mileage - data["Inspection_mileage"] if data["Inspection_mileage"] != None else -1
     
 
     return (oil_and_filters_mileage_diff, belt_replacement_mileage_diff, inspection_mileage_diff, time_diff)
 
+def evaluate_status(diff, limit):
+    ratio = diff / limit
+    if ratio >= 1: return ServiceStatus.OVERDUE
+    if ratio >= 0.85: return ServiceStatus.ALERT
+    if ratio >= 0.5: return ServiceStatus.SOON
+    if ratio >= 0: return ServiceStatus.OK
+    return ServiceStatus.NO_RECORDS
+
+def get_serivce_indicators(car_id: int, db: Session):
+    limitation = {
+        "oil_and_filters": 10000,
+        "belt_replacement": 60000,
+        "inspection_mileage": 10000,
+        "inspection_time": 365
+    }
+    res = {}
+    diffs = calculate_maintenance_delta(car_id, db)
+
+    return {
+        key: evaluate_status(diff, limitation[key])
+        for key, diff in zip(limitation.keys(), diffs)
+    }
+
 #vehicles
-@app.get("/vms/get_cars")
+@app.get("/vms/get_cars", response_model= List[CarResponse])
 async def get_cars(db: Session = Depends(get_db)):
     stmt = select(Car)
-    res = db.execute(stmt).scalars().all()
-    print(res)
+    cars = db.execute(stmt).scalars().all()
+    res = []
+    for car in cars:
+        indicators = get_serivce_indicators(car.id, db)
+        responce_car = CarResponse.model_validate(car)
+        responce_car.service_indicators = indicators
+        res.append(responce_car)
     return res
 
 @app.get("/vms/get_car_by_id/{car_id}")
@@ -78,7 +116,6 @@ async def get_car_by_id(car_id: int, db: Session = Depends(get_db)):
     res = db.execute(stmt) 
 
     cars = res.scalar_one_or_none()
-    print(calculate_maintenance_delta(car_id, db))
     return cars 
 
 @app.post("/vms/create_car")

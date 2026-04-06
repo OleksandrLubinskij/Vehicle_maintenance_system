@@ -1,6 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from enums import FuelType, OilType, UserRole, MaintenanceType
-from typing import Optional
+from typing import Optional, Dict
 class CarModel(BaseModel):
     vin: str
     brand: str
@@ -36,3 +36,10 @@ class CarUpdate(BaseModel):
 class MaintainenceLogUpdate(BaseModel):
     maintenance_type: Optional[MaintenanceType] = None
     description: Optional[str] = None
+
+class CarResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    brand: str
+    model: str
+    mileage: int
+    service_indicators: Dict[str, str] = {}
