@@ -65,12 +65,7 @@ def calculate_maintenance_delta(car_id: int, db: Session):
         belt_replacement_mileage_diff = current_mileage - data["Belt_mileage"]
     if data["Inspection_mileage"] is not None:
         inspection_mileage_diff = current_mileage - data["Inspection_mileage"]
-
-    # oil_and_filters_mileage_diff = current_mileage - data["Oil_filters_mileage"] if data["Oil_filters_mileage"] != None else -1
-    # belt_replacement_mileage_diff = current_mileage - data["Belt_mileage"] if data["Belt_mileage"] != None else -1
-    # inspection_mileage_diff = current_mileage - data["Inspection_mileage"] if data["Inspection_mileage"] != None else -1
     
-
     return (oil_and_filters_mileage_diff, belt_replacement_mileage_diff, inspection_mileage_diff, time_diff)
 
 def evaluate_status(diff, limit):
@@ -88,7 +83,6 @@ def get_serivce_indicators(car_id: int, db: Session):
         "inspection_mileage": 10000,
         "inspection_time": 365
     }
-    res = {}
     diffs = calculate_maintenance_delta(car_id, db)
 
     return {
