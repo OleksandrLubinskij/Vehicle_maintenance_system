@@ -2,16 +2,13 @@ from typing import List
 
 from fastapi import Depends, HTTPException, APIRouter
 from services.car_indicators_service import get_serivce_indicators
-from schemas import CarModel, CarResponse, CarUpdate
-from models import Car
+from app.schemas import CarModel, CarResponse, CarUpdate
+from app.models import Car
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from get_db import get_db
+from app.database import get_db
 
-router = APIRouter(
-    prefix="/cars",
-    tags=["Cars"],
-)
+router = APIRouter()
 
 @router.get("/", response_model= List[CarResponse])
 async def get_cars(db: Session = Depends(get_db)):
@@ -19,7 +16,7 @@ async def get_cars(db: Session = Depends(get_db)):
     cars = db.execute(stmt).scalars().all()
     res = []
     for car in cars:
-        indicators = get_serivce_indicators(car.id, db)
+        indicators = get_serivce_indicators(car.id, car.mileage,  db)
         responce_car = CarResponse.model_validate(car)
         responce_car.service_indicators = indicators
         res.append(responce_car)

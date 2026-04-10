@@ -1,4 +1,4 @@
-from enums import FuelType, OilType, UserRole, MaintenanceType
+from app.enums import FuelType, OilType, UserRole, MaintenanceType
 import datetime
 from typing import List
 from sqlalchemy import Enum, ForeignKey, DateTime, func, Text

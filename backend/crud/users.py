@@ -1,13 +1,11 @@
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy.orm import Session
-from get_db import get_db
-from models import User
-from schemas import UserModel
+from app.database import get_db
+from app.models import User
+from app.schemas import UserModel
 
-router = APIRouter(
-    prefix="/users",
-    tags=["Users"]
-)
+router = APIRouter()
+
 @router.post("/create_user")
 async def create_user(user:UserModel, db: Session = Depends(get_db)):
     new_user_dict = user.model_dump()

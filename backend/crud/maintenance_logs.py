@@ -1,14 +1,12 @@
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from models import Car, Maintenance_log
-from get_db import get_db
-from schemas import MaintainenceLogModel, MaintainenceLogUpdate
+from app.models import Car, Maintenance_log
+from app.database import get_db
+from app.schemas import MaintainenceLogModel, MaintainenceLogUpdate
 
-router = APIRouter(
-    prefix="/maintenance_logs",
-    tags=["Maintenance_logs"]
-)
+router = APIRouter()
+
 @router.get("/{car_id}")
 async def get_maintainence_log(car_id: int, db: Session = Depends(get_db)):
     stmt = select(Maintenance_log).where(Maintenance_log.car_id == car_id).limit(10)

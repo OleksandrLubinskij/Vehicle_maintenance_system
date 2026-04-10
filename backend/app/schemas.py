@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from enums import FuelType, OilType, UserRole, MaintenanceType
+from app.enums import FuelType, OilType, UserRole, MaintenanceType
 from typing import Optional, Dict
 class CarModel(BaseModel):
     vin: str

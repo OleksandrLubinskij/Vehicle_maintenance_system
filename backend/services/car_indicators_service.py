@@ -1,16 +1,10 @@
 from datetime import datetime
-from models import Car, Maintenance_log
-from enums import MaintenanceType, ServiceStatus
+from app.models import Maintenance_log
+from app.enums import MaintenanceType, ServiceStatus
 from sqlalchemy.orm import Session
 from sqlalchemy import select, func
 
-def calculate_maintenance_delta(car_id: int, db: Session):
-    car = db.get(Car, car_id)
-    if not car:
-        return None
-
-    current_mileage = car.mileage
-
+def calculate_maintenance_delta(car_id: int, current_mileage:int,  db: Session):
     subq = (
         select(
             Maintenance_log,
@@ -68,14 +62,14 @@ def evaluate_status(diff, limit):
     if ratio >= 0: return ServiceStatus.OK
     return ServiceStatus.NO_RECORDS
 
-def get_serivce_indicators(car_id: int, db: Session):
+def get_serivce_indicators(car_id: int, current_mileage: int,  db: Session):
     limitation = {
         "oil_and_filters": 10000,
         "belt_replacement": 60000,
         "inspection_mileage": 10000,
         "inspection_time": 365
     }
-    diffs = calculate_maintenance_delta(car_id, db)
+    diffs = calculate_maintenance_delta(car_id, current_mileage, db)
 
     return {
         key: evaluate_status(diff, limitation[key])
