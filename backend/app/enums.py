@@ -15,7 +15,7 @@ class OilType(enum.Enum):
 
 class MaintenanceType(enum.Enum):
     Oil_and_filters = "Заміна мастильних матеріалів та фільтрів"
-    Belt_replacement = "Заміна ременія ГРМ"
+    Belt_replacement = "Заміна ременя ГРМ"
     Repair = "Ремонтні роботи"            
     Inspection = "Технічний огляд"        
     Other = "Інше"

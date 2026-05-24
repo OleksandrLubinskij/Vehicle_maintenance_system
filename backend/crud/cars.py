@@ -1,5 +1,4 @@
 from typing import List
-
 from fastapi import Depends, HTTPException, APIRouter
 from services.car_indicators_service import get_serivce_indicators
 from app.schemas import CarModel, CarResponse, CarUpdate
@@ -7,6 +6,7 @@ from app.models import Car
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from app.database import get_db
+from app.exceptions import DBErrors, RecordNotFoundError
 
 router = APIRouter()
 
@@ -42,7 +42,8 @@ async def create_car(car:CarModel, db: Session = Depends(get_db)):
         return new_car_dict
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Помилка бази даних {str(e)}")
+        print(e)
+        raise DBErrors()
 
 @router.patch("/edit_car/{car_id}")
 def edit_car(car:CarUpdate, car_id:int, db:Session = Depends(get_db)):
