@@ -13,7 +13,7 @@ async def get_maintainence_log(car_id: int, db: Session = Depends(get_db)):
     res = db.execute(stmt).scalars().all()
     return res
 
-@router.get("/get_maintainence_record_by_id/{log_id}")
+@router.get("/get_maintenance_record_by_id/{log_id}")
 async def get_maintainence_log_by_id(log_id: int, db:Session = Depends(get_db)):
     stmt = select(
         Maintenance_log
@@ -23,7 +23,7 @@ async def get_maintainence_log_by_id(log_id: int, db:Session = Depends(get_db)):
     res = db.execute(stmt).scalar_one_or_none()
     return res
 
-@router.post("/create_maintainence_record/{car_id}")
+@router.post("/create_maintenance_record/{car_id}")
 async def create_maintainence_record(car_id: int, log:MaintainenceLogModel, db: Session = Depends(get_db)):
     stmt = select(
         Car.mileage
@@ -45,7 +45,7 @@ async def create_maintainence_record(car_id: int, log:MaintainenceLogModel, db: 
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Помилка бази даних {str(e)}")
     
-@router.patch("/edit_maintainence_record/{record_id}")
+@router.patch("/edit_maintenance_record/{record_id}")
 async def edit_maintainence_record(edited_record: MaintainenceLogUpdate, record_id: int, db: Session = Depends(get_db)):
     stmt = select(
         Maintenance_log
@@ -66,7 +66,7 @@ async def edit_maintainence_record(edited_record: MaintainenceLogUpdate, record_
     db.refresh(record_obj)
     return record_obj
 
-@router.delete("/delete_maintainence_record/{record_id}")
+@router.delete("/delete_maintenance_record/{record_id}")
 async def delete_maintainence_record(record_id: int, db: Session = Depends(get_db)):
     record_to_delete = db.get(Maintenance_log, record_id)
     if not record_to_delete:

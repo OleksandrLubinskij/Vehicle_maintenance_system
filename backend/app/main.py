@@ -10,8 +10,8 @@ app.add_exception_handler(DBErrors, general_db_errors_handler)
 app.add_exception_handler(RecordNotFoundError, record_not_found_error_handler)
 
 origins = [
-    "http://127.0.0.1:5500",
-    "http://localhost:5500",
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
 ]
 
 app.add_middleware(

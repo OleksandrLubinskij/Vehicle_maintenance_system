@@ -1,12 +1,60 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="index.js" defer></script>
-</head>
-<body>
-    
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VMS</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script type="module" src="base_view.js" defer></script>
+  </head>
+  <body>
+    <header class="main_header bg-[#1a8d55] p-2">
+      <div class="logo_and_name flex flex-row items-center gap-4">
+        <img
+          src="assets/logo_car.png"
+          alt=""
+          class="h-8 w-8 md:h-12 md:w-12 lg:h-14 lg:w-14"
+        />
+        <h1 class="text-white font-bold text-xl md:text-3xl lg:text-4xl">
+          Система підтримки автомобілів
+        </h1>
+      </div>
+    </header>
+    <nav
+      class="main_nav bg-[#f1efef] flex justify-between items-center py-1 px-8"
+    >
+      <div
+        class="main_sections text-base md:text-lg lg:text-xl font-medium flex gap-4 md:gap-12 lg:gap-24"
+      >
+        <button
+          id="nav-view"
+          class="hover:text-emerald-700 transition-colors duration-200 border-b-2 border-transparent hover:border-black p-1"
+        >
+          Переглянути
+        </button>
+        <button
+          id="nav-create"
+          class="hover:text-emerald-700 transition-colors duration-200 border-b-2 border-transparent hover:border-black p-1"
+        >
+          Створити
+        </button>
+        <button
+          id="nav-edit"
+          class="hover:text-emerald-700 transition-colors duration-200 border-b-2 border-transparent hover:border-black p-1"
+        >
+          Редагувати
+        </button>
+      </div>
+
+      <div class="secondary_section">
+        <button
+          id="settings"
+          class="p-1 hover:bg-gray-200 rounded-full transition-colors duration-300 shrink-0"
+        >
+          <img src="assets/settings.png" alt="Налаштування" class="h-7 w-7" />
+        </button>
+      </div>
+    </nav>
+    <div class="app"></div>
+  </body>
 </html>

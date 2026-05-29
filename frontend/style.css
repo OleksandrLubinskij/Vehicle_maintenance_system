@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* Створюємо варіант dark, який реагуватиме на клас .dark */
+@variant dark (&:where(.dark, .dark *));
+
+/* Ваші змінні (якщо вони потрібні) */
+:root {
+    --custom-bg: #f1efef;
+}
+
+.dark {
+    --custom-bg: #121212;
+}

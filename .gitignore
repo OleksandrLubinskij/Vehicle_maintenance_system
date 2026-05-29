@@ -7,3 +7,4 @@ venv/
 alembic.ini
 alembic/
 .vscode/
+frontend/node_modules/
