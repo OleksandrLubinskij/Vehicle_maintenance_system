@@ -19,10 +19,3 @@ class MaintenanceType(enum.Enum):
     Repair = "Ремонтні роботи"            
     Inspection = "Технічний огляд"        
     Other = "Інше"
-
-class ServiceStatus(enum.Enum):
-    OK = "OK"
-    SOON = "Soon"
-    ALERT = "Alert"
-    OVERDUE = "Overdue"
-    NO_RECORDS = "No records"

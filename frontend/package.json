@@ -15,5 +15,9 @@
     "@tailwindcss/vite": "^4.3.0",
     "tailwindcss": "^4.3.0",
     "vite": "^8.0.14"
+  },
+  "devDependencies": {
+    "@iconify-json/bi": "^1.2.7",
+    "@iconify/tailwind": "^1.2.0"
   }
 }

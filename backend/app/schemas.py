@@ -42,4 +42,7 @@ class CarResponse(BaseModel):
     brand: str
     model: str
     mileage: int
+    engine_capacity:float
+    fuel_type: str
+    oil_type: str
     service_indicators: Dict[str, str] = {}

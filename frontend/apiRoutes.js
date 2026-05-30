@@ -13,9 +13,9 @@ const endpoint = {
     maintenance_log: {
         show_all_mlog: (car_id) => `${BASE_MAINTENANCE_LOG_URL}/${car_id}`,
         show_mlog_by_id: (id) => `${BASE_MAINTENANCE_LOG_URL}/get_maintenance_record_by_id/${id}`,
-        create_mlog: (car_id) => `${BASE_CAR_URL}/create_maintenance_record/${car_id}`,
-        edit_mlog: (id) => `${BASE_CAR_URL}/edit_maintenance_record/${id}`,
-        delete_mlog: (id) => `${BASE_CAR_URL}/delete_maintenance_record/${id}`
+        create_mlog: (car_id) => `${BASE_MAINTENANCE_LOG_URL}/create_maintenance_record/${car_id}`,
+        edit_mlog: (id) => `${BASE_MAINTENANCE_LOG_URL}/edit_maintenance_record/${id}`,
+        delete_mlog: (id) => `${BASE_MAINTENANCE_LOG_URL}/delete_maintenance_record/${id}`
     }
 };
 

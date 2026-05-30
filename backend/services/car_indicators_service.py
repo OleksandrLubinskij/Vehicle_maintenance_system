@@ -1,9 +1,9 @@
 from datetime import datetime
 from app.models import Maintenance_log
-from app.enums import MaintenanceType, ServiceStatus
+from app.enums import MaintenanceType
 from sqlalchemy.orm import Session
 from sqlalchemy import select, func
-
+from app.config import LIMITATIONS, TEXT_INDICATORS
 def calculate_maintenance_delta(car_id: int, current_mileage:int,  db: Session):
     subq = (
         select(
@@ -56,23 +56,24 @@ def calculate_maintenance_delta(car_id: int, current_mileage:int,  db: Session):
 
 def evaluate_status(diff, limit):
     ratio = diff / limit
-    if ratio >= 1: return ServiceStatus.OVERDUE
-    if ratio >= 0.85: return ServiceStatus.ALERT
-    if ratio >= 0.5: return ServiceStatus.SOON
-    if ratio >= 0: return ServiceStatus.OK
-    return ServiceStatus.NO_RECORDS
+    if ratio >= 1: return 4 #overdue
+    if ratio >= 0.85: return 3 #critical
+    if ratio >= 0.5: return 2 #soon
+    if ratio >= 0: return 1 #ok
+    return 0 #none
 
 def get_serivce_indicators(car_id: int, current_mileage: int,  db: Session):
-    limitation = {
-        "oil_and_filters": 10000,
-        "belt_replacement": 60000,
-        "inspection_mileage": 10000,
-        "inspection_time": 365
-    }
     diffs = calculate_maintenance_delta(car_id, current_mileage, db)
 
-    return {
-        key: evaluate_status(diff, limitation[key])
-        for key, diff in zip(limitation.keys(), diffs)
+    output =  {
+        key: evaluate_status(diff, LIMITATIONS[key])
+        for key, diff in zip(LIMITATIONS.keys(), diffs)
     }
+    worst_maintenance_code = max(output.values())
+    output["worst_maintenance"] = worst_maintenance_code
+    output["text_indicator"] = TEXT_INDICATORS[worst_maintenance_code]
+    inspection_mileage = output.pop("inspection_mileage")
+    inspection_time = output.pop("inspection_time")
+    output["inspection"] = max((inspection_mileage, inspection_time))
+    return output
 
