@@ -10,4 +10,11 @@ export default defineConfig({
       ]
     }),
   ],
+  server: {
+    host: true, // або '0.0.0.0'
+    port: 5173,
+    watch: {
+      usePolling: true, // <--- Вмикає примусове опитування файлів
+    },
+  },
 })
