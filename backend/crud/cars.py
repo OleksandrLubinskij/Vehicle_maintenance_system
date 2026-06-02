@@ -7,11 +7,20 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 from app.database import get_db
 from app.exceptions import DBErrors, RecordNotFoundError
+from app.cache.redis import RedisCache
+
+cache = RedisCache()
 
 router = APIRouter()
 
 @router.get("/", response_model= List[CarResponse])
 async def get_cars(db: Session = Depends(get_db)):
+    cars = cache.get("cars")
+    print("jhgfjhgfjghf")
+    if cars:
+        print("У кеші")
+        return cars
+    
     stmt = select(Car)
     cars = db.execute(stmt).scalars().all()
     res = []
@@ -20,6 +29,9 @@ async def get_cars(db: Session = Depends(get_db)):
         responce_car = CarResponse.model_validate(car)
         responce_car.service_indicators = indicators
         res.append(responce_car)
+    data_for_cache = [car.model_dump() for car in res]
+    cache.set("cars", data_for_cache)
+    
     return res
 
 @router.get("/get_car_by_id/{car_id}")

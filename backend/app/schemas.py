@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 from app.enums import FuelType, OilType, UserRole, MaintenanceType
-from typing import Optional, Dict
+from typing import Optional, Dict, Any
 class CarModel(BaseModel):
     vin: str
     brand: str
@@ -45,4 +45,4 @@ class CarResponse(BaseModel):
     engine_capacity:float
     fuel_type: str
     oil_type: str
-    service_indicators: Dict[str, str] = {}
+    service_indicators: Dict[str, Any] = {}
