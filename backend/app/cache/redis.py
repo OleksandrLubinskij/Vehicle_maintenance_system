@@ -17,3 +17,17 @@ class RedisCache:
      
     def delete(self, key) -> None:
         self.redis.delete(key)
+
+
+    def hset(self, key:str, id:int, data:dict, expire:int = 3600) -> None:
+        json_data = json.dumps(data)
+        self.redis.hset(key, str(id), json_data)
+        self.redis.expire(key, expire)
+
+    def hget_by_id(self, key:str, id:int) -> dict:
+        data = self.redis.hget(key, str(id))
+        return  json.loads(data) if data else None
+    
+    def get_all_cached(self, key) -> dict:
+        data = self.redis.hgetall(key)
+        return {car_id: json.loads(val) for car_id, val in data.items()}

@@ -12,3 +12,7 @@ TEXT_INDICATORS = {
     3: "Стан критичний",
     4: "Ліміти перевищені!"
 }
+
+class CACHE:
+    CARS="cars"
+        
