@@ -30,18 +30,20 @@ async def get_cars(db: Session = Depends(get_db)):
         responce_car.service_indicators = indicators
         res[car.id] = (responce_car)
         cache.hset(CACHE.CARS, car.id, responce_car.model_dump())
-    
     return res
 
 @router.get("/get_car_by_id/{car_id}")
 async def get_car_by_id(car_id: int, db: Session = Depends(get_db)):
-    car = cache.get
+    car = cache.hget_by_id(CACHE.CARS, car_id)
+    if car:
+        return car
     stmt = select(Car).where(Car.id == car_id)
 
     res = db.execute(stmt) 
 
-    cars = res.scalar_one_or_none()
-    return cars 
+    car = res.scalar_one_or_none()
+    cache.hset(CACHE.CARS, car_id, car.model_dump())
+    return car
 
 @router.post("/create_car")
 async def create_car(car:CarModel, db: Session = Depends(get_db)):
@@ -62,7 +64,7 @@ def edit_car(car:CarUpdate, car_id:int, db:Session = Depends(get_db)):
     stmt = select(Car).where(Car.id == car_id)
     car_db = db.execute(stmt).scalar()
     if not car_db:
-        raise HTTPException(status_code=404, detail="Машину не знайдено")
+        raise RecordNotFoundError()
     
     update_data = car.model_dump(exclude_unset=True)
 
@@ -71,15 +73,18 @@ def edit_car(car:CarUpdate, car_id:int, db:Session = Depends(get_db)):
     
     db.commit()
     db.refresh(car_db)
+    cache.delete(CACHE.CARS)
     return car_db
 
 @router.delete("/delete_car/{car_id}")
 async def delete_car(car_id:int, db: Session = Depends(get_db)):
     car_to_delete = db.get(Car, car_id)
     if not car_to_delete:
-        raise HTTPException(status_code=404, detail="Машину не знайено")
+        raise RecordNotFoundError()
     db.delete(car_to_delete)
     db.commit()
+    cache.delete(CACHE.CARS)
+
 
 @router.get("/test_redis")
 def test_redis(car_id: int = Query(None), db: Session = Depends(get_db)):
