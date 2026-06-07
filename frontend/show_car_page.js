@@ -79,7 +79,8 @@ export class ShowCarPage extends BaseWindow {
 
     render(cars) {
         const app_div = document.querySelector("#app");
-        const cars_cards = cars.map(car => this.render_car_card(car)).join("");
+        console.log(cars)
+        const cars_cards = Object.values(cars).map(car => this.render_car_card(car)).join("");
         app_div.innerHTML = cars_cards; 
     }
 }
@@ -92,6 +93,5 @@ async function get_all_cars() {
 
 
 const cars = await get_all_cars();
-console.log(cars)
 const sh1 = new ShowCarPage("show car page");
 sh1.render(cars);
