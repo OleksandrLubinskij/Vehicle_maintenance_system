@@ -4,8 +4,7 @@ export class ErrorPage extends BaseWindow {
     constructor(title, error_code) {
         super(title)
         this.error_code = error_code;
-    }
-    static errors = {
+        this.errors = {
             "404": {
                 "img": "assets/page_not_found.svg",
                 "text": "Сторінку не знайдено!",
@@ -17,8 +16,12 @@ export class ErrorPage extends BaseWindow {
                 "hint": "Все що ви можете зробити це трішки зачекати поки розробник вирішить проблему."
             }
         }
-    static content() {
+    }
+    
+    content() {
+        console.log(this.error_code)
         const error_obj = this.errors[this.error_code];
+        console.log(error_obj);
         return `
             <div
         class="flex flex-col items-center max-w-md w-full bg-white border border-gray-100 shadow-2xl rounded-2xl p-8 md:p-10 text-center transition-all duration-300 hover:shadow-emerald-100"
@@ -27,7 +30,7 @@ export class ErrorPage extends BaseWindow {
           class="mb-6 p-4 bg-emerald-200 rounded-full text-emerald-600 animate-bounce"
         >
           <img
-            src=${error_obj["img"]}
+            src="${error_obj['img']}"
             alt="Page not found"
             class="w-16 h-16 md:w-20 md:h-20 object-contain"
           />
@@ -57,5 +60,10 @@ export class ErrorPage extends BaseWindow {
         </div>
       </div>
         `
+    }
+
+    render() {
+      const html = this.content();
+      super.render(html);
     }
 }

@@ -86,13 +86,6 @@ export class ShowCarPage extends BaseWindow {
     }
 
     async render() {
-        //Очікування завантаження
-        //блок try
-        //завнтаження машин з ендпоінту
-        //генерація контенту
-        //render
-        //catch
-        //Помикла на сервері
         super.render("<div class='text-center p-10 font-bold text-xl'>Завантаження списку автомобілів...</div>");
         try {
             this.cars = await this.get_all_cars();

@@ -25,15 +25,19 @@ class Router {
         console.log("Доступні маршрути:", this.routes);
 
         let PageClass = this.routes[path];
-
+        let pageInstance;
+        let error_code;
         if (!PageClass) {
             console.warn("Маршрут не знайдено в карті роутів! Перемикаємо на 404.");
             this.current_path = "/404";
             PageClass = this.routes[this.current_path];
-
+            pageInstance = new PageClass("Not found", "404");
         }
-
-        const pageInstance = new PageClass();
+        else {
+            this.current_path = path;
+            const page_title = path === "/" ? "Головна" : path.slice(1);
+            pageInstance = new PageClass(page_title);
+        }
         pageInstance.render();
     }
 
