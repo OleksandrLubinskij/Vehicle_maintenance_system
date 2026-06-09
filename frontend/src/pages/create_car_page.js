@@ -22,7 +22,6 @@ export class CreateCarPage extends BaseWindow {
         const oil_values = oil_enum.map(val => val.name);
 
         for (const [key, val] of Object.entries(this.form_fields)) {
-            // Якщо поле — VIN, передаємо клас для розширення, інакше — пустий рядок
             const extra_class = (key === "VIN") ? "md:col-span-2" : "";
             
             const field = form.create_entry(key, val, "input", extra_class);
@@ -30,7 +29,7 @@ export class CreateCarPage extends BaseWindow {
         }
 
         return `
-        <form action="POST" class="max-w-2xl w-full mx-auto mt-5">
+        <form action="/" id="create_car_form" class="max-w-2xl w-full mx-auto mt-5">
             <div class="border border-gray-200 rounded-2xl bg-white p-8 shadow-md">
                 <div class="grid grid-cols-1 md:grid-cols-2 md:gap-x-6">
                     ${
@@ -65,10 +64,25 @@ export class CreateCarPage extends BaseWindow {
         try {
         const fuel_enum = await api.enum.get_enums(1);
         const oil_enum = await api.enum.get_enums(2);
-        console.log(fuel_enum);
-        console.log(oil_enum);
         const html = this.content(fuel_enum, oil_enum);
         super.render(html);
+
+        setTimeout(() =>{const create_car_form = document.querySelector("#create_car_form");
+        if (create_car_form) {
+            create_car_form.addEventListener("submit", async (event) => {
+                const formData = new FormData(create_car_form);
+                const car_data = Object.fromEntries(formData.entries());
+                if(car_data.mileage) car_data.mileage = Number(car_data.mileage);
+                if(car_data.engine_capacity) car_data.engine_capacity = Number(car_data.engine_capacity);
+                console.log(car_data);
+                try {
+                    const responce = await api.cars.create_car(car_data);
+                } catch(error) {
+                    console.error("Помилка при відправці даних:", error);
+                    alert("Не вдалося зберегти автомобіль.");
+                }
+            })
+        }}, 0``)
     } catch(error) {
         console.error("Помилка завантаження енумів:", error);
         super.render("<p class='text-center text-red-500'>Не вдалося завантажити дані</p>");
