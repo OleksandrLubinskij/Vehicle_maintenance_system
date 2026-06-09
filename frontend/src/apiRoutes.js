@@ -1,7 +1,6 @@
-const BASE_URL = "http://127.0.0.1:8001";
-const BASE_CAR_URL = `${BASE_URL}/v1/cars`;
+const BASE_URL = "http://127.0.0.1:8001/v1";
+const BASE_CAR_URL = `${BASE_URL}/cars`;
 const BASE_MAINTENANCE_LOG_URL = `${BASE_URL}/maintenance_logs`;
-
 const endpoint = {
     cars: {
         show_all_cars: () => `${BASE_CAR_URL}`,
@@ -16,6 +15,9 @@ const endpoint = {
         create_mlog: (car_id) => `${BASE_MAINTENANCE_LOG_URL}/create_maintenance_record/${car_id}`,
         edit_mlog: (id) => `${BASE_MAINTENANCE_LOG_URL}/edit_maintenance_record/${id}`,
         delete_mlog: (id) => `${BASE_MAINTENANCE_LOG_URL}/delete_maintenance_record/${id}`
+    },
+    enum: {
+        get_enums: (enum_id) => `${BASE_URL}/get_enums/${enum_id}`
     }
 };
 
@@ -54,5 +56,8 @@ export const api = {
         create_mlog: (car_id, data) => request(endpoint.maintenance_log.create_mlog(car_id), "POST", data),
         edit_mlog: (id, data) => request(endpoint.maintenance_log.edit_mlog(id), "PATCH", data),
         delete_mlog: (id) => request(endpoint.maintenance_log.delete_mlog(id), "DELETE")
+    },
+    enum: {
+        get_enums: (enum_id) => request(endpoint.enum.get_enums(enum_id))
     }
 };

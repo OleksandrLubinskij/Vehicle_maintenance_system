@@ -1,7 +1,7 @@
 export class Form {
-    create_entry(label_text, id, type) {
+    create_entry(label_text, id, type, extra_classes = "") {
         return `
-        <div class="flex flex-col gap-2 w-full mb-4">
+        <div class="flex flex-col gap-2 w-full mb-4 ${extra_classes}">
           <label for="${id}" class="text-sm md:text-base font-semibold text-gray-700">
             ${label_text}:
           </label>
@@ -14,9 +14,9 @@ export class Form {
         </div>`
     }
 
-    create_select(label_text, id, values) {
+    create_select(label_text, id, values, extra_classes = "") {
         return `
-        <div class="flex flex-col gap-2 w-full mb-4">
+        <div class="flex flex-col gap-2 w-full mb-4 ${extra_classes}">
           <label for="${id}" class="text-sm md:text-base font-semibold text-gray-700">
             ${label_text}
           </label>

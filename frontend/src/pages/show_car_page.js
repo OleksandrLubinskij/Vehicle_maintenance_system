@@ -44,7 +44,7 @@ export class ShowCarPage extends BaseWindow {
         <article class="car_card border border-gray-200 bg-white flex flex-col md:flex-row items-stretch rounded-xl overflow-hidden shadow-sm m-4">
             
             <img
-                src="assets/skoda_octavia__622641438f.jpg"
+                src="assets/unknown_car.svg"
                 alt=""
                 class="w-full h-48 md:w-80 md:h-auto object-cover shrink-0 self-stretch"
             />
