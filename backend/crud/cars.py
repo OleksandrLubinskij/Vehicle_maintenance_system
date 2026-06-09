@@ -1,5 +1,5 @@
 from typing import Dict
-from fastapi import Depends, HTTPException, APIRouter, Query
+from fastapi import Depends, APIRouter, Query
 from services.car_indicators_service import get_serivce_indicators
 from app.schemas import CarModel, CarResponse, CarUpdate, CarResponse2
 from app.models import Car

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from crud import cars, maintenance_logs, users
-
+from services import get_enums
 api_router = APIRouter()
 api_router.include_router(cars.router, 
                           prefix="/v1/cars",
@@ -13,3 +13,7 @@ api_router.include_router(maintenance_logs.router,
 api_router.include_router(users.router,
                           prefix="/v1/users",
                           tags=["User"])
+
+api_router.include_router(get_enums.router,
+                          prefix="/v1/get_enums",
+                          tags=["Get Enums"])

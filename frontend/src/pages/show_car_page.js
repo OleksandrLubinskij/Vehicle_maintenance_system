@@ -20,6 +20,8 @@ export class ShowCarPage extends BaseWindow {
         };
 
         this.info_about_car_keys = ["mileage", "engine_capacity", "fuel_type", "oil_type"];
+
+        this.cars = [];
     }
 
     icon_value_text(image_path, text, element = "div") {
@@ -78,22 +80,38 @@ export class ShowCarPage extends BaseWindow {
         </article>
     `;
 }
-
-    render(cars) {
-        const app_div = document.querySelector("#app");
-        console.log(cars)
-        const cars_cards = Object.values(cars).map(car => this.render_car_card(car)).join("");
-        app_div.innerHTML = cars_cards; 
+    content() {
+        const cars_cards = Object.values(this.cars).map(car => this.render_car_card(car)).join("");
+        return cars_cards;
     }
-}
 
-async function get_all_cars() {
+    async render() {
+        //Очікування завантаження
+        //блок try
+        //завнтаження машин з ендпоінту
+        //генерація контенту
+        //render
+        //catch
+        //Помикла на сервері
+        super.render("<div class='text-center p-10 font-bold text-xl'>Завантаження списку автомобілів...</div>");
+        try {
+            this.cars = await this.get_all_cars();
+            const html = this.content();
+            super.render(html);
+        }
+        catch(error) {
+            console.log(`Error with car loading: ${error}`);
+            super.render("<div class='text-center p-10 text-red-500 font-bold'>Не вдалося завантажити дані.</div>");
+        }
+    }
+    async get_all_cars() {
         const cars_data = await api.cars.show_all_cars();
         return cars_data;
     }
+}
 
 
 
-const cars = await get_all_cars();
-const sh1 = new ShowCarPage("show car page");
-sh1.render(cars);
+
+
+

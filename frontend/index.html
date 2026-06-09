@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>VMS</title>
     <link rel="stylesheet" href="./style.css" />
-    <script type="module" src="show_car_page.js" defer></script>
+    <script type="module" src="./src/router.js" defer></script>
   </head>
   <body class="bg-[#f5f5f5]">
     <header class="main_header bg-[#227b50] p-2">
@@ -39,12 +39,14 @@
         <button
           id="nav-view"
           class="text-left md:text-center hover:text-emerald-700 transition-colors duration-200 border-b-2 border-transparent hover:border-black p-1"
+          data-path="/"
         >
           Переглянути
         </button>
         <button
           id="nav-create"
           class="text-left md:text-center hover:text-emerald-700 transition-colors duration-200 border-b-2 border-transparent hover:border-black p-1"
+          data-path="/create_car"
         >
           Створити
         </button>
@@ -65,8 +67,6 @@
         </button>
       </div>
     </nav>
-    <div id="app" class="app max-w-5xl mx-auto p-6">
-      <form action="GET"></form>
-    </div>
+    <div id="app" class="app max-w-max min-h-max mx-auto p-6"></div>
   </body>
 </html>
