@@ -32,17 +32,18 @@ async def get_cars(db: Session = Depends(get_db)):
         cache.hset(CACHE.CARS, car.id, responce_car.model_dump())
     return res
 
-@router.get("/get_car_by_id/{car_id}")
+@router.get("/get_car_by_id/{car_id}", response_model= CarResponse)
 async def get_car_by_id(car_id: int, db: Session = Depends(get_db)):
     car = cache.hget_by_id(CACHE.CARS, car_id)
     if car:
         return car
     stmt = select(Car).where(Car.id == car_id)
 
-    res = db.execute(stmt) 
-
-    car = res.scalar_one_or_none()
-    cache.hset(CACHE.CARS, car_id, car.model_dump())
+    car = db.execute(stmt).scalar_one_or_none()
+    indicators = get_serivce_indicators(car.id, car.mileage,  db)
+    responce_car = CarResponse.model_validate(car)
+    responce_car.service_indicators = indicators
+    cache.hset(CACHE.CARS, car.id, responce_car.model_dump())
     return car
 
 @router.post("/create_car")

@@ -40,6 +40,7 @@ class MaintainenceLogUpdate(BaseModel):
 class CarResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
+    vin: str
     brand: str
     model: str
     mileage: int

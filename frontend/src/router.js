@@ -6,9 +6,10 @@ class Router {
     
     constructor() {
         this.routes = {
-            "/": ShowCarPage,
+            "/cars": ShowCarPage ,
             "/create_car": CreateCarPage,
-            "/404": ErrorPage
+            "/edit_car": CreateCarPage ,
+            "/404": ErrorPage 
         };
         this._current_path = "/";
     }
@@ -20,10 +21,13 @@ class Router {
         this._current_path = new_path;
     }
 
-    load_page(path) {
-        console.log("=== РОУТЕР НАМАГАЄТЬСЯ ЗАВАНТАЖИТИ ШЛЯХ ==:", path);
+    load_page(raw_path) {
+        console.log("=== РОУТЕР НАМАГАЄТЬСЯ ЗАВАНТАЖИТИ ШЛЯХ ==:", raw_path);
         console.log("Доступні маршрути:", this.routes);
-
+        const raw_path_arr = raw_path.split("/").filter(Boolean);
+        const path = `/${raw_path_arr[0]}`;
+        const path_param = raw_path_arr[1];
+        console.log(`/${raw_path_arr[0]}`)
         let PageClass = this.routes[path];
         let pageInstance;
         let error_code;
@@ -35,8 +39,8 @@ class Router {
         }
         else {
             this.current_path = path;
-            const page_title = path === "/" ? "Головна" : path.slice(1);
-            pageInstance = new PageClass(page_title);
+            const page_title = path === "/" ? "Головна" : raw_path_arr[0];
+            pageInstance = new PageClass(page_title, path_param);
         }
         pageInstance.render();
     }
@@ -50,7 +54,7 @@ class Router {
     }
 }
 
-const router = new Router();
+export const router = new Router();
 
 router.load_page(window.location.pathname);
 

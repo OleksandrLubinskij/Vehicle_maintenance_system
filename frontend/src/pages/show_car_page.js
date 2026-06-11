@@ -10,6 +10,7 @@ export class ShowCarPage extends BaseWindow {
             "fuel_type": "assets/fuel-pump.svg",
             "oil_type": "assets/droplet.svg",
             "add_note_img": "assets/journal-plus.svg",
+            "edit_car": "assets/edit_car.svg"
         };
         this.indicators = {
             0: { "img": "assets/empty_car_log.svg", "color": "#dddddd" },
@@ -24,16 +25,19 @@ export class ShowCarPage extends BaseWindow {
         this.cars = [];
     }
 
-    icon_value_text(image_path, text, element = "div") {
-        return `
-            <${element} class="flex gap-2 m-2">
-                <img src="${image_path}" alt="" class="h-5 w-5 md:h-7 md:w-7 lg:h-9 lg:w-9 shrink-0" />
-                <span class="text-xs md:text-base lg:text-lg inline-flex items-center font-medium">
-                    ${text}
-                </span>
-            </${element}>
-        `;
-    }
+    icon_value_text(image_path, text, element = "div", data_path = "") {
+    
+    const pathAttr = (element === "button" && data_path) ? `data-path="${data_path}"` : "";
+
+    return `
+        <${element} ${pathAttr} class="flex gap-2 m-2 cursor-pointer items-center justify-start">
+            <img src="${image_path}" alt="" class="h-5 w-5 md:h-7 md:w-7 lg:h-9 lg:w-9 shrink-0" />
+            <span class="text-xs md:text-base lg:text-lg inline-flex items-center font-medium">
+                ${text}
+            </span>
+        </${element}>
+    `;
+}
 
     render_car_card(car_data) {
     const worstMaintenanceId = car_data["service_indicators"]["worst_maintenance"];
@@ -71,7 +75,15 @@ export class ShowCarPage extends BaseWindow {
                     ${this.icon_value_text(
                         this.images.add_note_img, 
                         "Додати ремонт", 
-                        "button"
+                        "button",
+                        "add_note"
+                    )}
+
+                    ${this.icon_value_text(
+                        this.images.edit_car, 
+                        "Редагувати", 
+                        "button",
+                        `/edit_car/${car_data["id"]}`
                     )}
                 </div>
             </div>
