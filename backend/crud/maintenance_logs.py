@@ -1,12 +1,14 @@
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from app.models import Car, Maintenance_log
+from app.models import Maintenance_log
 from app.database import get_db
 from app.schemas import MaintainenceLogModel, MaintainenceLogUpdate
-
+from app.cache.redis import RedisCache
+from app.config import CACHE
 
 router = APIRouter()
+cache = RedisCache()
 
 @router.get("/{car_id}")
 async def get_maintainence_log(car_id: int, db: Session = Depends(get_db)):
@@ -33,6 +35,7 @@ async def create_maintainence_record(car_id: int, log:MaintainenceLogModel, db: 
         db.add(new_log_obj)
         db.commit()
         db.refresh(new_log_obj)
+        cache.delete(CACHE.CARS)
         return new_log_obj
     except Exception as e:
         db.rollback()
@@ -57,6 +60,7 @@ async def edit_maintainence_record(edited_record: MaintainenceLogUpdate, record_
     
     db.commit()
     db.refresh(record_obj)
+    cache.delete(CACHE.CARS)
     return record_obj
 
 @router.delete("/delete_maintenance_record/{record_id}")
@@ -67,3 +71,4 @@ async def delete_maintainence_record(record_id: int, db: Session = Depends(get_d
 
     db.delete(record_to_delete)
     db.commit()
+    cache.delete(CACHE.CARS)

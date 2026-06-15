@@ -1,6 +1,6 @@
-export const CarFormAim = {
-    Create: "create",
-    Edit: "edit"
+export const PAGE_MODE = {
+    CREATE: "create",
+    EDIT: "edit"
 };
 
 export const MAINTENANCE_LOG_FIELDS = [

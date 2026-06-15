@@ -76,7 +76,7 @@ export class ShowCarPage extends BaseWindow {
                         this.images.add_note_img, 
                         "Додати ремонт", 
                         "button",
-                        "add_note"
+                        `/create_maintenance_record/${car_data["id"]}`
                     )}
 
                     ${this.icon_value_text(

@@ -46,6 +46,12 @@ async def get_car_by_id(car_id: int, db: Session = Depends(get_db)):
     cache.hset(CACHE.CARS, car.id, responce_car.model_dump())
     return car
 
+@router.get("/get_car_mileage/{car_id}")
+async def get_car_mileage(car_id: int, db: Session = Depends(get_db)):
+    stmt = select(Car.mileage).where(Car.id == car_id)
+    mileage = db.execute(stmt).scalar_one_or_none()
+    return mileage
+
 @router.post("/create_car")
 async def create_car(car:CarModel, db: Session = Depends(get_db)):
     new_car_dict = car.model_dump()

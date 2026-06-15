@@ -1,7 +1,7 @@
 import { BaseWindow } from "./base_view";
 import { api } from "../apiRoutes";
 import { Form } from "../components/form_elements";
-import { CarFormAim } from "../../config";
+import { PAGE_MODE } from "../../config";
 import { router } from "../router";
 export class CreateCarPage extends BaseWindow {
     constructor(title, id = null) {

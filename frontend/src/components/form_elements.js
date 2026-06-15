@@ -28,7 +28,7 @@ export class Form {
             rows=${rows}
             cols=${cols}
             class="w-full border border-gray-300 rounded-lg px-3 py-2 text-base focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 transition-all"
-          />
+          ></textarea>
         </div>`
     }
 
