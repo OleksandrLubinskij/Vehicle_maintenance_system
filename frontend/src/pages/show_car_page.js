@@ -93,6 +93,7 @@ export class ShowCarPage extends BaseWindow {
     `;
 }
     content() {
+        console.log(this.cars);
         const cars_cards = Object.values(this.cars).map(car => this.render_car_card(car)).join("");
         return cars_cards;
     }
