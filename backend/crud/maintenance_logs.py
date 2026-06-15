@@ -26,15 +26,7 @@ async def get_maintainence_log_by_id(log_id: int, db:Session = Depends(get_db)):
 
 @router.post("/create_maintenance_record/{car_id}")
 async def create_maintainence_record(car_id: int, log:MaintainenceLogModel, db: Session = Depends(get_db)):
-    stmt = select(
-        Car.mileage
-        ).where(
-            Car.id == car_id
-        )
-    car_mileage = db.execute(stmt).all()[0][0]
-
     new_log_dict = log.model_dump()
-    new_log_dict["mileage_on_maintain"] = car_mileage
     new_log_dict["car_id"] = car_id
     new_log_obj = Maintenance_log(**new_log_dict)
     try:

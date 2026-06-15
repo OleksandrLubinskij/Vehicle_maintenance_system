@@ -17,10 +17,10 @@ class UserModel(BaseModel):
     password: str
     role: UserRole
 
-class MaintainenceLogBaseModel(BaseModel):
-    car_id: int
+# class MaintainenceLogBaseModel(BaseModel):
+    
+class MaintainenceLogModel(BaseModel):
     mileage_on_maintain: int
-class MaintainenceLogModel(MaintainenceLogBaseModel):
     maintenance_type: MaintenanceType
     description: str
 class CarUpdate(BaseModel):
