@@ -17,3 +17,37 @@ export const MAINTENANCE_LOG_FIELDS = [
         ID:"description"
     },
 ];
+
+export const CAR_INPUT_FIELDS = [
+    {
+        LABEL:"VIN",
+        ID:"vin"
+    },
+    {
+        LABEL:"Бренд",
+        ID:"brand"
+    },
+    {
+        LABEL:"Модель",
+        ID:"model"
+    },
+    {
+        LABEL:"Пробіг",
+        ID:"mileage"
+    },
+    {
+        LABEL:"Об'єм двигуна",
+        ID:"engine_capacity"
+    },
+];
+
+export const CAR_SELECT_FIELDS = [
+    {
+        LABEL:"Тип пального",
+        ID:"fuel_type"
+    },
+    {
+        LABEL:"Тип масла",
+        ID:"oil_type"
+    },
+];

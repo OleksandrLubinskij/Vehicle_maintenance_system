@@ -1,7 +1,7 @@
 import { BaseWindow } from "./base_view";
 import { Form } from "../components/form_elements";
 import { MAINTENANCE_LOG_FIELDS, PAGE_MODE } from "../../config";
-import { MAINTENACE_LOG } from "../../MaintainenceLogConfig";
+import { MAINTENACE_LOG } from "../../DBConfig";
 import { api } from "../apiRoutes";
 import { router } from "../router";
 export class ManageMaintenancePage extends BaseWindow {

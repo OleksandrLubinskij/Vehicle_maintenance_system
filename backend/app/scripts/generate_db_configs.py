@@ -1,15 +1,21 @@
-from app.schemas import MaintainenceLogModel
+from app.schemas import MaintainenceLogModel, CarModel
 import json
 from pathlib import Path
-
-def generateMaintainenceLogModelConfig():
-    fields = list(MaintainenceLogModel.model_fields.keys())
+#PS ../Vehicle_Maintenance_System\backend> python -m app.scripts.generate_db_configs
+names = {
+    MaintainenceLogModel:"MAINTENACE_LOG",
+    CarModel: "CAR"
+}
+frontend_path = Path(__file__).parent.parent.parent.parent / "frontend" / "DBConfig.js"
+def generateConfig(model, name):
+    fields = list(model.model_fields.keys())
     config = {field: field for field in fields}
-    frontend_path = Path(__file__).parent.parent.parent.parent / "frontend" / "MaintainenceLogConfig.js"
-
-    with open(frontend_path, "w", encoding="utf-8") as file:
-        js_content = f"export const MAINTENACE_LOG = {json.dumps(config, indent=2)};"
+    with open(frontend_path, "a", encoding="utf-8") as file:
+        js_content = f"export const {name} = {json.dumps(config, indent=2)};\n\n"
         file.write(js_content)
 
 if __name__ == "__main__":
-    generateMaintainenceLogModelConfig()
+    with open(frontend_path, "w", encoding="utf-8") as file:
+        file.write("")
+    for key, val in names.items():
+        generateConfig(key, val)
