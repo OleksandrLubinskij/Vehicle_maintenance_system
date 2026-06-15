@@ -15,6 +15,23 @@ export class Form {
         </div>`
     }
 
+    create_textarea(label_text, id, rows, cols, default_value=null) {
+        return `
+        <div class="flex flex-col gap-2 w-full mb-4">
+          <label for="${id}" class="text-sm md:text-base font-semibold text-gray-700">
+            ${label_text}:
+          </label>
+          <textarea
+            id="${id}"
+            name="${id}"
+            value="${default_value===null ? "" : default_value}"
+            rows=${rows}
+            cols=${cols}
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-base focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 transition-all"
+          />
+        </div>`
+    }
+
     create_select(label_text, id, values, extra_classes = "", default_value="") {
         return `
         <div class="flex flex-col gap-2 w-full mb-4 ${extra_classes}">
