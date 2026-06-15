@@ -37,6 +37,7 @@ export class ManageMaintenancePage extends BaseWindow {
                         MAINTENANCE_LOG_FIELDS[2].ID, 
                         10, 
                         2, 
+                        "md:col-span-2",
                         def_val?.[MAINTENACE_LOG.description]
                     )}
                 </div>
