@@ -1,6 +1,8 @@
-const BASE_URL = "http://127.0.0.1:8001/v1";
+import { router } from "./router";
+const BASE_URL = "http://localhost:8001/v1";
 const BASE_CAR_URL = `${BASE_URL}/cars`;
 const BASE_MAINTENANCE_LOG_URL = `${BASE_URL}/maintenance_logs`;
+const BASE_USERS_URL = `${BASE_URL}/users`;
 const endpoint = {
     cars: {
         show_all_cars: () => `${BASE_CAR_URL}`,
@@ -19,6 +21,11 @@ const endpoint = {
     },
     enum: {
         get_enums: (enum_id) => `${BASE_URL}/get_enums/${enum_id}`
+    },
+    users: {
+        register:() => `${BASE_USERS_URL}/register`,
+        login:() => `${BASE_USERS_URL}/login`,
+        logout:() => `${BASE_USERS_URL}/logout`,
     }
 };
 
@@ -27,7 +34,8 @@ async function request(URL, method = "GET", data = null) {
         method,
         headers: {
             "Content-Type": "application/json"
-        }
+        },
+        credentials: "include"
     };
 
     if (data) {
@@ -35,7 +43,13 @@ async function request(URL, method = "GET", data = null) {
     }
 
     const response = await fetch(URL, options);
-
+    if (response.status === 401) {
+        console.warn("Бекенд повернув 401. Перенаправляємо на логін...");
+        
+        router.navigate("/login"); 
+        
+        throw new Error("Сесія закінчилася. Будь ласка, увійдіть знову.");
+    }
     if (!response.ok) {
         const error = await response.json().catch(() => ({ "detail": "Unknown error!" }));
         throw new Error(error.detail || `HTTP error: ${response.status}`);
@@ -61,5 +75,10 @@ export const api = {
     },
     enum: {
         get_enums: (enum_id) => request(endpoint.enum.get_enums(enum_id))
+    },
+    users: {
+        register: (data) => request(endpoint.users.register(), "POST", data),
+        login: (data) => request(endpoint.users.login(), "POST", data),
+        logout: (data) => request(endpoint.users.logout())
     }
 };

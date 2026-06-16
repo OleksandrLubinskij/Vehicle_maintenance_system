@@ -2,16 +2,20 @@ import { ShowCarPage } from "./pages/show_car_page.js";
 import { CreateCarPage } from "./pages/create_car_page.js";
 import { ManageMaintenancePage } from "./pages/maintenance_page.js";
 import { ErrorPage } from "./pages/error_page.js";
-import { PAGE_MODE } from "../config.js";
+import { AuthorizationPage } from "./pages/authorization_page.js";
+import { PAGE_MODE, AUTHORIZATION_PAGE_MODE } from "../config.js";
+
 class Router {
     constructor() {
         this.routes = {
-            "/cars": ShowCarPage,
-            "/create_car": CreateCarPage,
-            "/edit_car": CreateCarPage,
-            "/create_maintenance_record": ManageMaintenancePage,
-            "/edit_maintenance_record": ManageMaintenancePage,
-            "/404": ErrorPage 
+            "/cars": { Class: ShowCarPage },
+            "/create_car": { Class: CreateCarPage, mode: PAGE_MODE.CREATE, useParam: false },
+            "/edit_car": { Class: CreateCarPage, mode: PAGE_MODE.EDIT },
+            "/create_maintenance_record": { Class: ManageMaintenancePage, mode: PAGE_MODE.CREATE },
+            "/edit_maintenance_record": { Class: ManageMaintenancePage, mode: PAGE_MODE.EDIT },
+            "/register": { Class: AuthorizationPage, mode: AUTHORIZATION_PAGE_MODE.REGISTER },
+            "/login": { Class: AuthorizationPage, mode: AUTHORIZATION_PAGE_MODE.LOGIN },
+            "/404": { Class: ErrorPage }
         };
         this._current_path = "/";
     }
@@ -29,34 +33,27 @@ class Router {
         }
 
         const path = `/${raw_path_arr[0]}`;
-        const path_param = raw_path_arr[1] || null;
+        const routeConfig = this.routes[path];
+        const path_param = (routeConfig && routeConfig.useParam === false) ? null : (raw_path_arr[1] || null);
         
-        let PageClass = this.routes[path];
         let pageInstance;
 
-        if (!PageClass) {
+        if (!routeConfig) {
             console.warn("Маршрут не знайдено! Перемикаємо на 404.");
             this.current_path = "/404";
-            PageClass = this.routes["/404"];
-            pageInstance = new PageClass("Not found", "404");
+            const ErrorClass = this.routes["/404"].Class;
+            pageInstance = new ErrorClass("Not found", "404");
         } else {
             this.current_path = raw_path;
             const page_title = raw_path_arr[0].replace("_", " ");
-
-            if (path === "/create_maintenance_record") {
-                pageInstance = new PageClass(page_title, path_param, PAGE_MODE.CREATE);
-            } 
-            else if (path === "/edit_maintenance_record") {
-                pageInstance = new PageClass(page_title, path_param, PAGE_MODE.EDIT);
-            } 
-            else if (path === "/edit_car") {
-                pageInstance = new PageClass(page_title, path_param, PAGE_MODE.EDIT);
-            } 
-            else if (path === "/create_car") {
-                pageInstance = new PageClass(page_title, null, PAGE_MODE.CREATE);
-            } 
-            else {
-                pageInstance = new PageClass(page_title, path_param);
+            
+            const { Class, mode } = routeConfig;
+            
+            if (mode !== undefined) {
+                console.log(`Router ${mode}`);
+                pageInstance = new Class(page_title, path_param, mode);
+            } else {
+                pageInstance = new Class(page_title, path_param);
             }
         }
         
@@ -73,7 +70,6 @@ class Router {
 }
 
 export const router = new Router();
-
 router.load_page(window.location.pathname);
 
 document.addEventListener("click", (event) => {

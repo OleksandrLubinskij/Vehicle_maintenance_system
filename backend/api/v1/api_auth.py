@@ -41,7 +41,9 @@ async def login(response: Response, user_data:UserLogin, db: Session = Depends(g
     response.set_cookie(
         key="access_token",
         value=f"{access_token}",
-        httponly=True
+        httponly=True,     # Захищає від крадіжки токена через JS скрипти
+        secure=False,      # Постав FALSE для локальної розробки (без HTTPS)
+        samesite="lax",
     )
     return {"message": "Successful login"}
 

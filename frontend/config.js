@@ -3,6 +3,11 @@ export const PAGE_MODE = {
     EDIT: "edit"
 };
 
+export const AUTHORIZATION_PAGE_MODE = {
+    LOGIN: "login",
+    REGISTER: "register"
+}
+
 export const MAINTENANCE_LOG_FIELDS = [
     {
         LABEL:"Пробіг",
@@ -51,3 +56,18 @@ export const CAR_SELECT_FIELDS = [
         ID:"oil_type"
     },
 ];
+
+export const AUTHORIZATION_INPUT_FIELDS = [
+    {
+        LABEL:"Логін",
+        ID:"login"
+    },
+    {
+        LABEL:"Пароль",
+        ID:"password"
+    },
+    {
+        LABEL:"Підтвердженя паролю",
+        ID:"confirm_password"
+    }
+]
