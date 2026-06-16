@@ -43,6 +43,8 @@ services:
     depends_on:
       - db
       - redis_app
+    env_file:
+      - .env
 
   frontend:
     build: ./frontend

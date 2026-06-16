@@ -9,6 +9,7 @@ class RecordNotFoundError(DBErrors):
     def __init__(self, message: str = "Record not found!"):
         super().__init__(message)
 
+
 async def general_db_errors_handler(request: Request, exc: DBErrors):
     return JSONResponse(
         status_code=500,

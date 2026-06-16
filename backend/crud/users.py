@@ -1,15 +1,19 @@
-from fastapi import Depends, HTTPException, APIRouter
+from fastapi import Depends, HTTPException
+from sqlalchemy import select
 from sqlalchemy.orm import Session
-from app.database import get_db
 from app.models import User
-from app.schemas import UserModel
+from app.config import USER 
+from app.security import get_password_hash
 
-router = APIRouter()
-
-@router.post("/create_user")
-async def create_user(user:UserModel, db: Session = Depends(get_db)):
+async def create_user(user, db):
     new_user_dict = user.model_dump()
-    new_user = User(**new_user_dict)
+    raw_password = new_user_dict.pop(USER.PASSWORD)
+    hashed_password = get_password_hash(raw_password)
+    new_user = User(
+        login = new_user_dict.get(USER.LOGIN),
+        password = hashed_password,
+        role = new_user_dict.get(USER.ROLE)
+    )
     try:
         db.add(new_user)
         db.commit()
@@ -17,4 +21,8 @@ async def create_user(user:UserModel, db: Session = Depends(get_db)):
         return new_user_dict
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Помилка бази даних {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Помилка бази даних {str(e)}")
+
+async def get_user_by_login(login, db) -> User | None:
+    stmt = select(User).where(User.login == login)
+    return db.execute(stmt).scalar_one_or_none()

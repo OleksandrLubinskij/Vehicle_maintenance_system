@@ -10,15 +10,14 @@ class CarModel(BaseModel):
     fuel_type: FuelType
     oil_type: OilType
 
-class UserModel(BaseModel):
-    firstname: str
-    lastname: str
+class UserCreate(BaseModel):
     login: str
     password: str
     role: UserRole
 
-# class MaintainenceLogBaseModel(BaseModel):
-    
+class UserLogin(BaseModel):
+    login: str
+    password: str
 class MaintainenceLogModel(BaseModel):
     mileage_on_maintain: int
     maintenance_type: MaintenanceType

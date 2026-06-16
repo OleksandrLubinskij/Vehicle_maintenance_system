@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 LIMITATIONS = {
         "oil_and_filters": 10000,
         "belt_replacement": 60000,
@@ -15,4 +17,12 @@ TEXT_INDICATORS = {
 
 class CACHE:
     CARS="cars"
-        
+
+class USER:
+    LOGIN = "login"
+    PASSWORD = "password"
+    ROLE = "role"
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))

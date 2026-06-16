@@ -7,13 +7,6 @@ import { router } from "../router";
 export class CreateCarPage extends BaseWindow {
     constructor(title, id = null) {
         super(title);
-        this.form_fields = {
-            "VIN": "vin",
-            "Бренд": "brand",
-            "Модель": "model",
-            "Пробіг": "mileage",
-            "Об'єм двигуна": "engine_capacity"
-        };
         this.id = id;
     }
 
