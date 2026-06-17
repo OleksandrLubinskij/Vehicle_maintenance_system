@@ -74,8 +74,6 @@ export class AuthorizationPage extends BaseWindow {
                                 } else {
                                     await api.users.login(user_data);
                                     console.log("Авторизація успішна");
-                                    
-                                    // Даємо браузеру крихітну паузу (50мс), щоб він точно зберіг куку
                                     setTimeout(() => {
                                         router.navigate("/cars");
                                     }, 50);

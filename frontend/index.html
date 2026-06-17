@@ -6,6 +6,11 @@
     <title>VMS</title>
     <link rel="stylesheet" href="./style.css" />
     <script type="module" src="./src/router.js" defer></script>
+    <script
+      type="module"
+      src="./src/components/settings_floating_window.js"
+      defer
+    ></script>
   </head>
   <body class="bg-[#f5f5f5]">
     <header class="main_header bg-[#227b50] p-2">
@@ -54,11 +59,32 @@
 
       <div class="secondary_section">
         <button
-          id="settings"
+          id="settings_btn"
           class="p-1 hover:bg-gray-200 rounded-full transition-colors duration-300 shrink-0"
         >
           <img src="assets/gear.svg" alt="Налаштування" class="h-7 w-7" />
         </button>
+
+        <div
+          id="settings_dropdown"
+          class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-xl z-50 p-2 flex flex-col gap-1"
+        >
+          <button class="text-left w-full px-3 py-2 text-sm text-gray-700">
+            Налаштування
+          </button>
+          <hr class="border-gray-100my-1" />
+          <button
+            class="text-left w-full px-3 py-2 text-sm mt-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+          >
+            Світла тема
+          </button>
+          <button
+            id="logout_btn"
+            class="text-left w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+          >
+            Вийти
+          </button>
+        </div>
       </div>
     </nav>
     <div id="app" class="app max-w-max min-h-max mx-auto p-6"></div>
