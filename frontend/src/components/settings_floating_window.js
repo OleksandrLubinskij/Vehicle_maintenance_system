@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     logout_btn.addEventListener("click", async () => {
         try {
             await api.users.logout();
+            localStorage.removeItem("is_authenticated")
             settings_dropdown.classList.add("hidden");
             router.navigate("/login");
         }

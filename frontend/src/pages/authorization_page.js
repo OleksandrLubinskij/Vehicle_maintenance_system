@@ -16,16 +16,18 @@ export class AuthorizationPage extends BaseWindow {
         for(const field_identificator of AUTHORIZATION_INPUT_FIELDS) {
             if(this.mode === AUTHORIZATION_PAGE_MODE.LOGIN && field_identificator.ID === "confirm_password")
                 continue;
+            let type = field_identificator.ID.includes("password") ? "password" : "text"; 
             const field = form.create_entry(
                 field_identificator.LABEL,
                 field_identificator.ID,
+                type
             );
             form_fields.push(field)
         }
         return `
                 <form action="/cars" id="authorization_form" class="max-w-2xl w-full mx-auto mt-5">
                     <div class="border border-gray-200 rounded-2xl bg-white p-8 shadow-md">
-                        <div class="grid grid-cols-1 md:grid-cols-2 md:gap-x-6">
+                        <div class="flex flex-col md:gap-x-6">
                            ${form_fields.join("")}
                         </div>
                     </div>
@@ -77,6 +79,7 @@ export class AuthorizationPage extends BaseWindow {
                                     setTimeout(() => {
                                         router.navigate("/cars");
                                     }, 50);
+                                    localStorage.setItem("is_authenticated", "true");
                                 }
                             } catch (error) {
                                 console.error("Помилка при відправці даних:", error);

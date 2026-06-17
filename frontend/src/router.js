@@ -4,7 +4,7 @@ import { ManageMaintenancePage } from "./pages/maintenance_page.js";
 import { ErrorPage } from "./pages/error_page.js";
 import { AuthorizationPage } from "./pages/authorization_page.js";
 import { PAGE_MODE, AUTHORIZATION_PAGE_MODE } from "../config.js";
-
+import { control_nav_menu_visibility } from "./components/nav_menu_visibility.js";
 class Router {
     constructor() {
         this.routes = {
@@ -65,6 +65,7 @@ class Router {
 
         window.history.pushState({}, "", path);
         this._current_path = path;
+        control_nav_menu_visibility();
         this.load_page(path);
     }
 }
