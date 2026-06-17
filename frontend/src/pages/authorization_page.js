@@ -25,7 +25,7 @@ export class AuthorizationPage extends BaseWindow {
             form_fields.push(field)
         }
         return `
-                <form action="/cars" id="authorization_form" class="max-w-2xl w-full mx-auto mt-5">
+                <form action="/cars" id="authorization_form" class="w-full mt-4">
                     <div class="border border-gray-200 rounded-2xl bg-white p-8 shadow-md">
                         <div class="flex flex-col md:gap-x-6">
                            ${form_fields.join("")}
@@ -40,13 +40,16 @@ export class AuthorizationPage extends BaseWindow {
     }
 
     content() {
-        const register_btn_visibility = this.mode === AUTHORIZATION_PAGE_MODE.REGISTER ? "hidden" : "";
-        return `
-            <div class="flex flex-col">
-                <h1 class="text-center font-bold text-lg md:text-2xl lg:text-4xl">
+    const register_btn_visibility = this.mode === AUTHORIZATION_PAGE_MODE.REGISTER ? "hidden" : "";
+    
+    return `
+        <div class="flex flex-col flex-1 justify-center items-center w-full min-h-full py-10">
+            <div class="max-w-md w-full"> <h1 class="text-center font-bold text-lg md:text-2xl lg:text-4xl mb-2">
                     ${this.mode === AUTHORIZATION_PAGE_MODE.REGISTER ? "Реєстрація" : "Увійти"}
                 </h1>
+                
                 ${this.authorization_form()}
+                
                 <p class="text-center text-sm text-gray-600 mt-4 ${register_btn_visibility}">
                     Немає акаунта? 
                     <button 
@@ -58,8 +61,9 @@ export class AuthorizationPage extends BaseWindow {
                     </button>
                 </p>
             </div>
-        `;
-    }
+        </div>
+    `;
+}
 
     async render() {
         try {
@@ -83,7 +87,7 @@ export class AuthorizationPage extends BaseWindow {
                                     delete user_data.confirm_password;
                                     await api.users.register(user_data);
                                     console.log("Користувача створено");
-                                    
+                                    router.navigate("/login");
                                 } else {
                                     await api.users.login(user_data);
                                     console.log("Авторизація успішна");

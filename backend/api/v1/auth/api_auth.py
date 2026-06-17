@@ -5,20 +5,19 @@ from app.schemas import UserCreate, UserLogin
 import crud.users as users
 from sqlalchemy import select
 from app.models import User
-from services.get_current_user import get_current_user
+from api.v1.auth.get_current_user import get_current_user
 from app.security import  verify_password, create_access_token
 from app.config import USER
+from app.enums import UserRole
 
 router = APIRouter()
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register(user_data: UserCreate, db: Session = Depends(get_db)):
     existing_user = await users.get_user_by_login(login=user_data.login, db=db)
-    print(existing_user)
     if (existing_user):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="User with this name already exists!")
-    
     await users.create_user(user=user_data, db=db)
     return {"message": "User registered successfully"}
 
@@ -41,8 +40,8 @@ async def login(response: Response, user_data:UserLogin, db: Session = Depends(g
     response.set_cookie(
         key="access_token",
         value=f"{access_token}",
-        httponly=True,     # Захищає від крадіжки токена через JS скрипти
-        secure=False,      # Постав FALSE для локальної розробки (без HTTPS)
+        httponly=True,     
+        secure=False,    
         samesite="lax",
     )
     return {"message": "Successful login"}

@@ -12,7 +12,7 @@ async def create_user(user, db):
     new_user = User(
         login = new_user_dict.get(USER.LOGIN),
         password = hashed_password,
-        role = new_user_dict.get(USER.ROLE)
+        role="User"
     )
     try:
         db.add(new_user)

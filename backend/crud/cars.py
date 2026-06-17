@@ -2,17 +2,18 @@ from typing import Dict
 from fastapi import Depends, APIRouter, Query
 from services.car_indicators_service import get_serivce_indicators
 from app.schemas import CarModel, CarResponse, CarUpdate, CarResponse2
-from app.models import Car
+from app.models import Car, User
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from app.database import get_db
 from app.exceptions import DBErrors, RecordNotFoundError
 from app.cache.redis import RedisCache
 from app.config import CACHE
+from api.v1.auth.dependencies import RoleChecker
 
 cache = RedisCache()
-
 router = APIRouter()
+allow_admin_only = RoleChecker(["admin"])
 
 @router.get("/", response_model= Dict[int, CarResponse])
 async def get_cars(db: Session = Depends(get_db)):
@@ -53,7 +54,9 @@ async def get_car_mileage(car_id: int, db: Session = Depends(get_db)):
     return mileage
 
 @router.post("/create_car")
-async def create_car(car:CarModel, db: Session = Depends(get_db)):
+async def create_car(car:CarModel, 
+                     db: Session = Depends(get_db), 
+                     current_user: User = Depends(allow_admin_only)):
     new_car_dict = car.model_dump()
     new_car = Car(**new_car_dict)
     try:
@@ -67,7 +70,11 @@ async def create_car(car:CarModel, db: Session = Depends(get_db)):
         raise DBErrors()
 
 @router.patch("/edit_car/{car_id}")
-def edit_car(car:CarUpdate, car_id:int, db:Session = Depends(get_db)):
+def edit_car(car:CarUpdate, 
+             car_id:int, 
+             db:Session = Depends(get_db),
+             current_user: User = Depends(allow_admin_only)
+             ):
     stmt = select(Car).where(Car.id == car_id)
     car_db = db.execute(stmt).scalar()
     if not car_db:
@@ -84,33 +91,12 @@ def edit_car(car:CarUpdate, car_id:int, db:Session = Depends(get_db)):
     return car_db
 
 @router.delete("/delete_car/{car_id}")
-async def delete_car(car_id:int, db: Session = Depends(get_db)):
+async def delete_car(car_id:int, 
+                     db: Session = Depends(get_db),
+                     current_user: User = Depends(allow_admin_only)):
     car_to_delete = db.get(Car, car_id)
     if not car_to_delete:
         raise RecordNotFoundError()
     db.delete(car_to_delete)
     db.commit()
     cache.delete(CACHE.CARS)
-
-
-@router.get("/test_redis")
-def test_redis(car_id: int = Query(None), db: Session = Depends(get_db)):
-    if car_id is not None:
-        car = cache.hget_by_id("cars", car_id)
-        print(car)
-        if car:
-            return car
-        car = db.get(Car, car_id)
-        pydantic_car = CarResponse2.model_validate(car)
-        car_dict = pydantic_car.model_dump()
-        cache.hset("cars", car_id, car_dict)
-        return car
-    cars = cache.get_all_cached("cars")
-    if cars:
-        return cars
-    cars = db.execute(select(Car)).scalars().all()
-    for car in cars:
-        pydantic_car = CarResponse2.model_validate(car)
-        car_dict = pydantic_car.model_dump()
-        cache.hset("cars", car.id, car_dict)
-    return cars

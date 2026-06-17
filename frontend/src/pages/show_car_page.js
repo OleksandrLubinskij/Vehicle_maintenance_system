@@ -95,7 +95,11 @@ export class ShowCarPage extends BaseWindow {
     content() {
         console.log(this.cars);
         const cars_cards = Object.values(this.cars).map(car => this.render_car_card(car)).join("");
-        return cars_cards;
+        return `
+            <div class="max-w-6xl w-full mx-auto flex flex-col gap-2">
+                ${cars_cards}
+            </div>
+    `;
     }
 
     async render() {
@@ -115,9 +119,3 @@ export class ShowCarPage extends BaseWindow {
         return cars_data;
     }
 }
-
-
-
-
-
-

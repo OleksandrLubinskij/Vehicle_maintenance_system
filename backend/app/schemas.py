@@ -13,7 +13,6 @@ class CarModel(BaseModel):
 class UserCreate(BaseModel):
     login: str
     password: str
-    role: UserRole
 
 class UserLogin(BaseModel):
     login: str

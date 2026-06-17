@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from crud import cars, maintenance_logs
-import api.v1.api_auth as api_auth
+import api.v1.auth.api_auth as api_auth
 from services import get_enums
-from services.get_current_user import get_current_user
+from api.v1.auth.get_current_user import get_current_user
 api_router = APIRouter()
 api_router.include_router(cars.router, 
                           prefix="/v1/cars",
