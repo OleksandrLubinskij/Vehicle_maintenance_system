@@ -40,12 +40,23 @@ export class AuthorizationPage extends BaseWindow {
     }
 
     content() {
+        const register_btn_visibility = this.mode === AUTHORIZATION_PAGE_MODE.REGISTER ? "hidden" : "";
         return `
             <div class="flex flex-col">
                 <h1 class="text-center font-bold text-lg md:text-2xl lg:text-4xl">
                     ${this.mode === AUTHORIZATION_PAGE_MODE.REGISTER ? "Реєстрація" : "Увійти"}
                 </h1>
                 ${this.authorization_form()}
+                <p class="text-center text-sm text-gray-600 mt-4 ${register_btn_visibility}">
+                    Немає акаунта? 
+                    <button 
+                        id="go-to-register" 
+                        class="text-[#00966a] font-semibold hover:underline bg-transparent border-none p-0 cursor-pointer"
+                        data-path="/register"
+                    >
+                        Зареєструватися
+                    </button>
+                </p>
             </div>
         `;
     }
