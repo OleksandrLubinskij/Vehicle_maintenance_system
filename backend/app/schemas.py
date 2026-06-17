@@ -17,6 +17,10 @@ class UserCreate(BaseModel):
 class UserLogin(BaseModel):
     login: str
     password: str
+
+class UserResponce(BaseModel):
+    login: str
+    role: str
 class MaintainenceLogModel(BaseModel):
     mileage_on_maintain: int
     maintenance_type: MaintenanceType

@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
             await api.users.logout();
             localStorage.removeItem("is_authenticated")
             settings_dropdown.classList.add("hidden");
+            localStorage.removeItem("role");
             router.navigate("/login");
         }
         catch(error) {

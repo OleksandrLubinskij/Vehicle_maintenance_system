@@ -5,10 +5,10 @@ from app.schemas import UserCreate, UserLogin
 import crud.users as users
 from sqlalchemy import select
 from app.models import User
+from app.schemas import UserResponce
 from api.v1.auth.get_current_user import get_current_user
 from app.security import  verify_password, create_access_token
-from app.config import USER
-from app.enums import UserRole
+
 
 router = APIRouter()
 
@@ -56,3 +56,7 @@ async def get_all_users(db: Session = Depends(get_db)):
     stmt = select(User)
     users = db.execute(stmt).scalars().all()
     return users
+
+@router.get("/get_me", response_model=UserResponce)
+async def get_me(current_user:User =  Depends(get_current_user)) -> User:
+    return current_user;

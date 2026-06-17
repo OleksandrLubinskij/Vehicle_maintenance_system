@@ -25,7 +25,7 @@ class Router {
 
     load_page(raw_path) {
         console.log("=== РОУТЕР НАМАГАЄТЬСЯ ЗАВАНТАЖИТИ ШЛЯХ ==:", raw_path);
-        
+        control_nav_menu_visibility();
         const raw_path_arr = raw_path.split("/").filter(Boolean);
         if (raw_path_arr.length === 0) {
             this.navigate("/cars");
@@ -65,7 +65,6 @@ class Router {
 
         window.history.pushState({}, "", path);
         this._current_path = path;
-        control_nav_menu_visibility();
         this.load_page(path);
     }
 }

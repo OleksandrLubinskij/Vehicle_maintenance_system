@@ -71,3 +71,8 @@ export const AUTHORIZATION_INPUT_FIELDS = [
         ID:"confirm_password"
     }
 ]
+
+export const ROLE = {
+    USER: "User",
+    ADMIN: "Admin"
+}

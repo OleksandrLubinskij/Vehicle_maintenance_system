@@ -26,6 +26,7 @@ const endpoint = {
         register:() => `${BASE_USERS_URL}/register`,
         login:() => `${BASE_USERS_URL}/login`,
         logout:() => `${BASE_USERS_URL}/logout`,
+        get_me:() => `${BASE_USERS_URL}/get_me`
     }
 };
 
@@ -79,6 +80,7 @@ export const api = {
     users: {
         register: (data) => request(endpoint.users.register(), "POST", data),
         login: (data) => request(endpoint.users.login(), "POST", data),
-        logout: (data) => request(endpoint.users.logout())
+        logout: (data) => request(endpoint.users.logout()),
+        get_me: () => request(endpoint.users.get_me())
     }
 };
