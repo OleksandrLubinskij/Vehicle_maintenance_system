@@ -13,7 +13,7 @@ from api.v1.auth.dependencies import RoleChecker
 
 cache = RedisCache()
 router = APIRouter()
-allow_admin_only = RoleChecker(["admin"])
+allow_admin_only = RoleChecker(["Admin"])
 
 @router.get("/", response_model= Dict[int, CarResponse])
 async def get_cars(db: Session = Depends(get_db)):
@@ -45,7 +45,7 @@ async def get_car_by_id(car_id: int, db: Session = Depends(get_db)):
     responce_car = CarResponse.model_validate(car)
     responce_car.service_indicators = indicators
     cache.hset(CACHE.CARS, car.id, responce_car.model_dump())
-    return car
+    return responce_car
 
 @router.get("/get_car_mileage/{car_id}")
 async def get_car_mileage(car_id: int, db: Session = Depends(get_db)):
