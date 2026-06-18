@@ -3,6 +3,7 @@ import { Form } from "../components/form_elements";
 import { AUTHORIZATION_PAGE_MODE, AUTHORIZATION_INPUT_FIELDS } from "../../config";
 import { api } from "../apiRoutes";
 import { router } from "../router";
+import { handleFormError, clearFormErrors } from "../utils/auth_error_handler";
 export class AuthorizationPage extends BaseWindow {
     constructor(title, param, mode) {
         super(title);
@@ -73,14 +74,14 @@ export class AuthorizationPage extends BaseWindow {
                     if (authorization_form) {
                         authorization_form.addEventListener("submit", async (event) => {
                             event.preventDefault();
-        
+                            clearFormErrors(authorization_form);
                             const formData = new FormData(authorization_form);
                             const user_data = Object.fromEntries(formData.entries());
                             
                             try {
                                 if (this.mode === AUTHORIZATION_PAGE_MODE.REGISTER) {
                                     if (user_data.password !== user_data.confirm_password) {
-                                        alert("Паролі не збігаються!");
+                                        handleFormError(null, 3);
                                         return;
                                     }
                                     
@@ -100,8 +101,8 @@ export class AuthorizationPage extends BaseWindow {
                                     localStorage.setItem("role", current_user.role);
                                 }
                             } catch (error) {
-                                console.error("Помилка при відправці даних:", error);
-                                alert("Не вдалося зареєструватися або увійти");
+                                console.error("Помилка при відправці даних:", error.message);
+                                handleFormError(error);
                             }
                         });
                     }

@@ -45,14 +45,19 @@ async function request(URL, method = "GET", data = null) {
 
     const response = await fetch(URL, options);
     if (response.status === 401) {
-        console.warn("Бекенд повернув 401. Перенаправляємо на логін...");
-        
-        router.navigate("/login"); 
-        
-        throw new Error("Сесія закінчилася. Будь ласка, увійдіть знову.");
+        const loginURl = endpoint.users.login();
+        if (URL !== loginURl) { 
+            console.warn("Бекенд повернув 401. Перенаправляємо на логін...");
+            router.navigate("/login"); 
+            throw new Error("Сесія закінчилася. Будь ласка, увійдіть знову.");}
     }
     if (!response.ok) {
         const error = await response.json().catch(() => ({ "detail": "Unknown error!" }));
+        if(typeof(error.detail) === "object" && error.detail !== null) {
+            const custom_error = new Error(error.detail.message || "Error");
+            custom_error.code = error.detail.code;
+            throw custom_error;
+        }
         throw new Error(error.detail || `HTTP error: ${response.status}`);
     }
     return response.json();

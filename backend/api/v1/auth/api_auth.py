@@ -17,7 +17,9 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
     existing_user = await users.get_user_by_login(login=user_data.login, db=db)
     if (existing_user):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="User with this name already exists!")
+                            detail={
+                                "code":0,
+                                "message":"Користувач з таким іменем уже існує"})
     await users.create_user(user=user_data, db=db)
     return {"message": "User registered successfully"}
 
@@ -26,10 +28,14 @@ async def login(response: Response, user_data:UserLogin, db: Session = Depends(g
     user = await users.get_user_by_login(login=user_data.login, db=db)
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail="User doesn`t exist!")
+                            detail={
+                                "code": 1,
+                                "message":"Користувача не знайдено"})
     if not verify_password(user_data.password, user.password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail="Incorrect password")
+                            detail={
+                                "code": 2,
+                                "message": "Неправильний пароль"})
     
     token_data = {
         "sub": user.login,

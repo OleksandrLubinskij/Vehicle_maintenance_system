@@ -5,6 +5,7 @@ export class Form {
           <label for="${id}" class="text-sm md:text-base font-semibold text-gray-700">
             ${label_text}:
           </label>
+          <span id="${id}_error" class="hidden text-xs md:text-sm text-red-500 font-medium"></span>
           <input
             type="${type}"
             id="${id}"
