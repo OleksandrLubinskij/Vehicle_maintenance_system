@@ -109,7 +109,7 @@ export class ShowCarPage extends BaseWindow {
                         `${this.visibility} border border-transparent hover:border-blue-500 hover:bg-blue-50 rounded-lg px-3 py-1.5 text-gray-700 hover:text-blue-700`
                     )}
                 </div>
-
+            </div>
             <div class="car_indicator h-4 w-full md:h-auto md:w-16 shrink-0" style="background-color: ${indicatorColor}"></div>
         </article>
     `;
