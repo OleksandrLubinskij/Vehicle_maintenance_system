@@ -55,12 +55,20 @@ export class CreateCarPage extends BaseWindow {
         `;
     }
 
-    content(fuel_enum, oil_enum, default_values = null) {
+    content(fuel_enum, oil_enum, default_values = null, car_brand_model = null) {
         return `
             <div class="flex flex-col">
-                <h1 class="text-center font-bold text-lg md:text-2xl lg:text-4xl">
+                <h1 class="text-center font-bold text-lg md:text-2xl lg:text-4xl mb-4">
                     ${this.id === null ? "Додати машину" : "Редагувати машину"}
                 </h1>
+
+                ${car_brand_model ? `
+                    <div class="text-center text-sm md:text-base lg:text-lg font-semibold text-gray-500 tracking-wide uppercase">
+                        <span class="text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                            ${car_brand_model.brand} ${car_brand_model.model}
+                        </span>
+                    </div>
+                ` : ""}
                 ${this.create_add_car_form(fuel_enum, oil_enum, default_values)}
             </div>
         `;
@@ -70,9 +78,10 @@ export class CreateCarPage extends BaseWindow {
         try {
             const fuel_enum = await api.enum.get_enums(1);
             const oil_enum = await api.enum.get_enums(2);
+            const car_brand_model = this.id === null ? null : await api.cars.get_car_brand_and_model(this.id);
             const default_values = this.id === null ? null : await api.cars.show_car_by_id(this.id);
             
-            const html = this.content(fuel_enum, oil_enum, default_values);
+            const html = this.content(fuel_enum, oil_enum, default_values, car_brand_model);
             super.render(html);
 
             const create_car_form = document.querySelector("#create_car_form");

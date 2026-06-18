@@ -53,6 +53,12 @@ async def get_car_mileage(car_id: int, db: Session = Depends(get_db)):
     mileage = db.execute(stmt).scalar_one_or_none()
     return mileage
 
+@router.get("/get_car_brand_and_model/{car_id}")
+async def get_car_brand_and_model(car_id: int, db: Session = Depends(get_db)):
+    stmt = select(Car.brand, Car.model).where(Car.id == car_id)
+    car = db.execute(stmt).first()
+    return car._asdict()
+
 @router.post("/create_car")
 async def create_car(car:CarModel, 
                      db: Session = Depends(get_db), 

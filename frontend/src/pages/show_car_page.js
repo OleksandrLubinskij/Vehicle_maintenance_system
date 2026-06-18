@@ -48,17 +48,17 @@ export class ShowCarPage extends BaseWindow {
 
     icon_value_text(image_path, text, element = "div", data_path = "", extra_clases="") {
     
-    const pathAttr = (element === "button" && data_path) ? `data-path="${data_path}"` : "";
+        const pathAttr = (element === "button" && data_path) ? `data-path="${data_path}"` : "";
 
-    return `
-        <${element} ${pathAttr} class="flex gap-2 m-2 cursor-pointer items-center justify-start ${extra_clases}">
-            <img src="${image_path}" alt="" class="h-5 w-5 md:h-7 md:w-7 lg:h-9 lg:w-9 shrink-0" />
-            <span class="text-xs md:text-base lg:text-lg inline-flex items-center font-medium">
-                ${text}
-            </span>
-        </${element}>
-    `;
-}
+        return `
+            <${element} ${pathAttr} class="flex gap-2 m-2 cursor-pointer items-center justify-start transition-transform duration-200 hover:scale-105 ${extra_clases}">
+                <img src="${image_path}" alt="" class="h-5 w-5 md:h-7 md:w-7 lg:h-9 lg:w-9 shrink-0" />
+                <span class="text-xs md:text-base lg:text-lg inline-flex items-center font-medium">
+                    ${text}
+                </span>
+            </${element}>
+        `;
+    }
 
     render_car_card(car_data) {
     const worstMaintenanceId = car_data["service_indicators"]["worst_maintenance"];
@@ -92,14 +92,13 @@ export class ShowCarPage extends BaseWindow {
                     }
                 </div>
 
-                <div class=" mt-2 manage_btn_and_indicators w-full sm:w-auto flex flex-col-reverse gap-2 whitespace-nowrap pr-4 md:pr-12">
+                <div class="mt-2 manage_btn_and_indicators w-full sm:w-auto flex flex-col-reverse gap-2 whitespace-nowrap pr-4 md:pr-12">
                     ${this.icon_value_text(
                         this.images.add_note_img, 
                         "Додати ремонт", 
                         "button",
                         `/create_maintenance_record/${car_data["id"]}`,
-                        `${this.visibility}`
-
+                        `${this.visibility} border border-transparent hover:border-emerald-500 hover:bg-emerald-50 rounded-lg px-3 py-1.5 text-gray-700 hover:text-emerald-700`
                     )}
 
                     ${this.icon_value_text(
@@ -107,10 +106,9 @@ export class ShowCarPage extends BaseWindow {
                         "Редагувати", 
                         "button",
                         `/edit_car/${car_data["id"]}`,
-                        `${this.visibility}`
+                        `${this.visibility} border border-transparent hover:border-blue-500 hover:bg-blue-50 rounded-lg px-3 py-1.5 text-gray-700 hover:text-blue-700`
                     )}
                 </div>
-            </div>
 
             <div class="car_indicator h-4 w-full md:h-auto md:w-16 shrink-0" style="background-color: ${indicatorColor}"></div>
         </article>

@@ -10,7 +10,8 @@ const endpoint = {
         create_car: () => `${BASE_CAR_URL}/create_car`,
         edit_car: (id) => `${BASE_CAR_URL}/edit_car/${id}`,
         delete_car: (id) => `${BASE_CAR_URL}/delete_car/${id}`,
-        get_car_mileage: (id) => `${BASE_CAR_URL}/get_car_mileage/${id}`
+        get_car_mileage: (id) => `${BASE_CAR_URL}/get_car_mileage/${id}`,
+        get_car_brand_and_model: (id) => `${BASE_CAR_URL}/get_car_brand_and_model/${id}`,
     },
     maintenance_log: {
         show_all_mlog: (car_id) => `${BASE_MAINTENANCE_LOG_URL}/${car_id}`,
@@ -71,6 +72,7 @@ export const api = {
         edit_car: (id, data) => request(endpoint.cars.edit_car(id), "PATCH", data),
         delete_car: (id) => request(endpoint.cars.delete_car(id), "DELETE"),
         get_car_mileage: (id) => request(endpoint.cars.get_car_mileage(id), "GET"),
+        get_car_brand_and_model: (id) => request(endpoint.cars.get_car_brand_and_model(id), "GET"),
     },
     maintenance_log: {
         show_all_mlog: (car_id) => request(endpoint.maintenance_log.show_all_mlog(car_id)),

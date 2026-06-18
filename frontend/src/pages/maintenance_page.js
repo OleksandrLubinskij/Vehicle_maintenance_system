@@ -50,12 +50,22 @@ export class ManageMaintenancePage extends BaseWindow {
         `;
     }
 
-    content(maintenance_type_enum, actual_mileage=null, default_values = null) {
+    content(maintenance_type_enum, actual_mileage=null, default_values = null, car_brand_model=null) {
         return `
-            <div class="flex flex-col">
-                <h1 class="text-center font-bold text-lg md:text-2xl lg:text-4xl">
+            <div class="flex flex-col gap-2 md:gap-4">
+                <h1 class="text-center font-bold text-xl md:text-2xl lg:text-4xl text-gray-800">
                     ${this.mode === PAGE_MODE.CREATE ? "Додати ремонт" : "Редагувати ремонт"}
                 </h1>
+                
+                ${car_brand_model ? `
+                    <div class="text-center text-sm md:text-base lg:text-lg font-semibold text-gray-500 tracking-wide uppercase">
+                        Для автомобіля: 
+                        <span class="text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                            ${car_brand_model.brand} ${car_brand_model.model}
+                        </span>
+                    </div>
+                ` : ""}
+
                 ${this.create_maintenance_record_form(maintenance_type_enum, actual_mileage, default_values)}
             </div>
         `;
@@ -64,10 +74,11 @@ export class ManageMaintenancePage extends BaseWindow {
     async render() {
             try {
                 const maintenance_type_enum = await api.enum.get_enums(3);
-                const actual_mileage = this.mode === PAGE_MODE.EDIT  ? null : await api.cars.get_car_mileage(this.id)
+                const actual_mileage = this.mode === PAGE_MODE.EDIT ? null : await api.cars.get_car_mileage(this.id);
+                const car_brand_model = this.mode === PAGE_MODE.EDIT ? null : await api.cars.get_car_brand_and_model(this.id); 
                 const default_values = this.mode === PAGE_MODE.CREATE ? null : await api.maintenance_log.show_mlog_by_id(this.id);
                 
-                const html = this.content(maintenance_type_enum, actual_mileage, default_values);
+                const html = this.content(maintenance_type_enum, actual_mileage, default_values, car_brand_model);
                 super.render(html);
     
                 const manage_maintenance_form = document.querySelector("#manage_maintenance_form");
