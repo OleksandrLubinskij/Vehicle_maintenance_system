@@ -1,45 +1,56 @@
 import { BaseWindow } from "./base_view";
 import { api } from "../apiRoutes";
-import { ROLE } from "../../config";
+import { ROLE, INDICATORS } from "../../config";
 import { router } from "../router";
+import { icon_value_text } from "../components/icon_value_comp";
 export class ShowCarPage extends BaseWindow {
     constructor(title) {
         super(title);
+        // this.images = {
+        //     "mileage": "assets/speedometer.svg",
+        //     "engine_capacity": "assets/box.svg",
+        //     "fuel_type": "assets/fuel-pump.svg",
+        //     "oil_type": "assets/droplet.svg",
+        //     "add_note_img": "assets/journal-plus.svg",
+        //     "edit_car": "assets/edit_car.svg"
+        // };
         this.images = {
-            "mileage": "assets/speedometer.svg",
-            "engine_capacity": "assets/box.svg",
-            "fuel_type": "assets/fuel-pump.svg",
-            "oil_type": "assets/droplet.svg",
-            "add_note_img": "assets/journal-plus.svg",
-            "edit_car": "assets/edit_car.svg"
-        };
-        this.indicators = {
-            0: { 
-                "img": "assets/empty_car_log.svg", 
-                "color": "#dddddd", 
-                "text_color": "#4b5563" // Нейтральний темно-сірий (Tailwind gray-600)
-            },
-            1: { 
-                "img": "assets/emoji-ok.svg", 
-                "color": "#1d995d", 
-                "text_color": "#146c43" // Глибокий темно-зелений для хорошого стану
-            },
-            2: { 
-                "img": "assets/emoji-normal.svg", 
-                "color": "#db8956", 
-                "text_color": "#a05228" // Стриманий темно-помаранчевий
-            },
-            3: { 
-                "img": "assets/emoji-critical.svg", 
-                "color": "#be5651", 
-                "text_color": "#8c322e" // Бордово-червоний для критичного стану
-            },
-            4: { 
-                "img": "assets/emoji-overdue.svg", 
-                "color": "#595353", 
-                "text_color": "#212529" // Майже чорний/графітовий для протермінованого
-            },
-        };
+    // Speedometer (Пробіг)
+    "mileage": `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-speedometer" viewBox="0 0 16 16">
+  <path d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2M3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707M2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8m9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5m.754-4.246a.39.39 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.39.39 0 0 0-.029-.518z"/>
+  <path fill-rule="evenodd" d="M6.664 15.889A8 8 0 1 1 9.336.11a8 8 0 0 1-2.672 15.78zm-4.665-4.283A11.95 11.95 0 0 1 8 10c2.186 0 4.236.585 6.001 1.606a7 7 0 1 0-12.002 0" class="w-full h-full">
+</svg>`,
+    
+    // Box (Об'єм двигуна)
+    "engine_capacity": `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box" viewBox="0 0 16 16">
+  <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464z"/>
+</svg>`,
+    
+    // Fuel Pump (Тип пального)
+    "fuel_type": `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fuel-pump" viewBox="0 0 16 16">
+  <path d="M3 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5z"/>
+  <path d="M1 2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8a2 2 0 0 1 2 2v.5a.5.5 0 0 0 1 0V8h-.5a.5.5 0 0 1-.5-.5V4.375a.5.5 0 0 1 .5-.5h1.495c-.011-.476-.053-.894-.201-1.222a.97.97 0 0 0-.394-.458c-.184-.11-.464-.195-.9-.195a.5.5 0 0 1 0-1q.846-.002 1.412.336c.383.228.634.551.794.907.295.655.294 1.465.294 2.081v3.175a.5.5 0 0 1-.5.501H15v4.5a1.5 1.5 0 0 1-3 0V12a1 1 0 0 0-1-1v4h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1zm9 0a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v13h8z"/>
+</svg>`,
+    
+    // Droplet (Тип масла)
+    "oil_type": `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-droplet" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M7.21.8C7.69.295 8 0 8 0q.164.544.371 1.038c.812 1.946 2.073 3.35 3.197 4.6C12.878 7.096 14 8.345 14 10a6 6 0 0 1-12 0C2 6.668 5.58 2.517 7.21.8m.413 1.021A31 31 0 0 0 5.794 3.99c-.726.95-1.436 2.008-1.96 3.07C3.304 8.133 3 9.138 3 10a5 5 0 0 0 10 0c0-1.201-.796-2.157-2.181-3.7l-.03-.032C9.75 5.11 8.5 3.72 7.623 1.82z"/>
+  <path fill-rule="evenodd" d="M4.553 7.776c.82-1.641 1.717-2.753 2.093-3.13l.708.708c-.29.29-1.128 1.311-1.907 2.87z"/>
+</svg>`,
+    
+    // Journal Plus (Додати ремонт)
+    "add_note_img": `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-journal-plus" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 5.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V10a.5.5 0 0 1-1 0V8.5H6a.5.5 0 0 1 0-1h1.5V6a.5.5 0 0 1 .5-.5"/>
+  <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2"/>
+  <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z"/>
+</svg>`,
+    
+    // Pencil Square / Edit (Редагувати)
+    "edit_car": `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+</svg>`
+};
 
         this.info_about_car_keys = ["mileage", "engine_capacity", "fuel_type", "oil_type"];
 
@@ -47,25 +58,11 @@ export class ShowCarPage extends BaseWindow {
         this.visibility = localStorage.getItem("role") === ROLE.USER ? "hidden" : "";
     }
 
-    icon_value_text(image_path, text, element = "div", data_path = "", extra_clases="") {
-    
-        const pathAttr = (element === "button" && data_path) ? `data-path="${data_path}"` : "";
-
-        return `
-            <${element} ${pathAttr} class="flex gap-2 m-2 cursor-pointer items-center justify-start transition-transform duration-200 hover:scale-105 ${extra_clases}">
-                <img src="${image_path}" alt="" class="h-5 w-5 md:h-7 md:w-7 lg:h-9 lg:w-9 shrink-0" />
-                <span class="text-xs md:text-base lg:text-lg inline-flex items-center font-medium">
-                    ${text}
-                </span>
-            </${element}>
-        `;
-    }
-
     render_car_card(car_data) {
     const worstMaintenanceId = car_data["service_indicators"]["worst_maintenance"];
-    const indicatorColor = this.indicators[worstMaintenanceId]["color"];
-    const indicatorImg = this.indicators[worstMaintenanceId]["img"];
-    const textColor = this.indicators[worstMaintenanceId]["text_color"];
+    const indicatorColor = INDICATORS[worstMaintenanceId]["color"];
+    const indicatorImg = INDICATORS[worstMaintenanceId]["img"];
+    const textColor = INDICATORS[worstMaintenanceId]["text_color"];
     
     return `
         <article data-path="/get_car/${car_data["id"]}" class="car_card_main cursor-pointer border border-gray-200 bg-white flex flex-col md:flex-row items-stretch rounded-xl overflow-hidden shadow-sm m-4 hover:shadow-lg transition-shadow">
@@ -88,13 +85,13 @@ export class ShowCarPage extends BaseWindow {
                     </div>
                     ${
                         this.info_about_car_keys.map(key => 
-                            this.icon_value_text(this.images[key], car_data[key])
+                            icon_value_text(this.images[key], car_data[key])
                         ).join("")
                     }
                 </div>
 
                 <div class="mt-2 manage_btn_and_indicators w-full sm:w-auto flex flex-col-reverse gap-2 whitespace-nowrap pr-4 md:pr-12">
-                    ${this.icon_value_text(
+                    ${icon_value_text(
                         this.images.add_note_img, 
                         "Додати ремонт", 
                         "button",
@@ -102,7 +99,7 @@ export class ShowCarPage extends BaseWindow {
                         `${this.visibility} border border-transparent hover:border-emerald-500 hover:bg-emerald-50 rounded-lg px-3 py-1.5 text-gray-700 hover:text-emerald-700`
                     )}
 
-                    ${this.icon_value_text(
+                    ${icon_value_text(
                         this.images.edit_car, 
                         "Редагувати", 
                         "button",
@@ -127,7 +124,6 @@ export class ShowCarPage extends BaseWindow {
 
     async render() {
         super.render("<div class='text-center p-10 font-bold text-xl'>Завантаження списку автомобілів...</div>");
-        console.log(this.visibility)
         try {
             this.cars = await this.get_all_cars();
             const html = this.content();

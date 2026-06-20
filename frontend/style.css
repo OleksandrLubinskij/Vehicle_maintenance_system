@@ -6,6 +6,11 @@
     --custom-bg: #f1efef;
 }
 
+.car-svg-container svg {
+    width: 100% !important;
+    height: 100% !important;
+}
+
 .dark {
     --custom-bg: #121212;
 }

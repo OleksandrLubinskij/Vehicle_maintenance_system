@@ -1,7 +1,7 @@
 import { BaseWindow } from "./base_view";
 import { api } from "../apiRoutes";
 import { Form } from "../components/form_elements";
-import { PAGE_MODE, CAR_INPUT_FIELDS, CAR_SELECT_FIELDS } from "../../config";
+import { PAGE_MODE, CAR_TEXT_FIELDS, CAR_OPTION_FIELDS } from "../../config";
 import { CAR } from "../../DBConfig";
 import { router } from "../router";
 export class CreateCarPage extends BaseWindow {
@@ -17,7 +17,7 @@ export class CreateCarPage extends BaseWindow {
         const fuel_values = fuel_enum.map(val => val.name);
         const oil_values = oil_enum.map(val => val.name);
         
-        for (const field_identificator of CAR_INPUT_FIELDS) {
+        for (const field_identificator of CAR_TEXT_FIELDS) {
             const extra_class = (field_identificator.LABEL === "VIN") ? "md:col-span-2" : "";
             
             const def_val = default_values ? default_values[field_identificator.ID] : null; 
@@ -32,15 +32,15 @@ export class CreateCarPage extends BaseWindow {
                 <div class="grid grid-cols-1 md:grid-cols-2 md:gap-x-6">
                     ${form_fields.join("")}
                     ${form.create_select(   
-                        CAR_SELECT_FIELDS[0].LABEL, 
-                        CAR_SELECT_FIELDS[0].ID, 
+                        CAR_OPTION_FIELDS[0].LABEL, 
+                        CAR_OPTION_FIELDS[0].ID, 
                         fuel_values,
                         "",
                         default_values?.[CAR.fuel_type]
                     )}
                     ${form.create_select(
-                        CAR_SELECT_FIELDS[1].LABEL, 
-                        CAR_SELECT_FIELDS[1].ID,
+                        CAR_OPTION_FIELDS[1].LABEL, 
+                        CAR_OPTION_FIELDS[1].ID,
                         oil_values,
                         "",
                         default_values?.[CAR.oil_type]

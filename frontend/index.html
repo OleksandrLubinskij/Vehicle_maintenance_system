@@ -91,6 +91,24 @@
     <div
       id="app"
       class="app w-full min-h-[calc(100vh-120px)] mx-auto p-6 flex flex-col"
-    ></div>
+    >
+      <article>
+        <div id="car_photo">
+          <img src="assets/unknown_car.svg" alt="" />
+        </div>
+        <div id="car_info">
+          <p class="text-lg md:text-xl lg:text-2xl font-bold">
+            ${car_data["brand"]} ${car_data["model"]}
+          </p>
+          <div>
+            <p>VIN: ${car_data["vin"]}</p>
+            <p>VIN: ${car_data["vin"]}</p>
+            <p>VIN: ${car_data["vin"]}</p>
+            <p>VIN: ${car_data["vin"]}</p>
+            <p>VIN: ${car_data["vin"]}</p>
+          </div>
+        </div>
+      </article>
+    </div>
   </body>
 </html>
