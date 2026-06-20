@@ -3,6 +3,7 @@ import { CreateCarPage } from "./pages/create_car_page.js";
 import { ManageMaintenancePage } from "./pages/maintenance_page.js";
 import { ErrorPage } from "./pages/error_page.js";
 import { AuthorizationPage } from "./pages/authorization_page.js";
+import { GetCarPage } from "./pages/get_car_page.js";
 import { PAGE_MODE, AUTHORIZATION_PAGE_MODE } from "../config.js";
 import { control_nav_menu_visibility } from "./utils/nav_menu_visibility.js";
 import { updateActiveNavLink } from "./utils/update_active_nav_link.js";
@@ -12,6 +13,7 @@ class Router {
             "/cars": { Class: ShowCarPage },
             "/create_car": { Class: CreateCarPage, mode: PAGE_MODE.CREATE, useParam: false },
             "/edit_car": { Class: CreateCarPage, mode: PAGE_MODE.EDIT },
+            "/get_car": {Class: GetCarPage},
             "/create_maintenance_record": { Class: ManageMaintenancePage, mode: PAGE_MODE.CREATE },
             "/edit_maintenance_record": { Class: ManageMaintenancePage, mode: PAGE_MODE.EDIT },
             "/register": { Class: AuthorizationPage, mode: AUTHORIZATION_PAGE_MODE.REGISTER },

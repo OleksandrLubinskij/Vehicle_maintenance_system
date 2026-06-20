@@ -1,6 +1,7 @@
 import { BaseWindow } from "./base_view";
 import { api } from "../apiRoutes";
 import { ROLE } from "../../config";
+import { router } from "../router";
 export class ShowCarPage extends BaseWindow {
     constructor(title) {
         super(title);
@@ -67,7 +68,7 @@ export class ShowCarPage extends BaseWindow {
     const textColor = this.indicators[worstMaintenanceId]["text_color"];
     
     return `
-        <article class="car_card border border-gray-200 bg-white flex flex-col md:flex-row items-stretch rounded-xl overflow-hidden shadow-sm m-4">
+        <article data-path="/get_car/${car_data["id"]}" class="car_card_main cursor-pointer border border-gray-200 bg-white flex flex-col md:flex-row items-stretch rounded-xl overflow-hidden shadow-sm m-4 hover:shadow-lg transition-shadow">
             
             <img
                 src="assets/unknown_car.svg"
@@ -113,12 +114,12 @@ export class ShowCarPage extends BaseWindow {
             <div class="car_indicator h-4 w-full md:h-auto md:w-16 shrink-0" style="background-color: ${indicatorColor}"></div>
         </article>
     `;
-}
+    }
     content() {
         console.log(this.cars);
         const cars_cards = Object.values(this.cars).map(car => this.render_car_card(car)).join("");
         return `
-            <div class="max-w-6xl w-full mx-auto flex flex-col gap-2">
+            <div id="card_container" class="max-w-6xl w-full mx-auto flex flex-col gap-2">
                 ${cars_cards}
             </div>
     `;
@@ -131,6 +132,7 @@ export class ShowCarPage extends BaseWindow {
             this.cars = await this.get_all_cars();
             const html = this.content();
             super.render(html);
+            this.button_clicks();
         }
         catch(error) {
             console.log(`Error with car loading: ${error}`);
@@ -140,5 +142,20 @@ export class ShowCarPage extends BaseWindow {
     async get_all_cars() {
         const cars_data = await api.cars.show_all_cars();
         return cars_data;
+    }
+
+    button_clicks() {
+        const card_container = document.querySelector("#card_container");
+        if(!card_container) return ;
+        card_container.addEventListener("click" , (event) => {
+            const is_button = event.target.closest("button");
+            if(is_button) return;
+
+            const card = event.target.closest(".car_card_main");
+            if(card) {
+                const target_url = card.getAttribute("data-path");
+                router.navigate(target_url);
+            }
+        })
     }
 }
