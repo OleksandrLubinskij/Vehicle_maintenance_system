@@ -12,18 +12,18 @@ export class GetCarPage extends BaseWindow {
         this.visibility = localStorage.getItem("role") === ROLE.USER ? "hidden" : "";
     }
 
-    generate_car_detail() {
-        let fields = [];
-        CAR_CARD_DETAILS.slice(1).forEach(field => {
-            fields.push(`
-                <div class="flex flex-col p-4 bg-gray-50 border border-gray-100 rounded-xl shadow-sm transition-all hover:bg-gray-100">
-                    <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">${field.LABEL}</span>
-                    <span class="text-lg md:text-xl font-bold text-gray-800 mt-1">${this.car[field.ID] || "—"}</span>
-                </div>
-            `);
-        });
-        return fields;
-    }
+   generate_car_detail() {
+    let fields = [];
+    CAR_CARD_DETAILS.slice(1).forEach(field => {
+        fields.push(`
+            <div class="flex flex-col pr-4 lg:border-r lg:last:border-r-0 lg:border-gray-100 lg:last:pr-0">
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">${field.LABEL}</span>
+                <span class="text-xl md:text-2xl font-black text-gray-900 mt-0.5">${this.car[field.ID] || "—"}</span>
+            </div>
+        `);
+    });
+    return fields;
+}
 
     generate_indicators_fields() {
         let fields = [];
@@ -84,14 +84,14 @@ export class GetCarPage extends BaseWindow {
                         </div>
 
                         <div>
-                            <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 mb-3 border-b border-gray-100 pb-2">Характеристики автомобіля</h3>
+                            <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 mb-3 border-b border-gray-100 pb-2">Характеристики</h3>
                             <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 ${this.generate_car_detail().join("")}
                             </div>
                         </div>
 
                         <div>
-                            <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 mb-3 border-b border-gray-100 pb-2">Стан систем та регламентних робіт</h3>
+                            <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 mb-3 border-b border-gray-100 pb-2">Стан</h3>
                             <div class="flex flex-col">
                                 ${this.generate_indicators_fields().join("")}
                             </div>

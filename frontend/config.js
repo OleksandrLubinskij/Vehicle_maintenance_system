@@ -90,7 +90,7 @@ export const MAINTENANCE_TYPES = [
         ID: "oil_and_filters"
     },
     {
-        LABEL: "Заміна ременів ГРМ",
+        LABEL: "Заміна ременя ГРМ",
         ID: "belt_replacement"
     },
     {

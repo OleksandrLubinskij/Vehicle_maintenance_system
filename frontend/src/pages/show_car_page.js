@@ -79,8 +79,8 @@ export class ShowCarPage extends BaseWindow {
                     <p class="text-lg md:text-xl lg:text-2xl font-bold">
                         ${car_data["brand"]} ${car_data["model"]}
                     </p>
-                    <div class="w-50 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-gray-100 border border-gray-200 uppercase       tracking-wide" style="color: ${textColor}"> 
-                        <img src="${indicatorImg}" alt="" class="h-3.5 w-3.5 shrink-0" />
+                    <div class="w-50 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[14px] font-bold bg-gray-100 border border-gray-200 uppercase       tracking-wide" style="color: ${textColor}"> 
+                        <img src="${indicatorImg}" alt="" class="h-4.5 w-4.5 shrink-0" />
                         <span>${car_data["service_indicators"]["text_indicator"]}</span>
                     </div>
                     ${
@@ -90,13 +90,13 @@ export class ShowCarPage extends BaseWindow {
                     }
                 </div>
 
-                <div class="mt-2 manage_btn_and_indicators w-full sm:w-auto flex flex-col-reverse gap-2 whitespace-nowrap pr-4 md:pr-12">
+                <div class="mt-5 manage_btn_and_indicators w-full sm:w-auto flex flex-col-reverse gap-2 whitespace-nowrap">
                     ${icon_value_text(
                         this.images.add_note_img, 
                         "Додати ремонт", 
                         "button",
                         `/create_maintenance_record/${car_data["id"]}`,
-                        `${this.visibility} border border-transparent hover:border-emerald-500 hover:bg-emerald-50 rounded-lg px-3 py-1.5 text-gray-700 hover:text-emerald-700`
+                        `${this.visibility} border border-transparent hover:border-emerald-500 hover:bg-emerald-50 rounded-lg lg:px-3 lg:py-1.5 text-gray-700 hover:text-emerald-700`
                     )}
 
                     ${icon_value_text(
@@ -104,7 +104,7 @@ export class ShowCarPage extends BaseWindow {
                         "Редагувати", 
                         "button",
                         `/edit_car/${car_data["id"]}`,
-                        `${this.visibility} border border-transparent hover:border-blue-500 hover:bg-blue-50 rounded-lg px-3 py-1.5 text-gray-700 hover:text-blue-700`
+                        `${this.visibility} border border-transparent hover:border-blue-500 hover:bg-blue-50 rounded-lg lg:px-3 lg:py-1.5 text-gray-700 hover:text-blue-700`
                     )}
                 </div>
             </div>

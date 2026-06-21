@@ -12,9 +12,13 @@ router = APIRouter()
 cache = RedisCache()
 allow_admin_only = RoleChecker(["admin"])
 @router.get("/{car_id}")
-async def get_maintainence_log(car_id: int, 
+async def get_maintainence_log(car_id: int,
+                               maintenance_type: str | None = None, 
                                db: Session = Depends(get_db)):
-    stmt = select(Maintenance_log).where(Maintenance_log.car_id == car_id).limit(10)
+    condition = [Maintenance_log.car_id == car_id]
+    if maintenance_type and maintenance_type != "Усі":
+        condition.append(Maintenance_log.maintenance_type == maintenance_type)
+    stmt = select(Maintenance_log).where(*condition).limit(10).order_by(Maintenance_log.date.desc())
     res = db.execute(stmt).scalars().all()
     return res
 
@@ -28,6 +32,7 @@ async def get_maintainence_log_by_id(log_id: int,
     )
     res = db.execute(stmt).scalar_one_or_none()
     return res
+
 
 @router.post("/create_maintenance_record/{car_id}")
 async def create_maintainence_record(car_id: int, 
