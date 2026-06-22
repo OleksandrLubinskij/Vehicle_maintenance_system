@@ -6,14 +6,6 @@ import { icon_value_text } from "../components/icon_value_comp";
 export class ShowCarPage extends BaseWindow {
     constructor(title) {
         super(title);
-        // this.images = {
-        //     "mileage": "assets/speedometer.svg",
-        //     "engine_capacity": "assets/box.svg",
-        //     "fuel_type": "assets/fuel-pump.svg",
-        //     "oil_type": "assets/droplet.svg",
-        //     "add_note_img": "assets/journal-plus.svg",
-        //     "edit_car": "assets/edit_car.svg"
-        // };
         this.images = {
     // Speedometer (Пробіг)
     "mileage": `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-speedometer" viewBox="0 0 16 16">
