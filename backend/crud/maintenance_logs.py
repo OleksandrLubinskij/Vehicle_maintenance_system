@@ -1,5 +1,5 @@
 from fastapi import Depends, HTTPException, APIRouter
-from sqlalchemy import select
+from sqlalchemy import asc, desc, select
 from sqlalchemy.orm import Session
 from app.models import Maintenance_log, User
 from app.database import get_db
@@ -13,12 +13,15 @@ cache = RedisCache()
 allow_admin_only = RoleChecker(["admin"])
 @router.get("/{car_id}")
 async def get_maintainence_log(car_id: int,
-                               maintenance_type: str | None = None, 
+                               maintenance_type: str | None = None,
+                               sort_order: str | None = None, 
                                db: Session = Depends(get_db)):
     condition = [Maintenance_log.car_id == car_id]
     if maintenance_type and maintenance_type != "Усі":
         condition.append(Maintenance_log.maintenance_type == maintenance_type)
-    stmt = select(Maintenance_log).where(*condition).limit(10).order_by(Maintenance_log.date.desc())
+    sort_order_condition = asc(Maintenance_log.date) if sort_order == "asc" else desc(Maintenance_log.date) 
+    
+    stmt = select(Maintenance_log).where(*condition).limit(10).order_by(sort_order_condition)
     res = db.execute(stmt).scalars().all()
     return res
 

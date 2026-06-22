@@ -32,7 +32,7 @@ export class Form {
         </div>`
     }
 
-    create_select(label_text, id, values, extra_classes = "", default_value="") {
+    create_select(label_text, id, values, extra_classes = "", default_value="", show_values="") {
         return `
         <div class="flex flex-col gap-2 w-full mb-4 ${extra_classes}">
           <label for="${id}" class="text-sm md:text-base font-semibold text-gray-700">
@@ -43,17 +43,22 @@ export class Form {
             name="${id}" 
             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 text-base transition-all bg-white"
           >
-            ${this.create_options(values, default_value)}
+            ${this.create_options(values, default_value, show_values)}
           </select>
         </div>
         `
     }
 
-    create_options(values, default_value) {
-        const options_arr = values.map(val => {
-          const isSelected = val === default_value ? "selected" : "";
-            return `<option value="${val}" ${isSelected} class="text-base">${val}</option>`
-        });
-        return options_arr.join("");        
-    }
+    create_options(values, default_value, show_values) {
+    const display_arr = show_values ? show_values : values;
+
+    const options_arr = display_arr.map((display_val, index) => {
+        const backend_val = show_values ? values[index] : display_val;
+        const isSelected = backend_val === default_value ? "selected" : "";
+        
+        return `<option value="${backend_val}" ${isSelected} class="text-base">${display_val}</option>`;
+    });
+
+    return options_arr.join("");        
+}
 }

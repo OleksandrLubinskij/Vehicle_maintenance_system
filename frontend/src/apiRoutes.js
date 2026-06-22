@@ -14,7 +14,15 @@ const endpoint = {
         get_car_brand_and_model: (id) => `${BASE_CAR_URL}/get_car_brand_and_model/${id}`,
     },
     maintenance_log: {
-        show_all_mlog: (car_id) => `${BASE_MAINTENANCE_LOG_URL}/${car_id}`,
+        show_all_mlog: (car_id, params={}) => {
+            let query_params = new URLSearchParams();
+            if(params.maintenance_type) query_params.append("maintenance_type", params.maintenance_type);
+            if(params.sort_order) query_params.append("sort_order", params.sort_order);
+            const query_string = query_params.toString();
+            const sufix = query_string ? `?${query_string}` : "";
+         
+            return `${BASE_MAINTENANCE_LOG_URL}/${car_id}${sufix}`;
+        },
         show_mlog_by_id: (id) => `${BASE_MAINTENANCE_LOG_URL}/get_maintenance_record_by_id/${id}`,
         create_mlog: (car_id) => `${BASE_MAINTENANCE_LOG_URL}/create_maintenance_record/${car_id}`,
         edit_mlog: (id) => `${BASE_MAINTENANCE_LOG_URL}/edit_maintenance_record/${id}`,
@@ -75,7 +83,7 @@ export const api = {
         get_car_brand_and_model: (id) => request(endpoint.cars.get_car_brand_and_model(id), "GET"),
     },
     maintenance_log: {
-        show_all_mlog: (car_id) => request(endpoint.maintenance_log.show_all_mlog(car_id)),
+        show_all_mlog: (car_id, params={}) => request(endpoint.maintenance_log.show_all_mlog(car_id, params)),
         show_mlog_by_id: (id) => request(endpoint.maintenance_log.show_mlog_by_id(id)),
         create_mlog: (car_id, data) => request(endpoint.maintenance_log.create_mlog(car_id), "POST", data),
         edit_mlog: (id, data) => request(endpoint.maintenance_log.edit_mlog(id), "PATCH", data),

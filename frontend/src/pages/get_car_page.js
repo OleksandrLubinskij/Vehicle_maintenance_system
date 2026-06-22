@@ -3,7 +3,9 @@ import { router } from "../router";
 import { api } from "../apiRoutes";
 import { ROLE, CAR_CARD_DETAILS, MAINTENANCE_TYPES, INDICATORS } from "../../config";
 import { icon_value_text } from "../components/icon_value_comp";
+import { Form } from "../components/form_elements";
 
+const form = new Form();
 export class GetCarPage extends BaseWindow {
     constructor(title, id) {
         super(title);
@@ -53,7 +55,10 @@ export class GetCarPage extends BaseWindow {
         return fields;
     }
 
-    content() {
+    content(maintenance_enum, filter_res) {
+        const maintenance_type_show_values = maintenance_enum.map(val => val.name);
+        const maintenance_type_values = maintenance_enum.map(val => val.id);
+        
         return `
             <div class="max-w-6xl w-full mx-auto p-4 md:p-8 animate-fade-in">
                 <article class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row items-stretch gap-6 md:gap-10 p-6 md:p-8">
@@ -99,16 +104,72 @@ export class GetCarPage extends BaseWindow {
 
                     </div>
                 </article>
+                <div>  
+                    <div id="filter">  
+                        <h3>Фільтр</h3>
+                        <form id="filter_form" action="">
+                            ${form.create_select(
+                                "Тип ремонту",
+                                "maintenance_type",
+                                maintenance_type_values,
+                                "",
+                                "",
+                                maintenance_type_show_values
+                            )}
+
+                            <fieldset class="border-none p-0 m-0">
+                                <legend class="font-bold text-gray-700 mb-2">Сортування</legend>
+                                <div class="space-y-2">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="sort_order" value="desc" checked class="w-4 h-4 text-green-600">
+                                    <span>Спочатку найновіші</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="sort_order" value="asc" class="w-4 h-4 text-green-600">
+                                    <span>Спочатку найстаріші</span>
+                                </label>
+                                </div>
+                            </fieldset>
+                            <input 
+                                type="submit" 
+                                value="Підтвердити"
+                                class="w-full py-3 px-6 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 mt-5 cursor-pointer">
+                        </form>
+                    </div>
+                    <div id="maintenances">  
+        
+                    </div>
+                </div>
             </div>
         `;
+    }
+    show_maintenance_logs() {
+        const filter_form = document.querySelector("#filter_form");
+        const maintenances = document.querySelector("#maintenances");
+        let filter_data;
+        if(filter_form) {
+            filter_form.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                const form_data = new FormData(filter_form);
+                filter_data = Object.fromEntries(form_data.entries());
+                const maintenance_logs = await api.maintenance_log.show_all_mlog(this.id, filter_data);
+                console.log(maintenance_logs);
+                maintenances.innerText = `${filter_data.maintenance_type}`
+            })
+        }
+        
     }
 
     async render() {
         super.render("<div class='text-center p-10 font-bold text-xl text-gray-500'>Завантаження інформації про автомобіль...</div>");
         try {
             this.car = await api.cars.show_car_by_id(this.id);
-            const html = this.content();
+            const maintenance_enum = await api.enum.get_enums(3);
+            const html = this.content(maintenance_enum);
             super.render(html);
+            this.show_maintenance_logs();
+
+            
         }
         catch(error) {
             console.log(`Error with car loading: ${error}`);
