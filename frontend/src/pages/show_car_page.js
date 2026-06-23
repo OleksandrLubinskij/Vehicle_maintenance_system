@@ -52,9 +52,9 @@ export class ShowCarPage extends BaseWindow {
 
     render_car_card(car_data) {
     const worstMaintenanceId = car_data["service_indicators"]["worst_maintenance"];
-    const indicatorColor = INDICATORS[worstMaintenanceId]["color"];
+    const indicatorColor = INDICATORS[worstMaintenanceId]["text_color"];
     const indicatorImg = INDICATORS[worstMaintenanceId]["img"];
-    const textColor = INDICATORS[worstMaintenanceId]["text_color"];
+    const textColor = INDICATORS[worstMaintenanceId]["color"];
     
     return `
         <article data-path="/get_car/${car_data["id"]}" class="car_card_main cursor-pointer border border-gray-200 bg-white flex flex-col md:flex-row items-stretch rounded-xl overflow-hidden shadow-sm m-4 hover:shadow-lg transition-shadow">
@@ -96,7 +96,7 @@ export class ShowCarPage extends BaseWindow {
                         "Редагувати", 
                         "button",
                         `/edit_car/${car_data["id"]}`,
-                        `${this.visibility} border border-transparent hover:border-blue-500 hover:bg-blue-50 rounded-lg lg:px-3 lg:py-1.5 text-gray-700 hover:text-blue-700`
+                        `${this.visibility} border border-transparent hover:border-[#a05228] hover:bg-orange-50 rounded-lg lg:px-3 lg:py-1.5 text-gray-700 hover:text-[#a05228]`
                     )}
                 </div>
             </div>

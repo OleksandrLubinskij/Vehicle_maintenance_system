@@ -168,7 +168,7 @@ export class GetCarPage extends BaseWindow {
                                 </label>
                             </div>
                         </fieldset>
-                        <input type="submit" value="Підтвердити" class="w-full py-2.5 px-4 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 rounded-xl shadow-sm transition-all duration-200 cursor-pointer text-center">
+                        <input type="submit" value="Підтвердити" class="w-full py-2.5 px-4 text-sm font-bold text-white bg-[#146c43] hover:bg-emerald-700 active:bg-emerald-800 rounded-xl shadow-sm transition-all duration-200 cursor-pointer text-center">
                     </form>
                 </div>
 
