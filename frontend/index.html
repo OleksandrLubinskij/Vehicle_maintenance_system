@@ -11,6 +11,7 @@
       src="./src/utils/settings_floating_window.js"
       defer
     ></script>
+    <script src="./src/components/navbar_burger_menu.js"></script>
   </head>
   <body class="bg-[#f5f5f5]">
     <header class="main_header bg-[#227b50] p-2">
@@ -70,9 +71,9 @@
           id="settings_dropdown"
           class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-xl z-50 p-2 flex flex-col gap-1"
         >
-          <button class="text-left w-full px-3 py-2 text-sm text-gray-700">
+          <div class="text-left w-full px-3 py-2 text-sm text-gray-700">
             Налаштування
-          </button>
+          </div>
           <hr class="border-gray-100my-1" />
           <button
             class="text-left w-full px-3 py-2 text-sm mt-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
@@ -86,6 +87,25 @@
             Вийти
           </button>
         </div>
+      </div>
+      <div
+        id="mobile_dropdown_menu"
+        class="hidden absolute top-full left-0 bg-white border-t border-gray-300 flex-col gap-2 p-4 z-50 md:hidden text-sm rounded-lg shadow-xl"
+      >
+        <div class="text-left w-full px-3 text-sm text-gray-700">Меню</div>
+        <hr class="border-gray-100my-1" />
+        <button
+          class="menu_btn text-left hover:text-emerald-700 hover:bg-gray-200 transition-colors duration-200 p-2 rounded-md"
+          data-path="/cars"
+        >
+          Переглянути
+        </button>
+        <button
+          class="menu_btn text-left hover:text-emerald-700 hover:bg-gray-200 transition-colors duration-200 p-2 rounded-md"
+          data-path="/create_car"
+        >
+          Створити
+        </button>
       </div>
     </nav>
     <div
