@@ -1,5 +1,5 @@
 import os
-from dotenv import load_dotenv
+import pathlib
 LIMITATIONS = {
         "oil_and_filters": 10000,
         "belt_replacement": 60000,
@@ -26,3 +26,5 @@ class USER:
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+
+CAR_PHOTO_PATH = pathlib.Path(__file__).parent.parent / "static" / "car_images"

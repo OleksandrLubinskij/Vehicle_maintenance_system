@@ -1,7 +1,7 @@
 from typing import Dict
-from fastapi import Depends, APIRouter, Query
+from fastapi import Depends, APIRouter
 from services.car_indicators_service import get_serivce_indicators
-from app.schemas import CarModel, CarResponse, CarUpdate, CarResponse2
+from app.schemas import CarModel, CarResponse, CarUpdate
 from app.models import Car, User
 from sqlalchemy.orm import Session
 from sqlalchemy import select
