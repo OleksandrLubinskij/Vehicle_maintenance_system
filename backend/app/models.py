@@ -18,6 +18,7 @@ class Car(Base):
     engine_capacity: Mapped[float] = mapped_column(nullable=False)
     fuel_type: Mapped[FuelType] = mapped_column(Enum(FuelType))
     oil_type: Mapped[OilType] = mapped_column(Enum(OilType))
+    photo_path: Mapped[str | None] = mapped_column(nullable=True)
     maintenance_logs: Mapped[List["Maintenance_log"]] = relationship(
         back_populates="car", cascade="all, delete-orphan"
     )
