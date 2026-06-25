@@ -50,13 +50,4 @@ class CarResponse(BaseModel):
     fuel_type: str
     oil_type: str
     service_indicators: Dict[str, Any] = {}
-
-class CarResponse2(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-    id: int
-    brand: str
-    model: str
-    mileage: int
-    engine_capacity:float
-    fuel_type: str
-    oil_type: str
+    photo_path: str | None

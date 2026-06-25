@@ -10,3 +10,7 @@ httpx
 python-jose[cryptography]>=3.3.0
 bcrypt==3.2.2
 passlib
+python-multipart
+aiofiles
+Pillow
+asyncpg

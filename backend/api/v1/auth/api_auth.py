@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.schemas import UserCreate, UserLogin
 import crud.users as users
@@ -13,7 +13,8 @@ from app.security import  verify_password, create_access_token
 router = APIRouter()
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
-async def register(user_data: UserCreate, db: Session = Depends(get_db)):
+async def register(user_data: UserCreate, 
+                   db: AsyncSession = Depends(get_db)):
     existing_user = await users.get_user_by_login(login=user_data.login, db=db)
     if (existing_user):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
@@ -24,7 +25,9 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
     return {"message": "User registered successfully"}
 
 @router.post("/login")
-async def login(response: Response, user_data:UserLogin, db: Session = Depends(get_db)):
+async def login(response: Response, 
+                user_data:UserLogin, 
+                db: AsyncSession = Depends(get_db)):
     user = await users.get_user_by_login(login=user_data.login, db=db)
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
@@ -58,9 +61,9 @@ async def logout(response:Response):
     return {"status": "success", "message": "Logged out successfully"}
 
 @router.get("/get_all_users")
-async def get_all_users(db: Session = Depends(get_db)):
+async def get_all_users(db: AsyncSession = Depends(get_db)):
     stmt = select(User)
-    users = db.execute(stmt).scalars().all()
+    users = (await db.execute(stmt)).scalars().all()
     return users
 
 @router.get("/get_me", response_model=UserResponce)

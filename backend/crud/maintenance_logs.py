@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy import asc, desc, select
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Maintenance_log, User
 from app.database import get_db
 from app.schemas import MaintainenceLogModel, MaintainenceLogUpdate
@@ -11,62 +11,71 @@ from api.v1.auth.dependencies import RoleChecker
 router = APIRouter()
 cache = RedisCache()
 allow_admin_only = RoleChecker(["admin"])
+
 @router.get("/{car_id}")
 async def get_maintainence_log(car_id: int,
                                maintenance_type: str | None = None,
                                sort_order: str | None = None, 
-                               db: Session = Depends(get_db)):
+                               db: AsyncSession = Depends(get_db)):
     condition = [Maintenance_log.car_id == car_id]
     if maintenance_type and maintenance_type != "Усі":
         condition.append(Maintenance_log.maintenance_type == maintenance_type)
     sort_order_condition = asc(Maintenance_log.date) if sort_order == "asc" else desc(Maintenance_log.date) 
     
-    stmt = select(Maintenance_log).where(*condition).limit(10).order_by(sort_order_condition)
-    res = db.execute(stmt).scalars().all()
+    stmt = select(
+            Maintenance_log
+        ).where(
+            *condition
+        ).limit(
+            10
+        ).order_by(
+            sort_order_condition
+        )
+    res = (await db.execute(stmt)).scalars().all()
     return res
 
 @router.get("/get_maintenance_record_by_id/{log_id}")
 async def get_maintainence_log_by_id(log_id: int, 
-                                     db:Session = Depends(get_db)):
+                                     db:AsyncSession = Depends(get_db)):
     stmt = select(
         Maintenance_log
     ).where(
         Maintenance_log.id == log_id 
     )
-    res = db.execute(stmt).scalar_one_or_none()
+    res = (await db.execute(stmt)).scalar_one_or_none()
     return res
 
 
 @router.post("/create_maintenance_record/{car_id}")
 async def create_maintainence_record(car_id: int, 
                                      log:MaintainenceLogModel, 
-                                     db: Session = Depends(get_db),
+                                     db: AsyncSession = Depends(get_db),
                                      current_user: User = Depends(allow_admin_only)):
     new_log_dict = log.model_dump()
     new_log_dict["car_id"] = car_id
     new_log_obj = Maintenance_log(**new_log_dict)
     try:
         db.add(new_log_obj)
-        db.commit()
-        db.refresh(new_log_obj)
-        cache.delete(CACHE.CARS)
+        await db.commit()
+        await db.refresh(new_log_obj)
+        await cache.delete(CACHE.CARS)
         return new_log_obj
     except Exception as e:
-        db.rollback()
+        await db.rollback()
         raise HTTPException(status_code=400, detail=f"Помилка бази даних {str(e)}")
     
 @router.patch("/edit_maintenance_record/{record_id}")
 async def edit_maintainence_record(edited_record: MaintainenceLogUpdate, 
                                    record_id: int, 
-                                   db: Session = Depends(get_db),
+                                   db: AsyncSession = Depends(get_db),
                                    current_user: User = Depends(allow_admin_only)):
     stmt = select(
-        Maintenance_log
+            Maintenance_log
         ).where(
             Maintenance_log.id == record_id
         )
     
-    record_obj = db.execute(stmt).scalar_one()
+    record_obj = (await db.execute(stmt)).scalar_one()
     if not record_obj:
         raise HTTPException(status_code=404, detail="Запис не знайдено!")
     
@@ -75,19 +84,19 @@ async def edit_maintainence_record(edited_record: MaintainenceLogUpdate,
     for key, val in edited_record.items():
         setattr(record_obj, key, val)
     
-    db.commit()
-    db.refresh(record_obj)
-    cache.delete(CACHE.CARS)
+    await db.commit()
+    await db.refresh(record_obj)
+    await cache.delete(CACHE.CARS)
     return record_obj
 
 @router.delete("/delete_maintenance_record/{record_id}")
 async def delete_maintainence_record(record_id: int, 
-                                     db: Session = Depends(get_db),
+                                     db: AsyncSession = Depends(get_db),
                                      current_user: User = Depends(allow_admin_only)):
-    record_to_delete = db.get(Maintenance_log, record_id)
+    record_to_delete = await db.get(Maintenance_log, record_id)
     if not record_to_delete:
         raise HTTPException(status_code=404, detail="Запис не знайдено")
 
-    db.delete(record_to_delete)
-    db.commit()
-    cache.delete(CACHE.CARS)
+    await db.delete(record_to_delete)
+    await db.commit()
+    await cache.delete(CACHE.CARS)
