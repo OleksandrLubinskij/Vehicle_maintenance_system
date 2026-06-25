@@ -25,4 +25,4 @@ async def create_user(user, db):
 
 async def get_user_by_login(login, db) -> User | None:
     stmt = select(User).where(User.login == login)
-    return db.execute(stmt).scalar_one_or_none()
+    return (await db.execute(stmt)).scalar_one_or_none()

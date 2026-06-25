@@ -1,10 +1,12 @@
 from datetime import datetime
 from app.models import Maintenance_log
 from app.enums import MaintenanceType
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from app.config import LIMITATIONS, TEXT_INDICATORS
-def calculate_maintenance_delta(car_id: int, current_mileage:int,  db: Session):
+async def calculate_maintenance_delta(car_id: int, 
+                                current_mileage:int,  
+                                db: AsyncSession):
     subq = (
         select(
             Maintenance_log,
@@ -23,7 +25,7 @@ def calculate_maintenance_delta(car_id: int, current_mileage:int,  db: Session):
     ).subquery()
 
     stmt = select(subq).where(subq.c.rn == 1)
-    res = db.execute(stmt).all()
+    res = (await db.execute(stmt)).all()
     data = {
         "Oil_filters_mileage": None,
         "Belt_mileage": None,
@@ -62,8 +64,10 @@ def evaluate_status(diff, limit):
     if ratio >= 0: return 1 #ok
     return 0 #none
 
-def get_serivce_indicators(car_id: int, current_mileage: int,  db: Session):
-    diffs = calculate_maintenance_delta(car_id, current_mileage, db)
+async def get_serivce_indicators(car_id: int, 
+                           current_mileage: int,  
+                           db: AsyncSession):
+    diffs = await calculate_maintenance_delta(car_id, current_mileage, db)
 
     output =  {
         key: evaluate_status(diff, LIMITATIONS[key])

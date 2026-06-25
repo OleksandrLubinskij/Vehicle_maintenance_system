@@ -1,13 +1,13 @@
 from fastapi import Cookie, Depends, HTTPException, status
 from jose import jwt, JWTError
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.security import SECRET_KEY, ALGORITHM
 from crud.users import get_user_by_login
 
 async def get_current_user(
     access_token: str | None = Cookie(None), 
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     unauthorized_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

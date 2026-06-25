@@ -15,12 +15,12 @@ async def get_db():
     try:
         yield db
     finally:
-        db.close()
+        await db.close()
 
 async def init_db(engine):
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all(bind=engine))
-        await conn.run_sync(Base.metadata.create_all(bind=engine))
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
 
 if __name__ == "__main__":
     asyncio.run(init_db(engine))
