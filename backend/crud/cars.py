@@ -36,30 +36,30 @@ async def get_cars(db: AsyncSession = Depends(get_db)):
 @router.get("/get_car_by_id/{car_id}", response_model= CarResponse)
 async def get_car_by_id(car_id: int, 
                         db: AsyncSession = Depends(get_db)):
-    car = cache.hget_by_id(CACHE.CARS, car_id)
+    car = await cache.hget_by_id(CACHE.CARS, car_id)
     if car:
         return car
     stmt = select(Car).where(Car.id == car_id)
 
-    car = db.execute(stmt).scalar_one_or_none()
-    indicators = get_serivce_indicators(car.id, car.mileage,  db)
+    car = (await db.execute(stmt)).scalar_one_or_none()
+    indicators = await get_serivce_indicators(car.id, car.mileage,  db)
     responce_car = CarResponse.model_validate(car)
     responce_car.service_indicators = indicators
-    cache.hset(CACHE.CARS, car.id, responce_car.model_dump())
+    await cache.hset(CACHE.CARS, car.id, responce_car.model_dump())
     return responce_car
 
 @router.get("/get_car_mileage/{car_id}")
 async def get_car_mileage(car_id: int, 
                           db: AsyncSession = Depends(get_db)):
     stmt = select(Car.mileage).where(Car.id == car_id)
-    mileage = db.execute(stmt).scalar_one_or_none()
+    mileage = (await db.execute(stmt)).scalar_one_or_none()
     return mileage
 
 @router.get("/get_car_brand_and_model/{car_id}")
 async def get_car_brand_and_model(car_id: int, 
                                   db: AsyncSession = Depends(get_db)):
     stmt = select(Car.brand, Car.model).where(Car.id == car_id)
-    car = db.execute(stmt).first()
+    car = (await db.execute(stmt)).first()
     return car._asdict()
 
 @router.post("/create_car")
@@ -70,11 +70,11 @@ async def create_car(car:CarModel,
     new_car = Car(**new_car_dict)
     try:
         db.add(new_car)
-        db.commit()
-        db.refresh(new_car)
+        await db.commit()
+        await db.refresh(new_car)
         return new_car_dict
     except Exception as e:
-        db.rollback()
+        await db.rollback()
         print(e)
         raise DBErrors()
 
@@ -85,7 +85,7 @@ async def edit_car(car:CarUpdate,
              current_user: User = Depends(allow_admin_only)
              ):
     stmt = select(Car).where(Car.id == car_id)
-    car_db = db.execute(stmt).scalar()
+    car_db = (await db.execute(stmt)).scalar()
     if not car_db:
         raise RecordNotFoundError()
     
@@ -94,9 +94,9 @@ async def edit_car(car:CarUpdate,
     for key, value in update_data.items():
         setattr(car_db, key, value)
     
-    db.commit()
-    db.refresh(car_db)
-    cache.delete(CACHE.CARS)
+    await db.commit()
+    await db.refresh(car_db)
+    await cache.delete(CACHE.CARS)
     return car_db
 
 @router.delete("/delete_car/{car_id}")
@@ -107,5 +107,5 @@ async def delete_car(car_id:int,
     if not car_to_delete:
         raise RecordNotFoundError()
     db.delete(car_to_delete)
-    db.commit()
-    cache.delete(CACHE.CARS)
+    await db.commit()
+    await cache.delete(CACHE.CARS)

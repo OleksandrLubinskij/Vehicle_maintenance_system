@@ -16,11 +16,11 @@ async def create_user(user, db):
     )
     try:
         db.add(new_user)
-        db.commit()
-        db.refresh(new_user)
+        await db.commit()
+        await db.refresh(new_user)
         return new_user_dict
     except Exception as e:
-        db.rollback()
+        await db.rollback()
         raise HTTPException(status_code=500, detail=f"Помилка бази даних {str(e)}")
 
 async def get_user_by_login(login, db) -> User | None:

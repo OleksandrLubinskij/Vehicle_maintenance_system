@@ -63,7 +63,7 @@ async def logout(response:Response):
 @router.get("/get_all_users")
 async def get_all_users(db: AsyncSession = Depends(get_db)):
     stmt = select(User)
-    users = await db.execute(stmt).scalars().all()
+    users = (await db.execute(stmt)).scalars().all()
     return users
 
 @router.get("/get_me", response_model=UserResponce)
