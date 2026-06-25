@@ -13,3 +13,4 @@ passlib
 python-multipart
 aiofiles
 Pillow
+asyncpg
