@@ -1,5 +1,5 @@
 from fastapi import Depends, APIRouter, UploadFile, File
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import update
 from app.database import get_db
 from app.exceptions import RecordNotFoundError
@@ -16,9 +16,7 @@ router = APIRouter()
 cache = RedisCache()
 
 @router.post("/upload/{car_id}")
-async def upload_car_photo(car_id: int, raw_photo: UploadFile = File(...), db:Session=Depends(get_db)):
-    print(CAR_PHOTO_PATH)
-
+async def upload_car_photo(car_id: int, raw_photo: UploadFile = File(...), db:AsyncSession=Depends(get_db)):
     try:
         photo = await convert_image_webp(raw_photo)
     except UnidentifiedImageError:
@@ -29,7 +27,7 @@ async def upload_car_photo(car_id: int, raw_photo: UploadFile = File(...), db:Se
     stmt = update(Car
                     ).where(Car.id == car_id
                     ).values(photo_path=new_filename)
-    result = db.execute(stmt)
+    result = await db.execute(stmt)
     if result.rowcount == 0:
         raise RecordNotFoundError
     
@@ -37,6 +35,6 @@ async def upload_car_photo(car_id: int, raw_photo: UploadFile = File(...), db:Se
     async with aiofiles.open(photo_path, "wb") as file:
         await file.write(photo)
 
-    db.commit()
-    cache.delete(CACHE.CARS)
+    await db.commit()
+    await cache.delete(CACHE.CARS)
     return {"message": "Photo uploaded!"}
