@@ -12,6 +12,8 @@ export class GetCarPage extends BaseWindow {
         this.id = id;
         this.car = null;
         this.visibility = localStorage.getItem("role") === ROLE.USER ? "hidden" : "";
+        this.offset = 0;
+        this.limit = 10;
         this.images = {
             "arrow": `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down-fill transition-transform duration-200 target-arrow" viewBox="0 0 16 16">
                 <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
@@ -172,7 +174,15 @@ export class GetCarPage extends BaseWindow {
                     </form>
                 </div>
 
-                <div id="maintenances" class="flex-1 w-full space-y-4"></div>
+                <div class="flex-1 w-full flex flex-col">
+                    <div id="maintenances" class="w-full space-y-4"></div>
+                    
+                    <div id="load_more_wrapper" class="hidden flex justify-center pt-8 pb-4">
+                        <button id="load_more_btn" class="group flex items-center justify-center gap-2 w-full sm:w-auto py-3 px-8 text-sm font-bold text-[#146c43] bg-white hover:bg-emerald-50 border-2 border-[#146c43] rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer active:scale-95 uppercase tracking-wide">
+                            Завантажити ще
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <div class="flex justify-center pt-4">
@@ -184,54 +194,96 @@ export class GetCarPage extends BaseWindow {
     `;
 }
 
-    
-
     show_maintenance_logs() {
-        const filter_form = document.querySelector("#filter_form");
-        const maintenances = document.querySelector("#maintenances");
+    const filter_form = document.querySelector("#filter_form");
+    const maintenances = document.querySelector("#maintenances");
+    const load_more_btn = document.querySelector("#load_more_btn");
+    const load_more_wrapper = document.querySelector("#load_more_wrapper");
+    
+    const fetchAndRender = async (isLoadMore = false) => {
+        const form_data = new FormData(filter_form);
+        const filter_data = Object.fromEntries(form_data.entries());
         
-        const fetchAndRender = async () => {
-            const form_data = new FormData(filter_form);
-            const filter_data = Object.fromEntries(form_data.entries());
+        if (!filter_data.maintenance_type) {
+            delete filter_data.maintenance_type;
+        }
+        if (!isLoadMore) {
+            this.offset = 0;
+            maintenances.innerHTML = "<div class='text-center p-6 text-gray-400 font-medium'>Завантаження історії...</div>";
+        }
+        filter_data.offset = this.offset;
+        filter_data.limit = this.limit;
+
+        try {
+            console.log(filter_data)
+            const maintenance_logs = await api.maintenance_log.show_all_mlog(this.id, filter_data);
             
-            if (!filter_data.maintenance_type) {
-                delete filter_data.maintenance_type;
+            if (!isLoadMore) {
+                maintenances.innerHTML = "";
             }
 
-            maintenances.innerHTML = "<div class='text-center p-6 text-gray-400 font-medium'>Завантаження історії...</div>";
-            const maintenance_logs = await api.maintenance_log.show_all_mlog(this.id, filter_data);
-            maintenances.innerHTML = this.render_maintenance_log(maintenance_logs);
+            if (maintenance_logs && maintenance_logs.length > 0) {
+                maintenances.insertAdjacentHTML("beforeend", this.render_maintenance_log(maintenance_logs));
+                this.offset += this.limit;
+            } else if (!isLoadMore) {
+                maintenances.innerHTML = `<div class="bg-white border border-gray-200 rounded-xl p-8 text-center text-gray-500 font-semibold shadow-sm">Записів про ремонти не знайдено.</div>`;
+            }
+
+            if (!maintenance_logs || maintenance_logs.length < this.limit) {
+                load_more_wrapper.classList.add("hidden");
+            } else {
+                load_more_wrapper.classList.remove("hidden");
+            }
+
             this.init_accordion_events();
-        };
-
-        if(filter_form) {
-            filter_form.addEventListener("submit", async (event) => {
-                event.preventDefault();
-                await fetchAndRender();
-            });
-            
-            fetchAndRender();
+        } catch (error) {
+            console.error("Помилка завантаження логів:", error);
+            if (!isLoadMore) maintenances.innerHTML = "<div class='text-center p-6 text-red-500 font-medium'>Помилка завантаження</div>";
         }
-        if(maintenances) {
-            maintenances.addEventListener("click", async (event) => {
-                const delete_btn = event.target.closest("#delete_log");
-                if(delete_btn){
-                    const delete_id = delete_btn.dataset.id;
-                    const delete_confirm = confirm("Ви впевнені що хочете видалити запис?");
+    };
 
-                    if(delete_confirm) {
-                        try {
-                            await api.maintenance_log.delete_mlog(delete_id);
-                        await fetchAndRender(); 
+    if(filter_form) {
+        filter_form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            await fetchAndRender(false);
+        });
+        
+        fetchAndRender(false);
+    }
+
+    if(load_more_btn) {
+        load_more_btn.addEventListener("click", async () => {
+            const originalText = load_more_btn.innerText;
+            load_more_btn.innerText = "Завантаження...";
+            load_more_btn.disabled = true;
+            
+            await fetchAndRender(true);
+            
+            load_more_btn.innerText = originalText;
+            load_more_btn.disabled = false;
+        });
+    }
+
+    if(maintenances) {
+        maintenances.addEventListener("click", async (event) => {
+            const delete_btn = event.target.closest("#delete_log");
+            if(delete_btn){
+                const delete_id = delete_btn.dataset.id;
+                const delete_confirm = confirm("Ви впевнені що хочете видалити запис?");
+
+                if(delete_confirm) {
+                    try {
+                        await api.maintenance_log.delete_mlog(delete_id);
+                        await fetchAndRender(false);
                     } catch (error) {
                         console.error("Помилка при видаленні запису:", error);
                         alert("Не вдалося видалити запис. Спробуйте пізніше.");
                     }
-                    }
                 }
-            })
-        }
+            }
+        });
     }
+}
 
     init_accordion_events() {
         const logs = document.querySelectorAll(".maintenance-item");

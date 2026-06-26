@@ -16,7 +16,8 @@ allow_admin_only = RoleChecker(["admin"])
 async def get_maintainence_log(car_id: int,
                                maintenance_type: str | None = None,
                                sort_order: str | None = None, 
-                               offset_val: int = 0,
+                               limit: int = 10,
+                               offset: int = 0,
                                db: AsyncSession = Depends(get_db)):
     condition = [Maintenance_log.car_id == car_id]
     if maintenance_type and maintenance_type != "Усі":
@@ -27,12 +28,12 @@ async def get_maintainence_log(car_id: int,
             Maintenance_log
         ).where(
             *condition
-        ).limit(
-            10
-        ).offset(
-            offset_val
         ).order_by(
             sort_order_condition
+        ).limit(
+            limit
+        ).offset(
+            offset
         )
     res = (await db.execute(stmt)).scalars().all()
     return res

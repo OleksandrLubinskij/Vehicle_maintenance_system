@@ -16,11 +16,16 @@ const endpoint = {
     maintenance_log: {
         show_all_mlog: (car_id, params={}) => {
             let query_params = new URLSearchParams();
-            if(params.maintenance_type) query_params.append("maintenance_type", params.maintenance_type);
-            if(params.sort_order) query_params.append("sort_order", params.sort_order);
+        
+            for (const [key, value] of Object.entries(params)) {
+                if (value !== undefined && value !== null && value !== "") {
+                    query_params.append(key, value);
+                }
+            }
+
             const query_string = query_params.toString();
             const sufix = query_string ? `?${query_string}` : "";
-         
+            
             return `${BASE_MAINTENANCE_LOG_URL}/${car_id}${sufix}`;
         },
         show_mlog_by_id: (id) => `${BASE_MAINTENANCE_LOG_URL}/get_maintenance_record_by_id/${id}`,
