@@ -270,7 +270,7 @@ export class GetCarPage extends BaseWindow {
             
             return `
             <div class="maintenance-item w-full flex flex-col">
-                <div class="bg-white border-2 border-gray-900 rounded-xl overflow-hidden flex flex-row items-stretch shadow-sm min-h-[4rem] md:min-h-[5rem]">
+                <div class="bg-white border-2 border-gray-900 rounded-xl overflow-hidden flex flex-row items-stretch shadow-sm min-h-16 md:min-h-20">
                     
                     <div class="flex-1 flex flex-col sm:grid sm:grid-cols-3 justify-center items-start sm:items-center px-4 py-2 sm:py-0 gap-1 sm:gap-2 font-bold text-gray-900 text-xs sm:text-sm md:text-base">
                         <div class="line-clamp-2 sm:truncate pr-2 w-full">${log.maintenance_type}</div>
