@@ -72,7 +72,7 @@ async def create_car(car:CarModel,
         db.add(new_car)
         await db.commit()
         await db.refresh(new_car)
-        return new_car_dict
+        return {"car_id": new_car.id}
     except Exception as e:
         await db.rollback()
         print(e)
@@ -103,9 +103,9 @@ async def edit_car(car:CarUpdate,
 async def delete_car(car_id:int, 
                      db: AsyncSession = Depends(get_db),
                      current_user: User = Depends(allow_admin_only)):
-    car_to_delete = db.get(Car, car_id)
+    car_to_delete = await db.get(Car, car_id)
     if not car_to_delete:
         raise RecordNotFoundError()
-    db.delete(car_to_delete)
+    await db.delete(car_to_delete)
     await db.commit()
     await cache.delete(CACHE.CARS)

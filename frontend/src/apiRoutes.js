@@ -1,7 +1,8 @@
 import { router } from "./router";
 const BASE_URL = "http://localhost:8001";
 const BASE_API_URL = `${BASE_URL}/v1`;
-export const BASE_CAR_PHOTO_URL = `${BASE_URL}/car_photos`;
+export const BASE_CAR_PHOTO_GET_URL = `${BASE_URL}/car_photos`;
+export const BASE_CAR_PHOTO_UPLOAD_URL = `${BASE_API_URL}/car_photos/upload`;
 const BASE_CAR_URL = `${BASE_API_URL}/cars`;
 const BASE_MAINTENANCE_LOG_URL = `${BASE_API_URL}/maintenance_logs`;
 const BASE_USERS_URL = `${BASE_API_URL}/users`;
@@ -15,6 +16,7 @@ const endpoint = {
         delete_car: (id) => `${BASE_CAR_URL}/delete_car/${id}`,
         get_car_mileage: (id) => `${BASE_CAR_URL}/get_car_mileage/${id}`,
         get_car_brand_and_model: (id) => `${BASE_CAR_URL}/get_car_brand_and_model/${id}`,
+        upload_car_photo: (id) => `${BASE_CAR_PHOTO_UPLOAD_URL}/${id}`,
     },
     maintenance_log: {
         show_all_mlog: (car_id, params={}) => {
@@ -45,14 +47,17 @@ const endpoint = {
 async function request(URL, method = "GET", data = null) {
     const options = {
         method,
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: {},
         credentials: "include"
     };
 
-    if (data) {
-        options.body = JSON.stringify(data);
+    if (data && method !== "GET" && method !== "HEAD") {
+        if (data instanceof FormData) {
+            options.body = data;
+        } else {
+            options.headers["Content-Type"] = "application/json";
+            options.body = JSON.stringify(data);
+        }
     }
 
     const response = await fetch(URL, options);
@@ -84,6 +89,7 @@ export const api = {
         delete_car: (id) => request(endpoint.cars.delete_car(id), "DELETE"),
         get_car_mileage: (id) => request(endpoint.cars.get_car_mileage(id), "GET"),
         get_car_brand_and_model: (id) => request(endpoint.cars.get_car_brand_and_model(id), "GET"),
+        upload_car_photo: (id, photo) => request(endpoint.cars.upload_car_photo(id), "POST", photo)
     },
     maintenance_log: {
         show_all_mlog: (car_id, params={}) => request(endpoint.maintenance_log.show_all_mlog(car_id, params)),

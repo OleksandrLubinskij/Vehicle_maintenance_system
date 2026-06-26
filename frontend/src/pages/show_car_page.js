@@ -1,5 +1,5 @@
 import { BaseWindow } from "./base_view";
-import { api, BASE_CAR_PHOTO_URL } from "../apiRoutes";
+import { api, BASE_CAR_PHOTO_GET_URL } from "../apiRoutes";
 import { ROLE, INDICATORS } from "../../config";
 import { router } from "../router";
 import { icon_value_text } from "../components/icon_value_comp";
@@ -60,7 +60,7 @@ export class ShowCarPage extends BaseWindow {
         <article data-path="/get_car/${car_data["id"]}" class="car_card_main cursor-pointer border border-gray-200 bg-white flex flex-col md:flex-row items-stretch rounded-xl overflow-hidden shadow-sm m-4 hover:shadow-lg transition-shadow">
             
             <img
-                src="${car_data["photo_path"] ? `${BASE_CAR_PHOTO_URL}/${car_data["photo_path"]}` : "assets/unknown_car.svg"}"
+                src="${car_data["photo_path"] ? `${BASE_CAR_PHOTO_GET_URL}/${car_data["photo_path"]}` : "assets/unknown_car.svg"}"
                 alt=""
                 class="w-full h-48 md:w-80 md:h-auto object-cover shrink-0 self-stretch"
             />

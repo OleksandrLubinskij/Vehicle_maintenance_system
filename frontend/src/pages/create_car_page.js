@@ -46,6 +46,15 @@ export class CreateCarPage extends BaseWindow {
                         default_values?.[CAR.oil_type]
                     )}
                 </div>
+                <div class="mt-6 pt-4 border-t border-gray-100">
+                    <label for="car_image" class="block text-sm font-medium text-gray-700 mb-2">Фото автомобіля</label>
+                    <input type="file" id="car_image" name="car_image" accept="image/*" 
+                        class="block w-full text-sm text-gray-500
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-md file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-emerald-50 file:text-emerald-700
+                        hover:file:bg-emerald-100 cursor-pointer">
             </div>
             <input 
                 type="submit" 
@@ -90,24 +99,42 @@ export class CreateCarPage extends BaseWindow {
                     event.preventDefault();
 
                     const formData = new FormData(create_car_form);
+                    const image_file = formData.get("car_image");
+                    formData.delete("car_image");
                     const car_data = Object.fromEntries(formData.entries());
                     
                     if (car_data.mileage) car_data.mileage = Number(car_data.mileage);
                     if (car_data.engine_capacity) car_data.engine_capacity = Number(car_data.engine_capacity);
                     
                     try {
+                        let new_car;
                         if (this.id) {
-                            await api.cars.edit_car(this.id, car_data);
+                            new_car = await api.cars.edit_car(this.id, car_data);
                             console.log("Машину успішно оновлено");
                         } else {
-                            await api.cars.create_car(car_data);
+                            new_car = await api.cars.create_car(car_data);
                             console.log("Машину успішно створено");
+                        }
+                        console.log(`ID - ${new_car["car_id"]}`)
+                        if(image_file && image_file.size > 0 && new_car["car_id"]) {
+                            const imageFormData = new FormData();
+                            imageFormData.append("raw_photo", image_file);
+
+                            try {
+                                await api.cars.upload_car_photo(new_car["car_id"], imageFormData);
+                                console.log("Фото успішно завантажено");
+                            } catch (imgError) {
+                                console.error("Помилка при завантаженні фото:", imgError);
+                                alert("Машину збережено, але фото не вдалося завантажити.");
+                            }
                         }
                         router.navigate("/cars");
                     } catch (error) {
                         console.error("Помилка при відправці даних:", error);
                         alert("Не вдалося зберегти дані автомобіля.");
                     }
+
+
                 });
             }
             
