@@ -108,26 +108,17 @@ export class CreateCarPage extends BaseWindow {
                     
                     try {
                         let new_car;
+                        const photo_endpoint = async (car_id, image, mode) => await this.upload_photo(car_id, image, mode)
                         if (this.id) {
-                            new_car = await api.cars.edit_car(this.id, car_data);
+                            await api.cars.edit_car(this.id, car_data);
                             console.log("Машину успішно оновлено");
+                            await photo_endpoint(this.id, image_file, PAGE_MODE.EDIT);
                         } else {
                             new_car = await api.cars.create_car(car_data);
                             console.log("Машину успішно створено");
+                            await photo_endpoint(new_car["car_id"], image_file, PAGE_MODE.CREATE);
                         }
-                        console.log(`ID - ${new_car["car_id"]}`)
-                        if(image_file && image_file.size > 0 && new_car["car_id"]) {
-                            const imageFormData = new FormData();
-                            imageFormData.append("raw_photo", image_file);
-
-                            try {
-                                await api.cars.upload_car_photo(new_car["car_id"], imageFormData);
-                                console.log("Фото успішно завантажено");
-                            } catch (imgError) {
-                                console.error("Помилка при завантаженні фото:", imgError);
-                                alert("Машину збережено, але фото не вдалося завантажити.");
-                            }
-                        }
+                        
                         router.navigate("/cars");
                     } catch (error) {
                         console.error("Помилка при відправці даних:", error);
@@ -142,5 +133,23 @@ export class CreateCarPage extends BaseWindow {
             console.error("Помилка завантаження енумів:", error);
             super.render("<p class='text-center text-red-500'>Не вдалося завантажити дані</p>");
         }
+    }
+    async upload_photo(car_id, image_file, mode) {
+        if(image_file && image_file.size > 0 && car_id) {
+            const imageFormData = new FormData();
+            imageFormData.append("raw_photo", image_file);
+            const endpoints = {
+                [PAGE_MODE.EDIT]: async (car_id, image) => await api.cars.edit_car_photo(car_id, image),
+                [PAGE_MODE.CREATE]: async (car_id, image) => await api.cars.upload_car_photo(car_id, image),
+            }
+
+            try {
+                await endpoints[mode](car_id, imageFormData);
+                console.log("Фото успішно завантажено");
+                } catch (imgError) {            
+                console.error("Помилка при завантаженні фото:", imgError);
+                 alert("Машину збережено, але фото не вдалося завантажити.");
+            }
+        }               
     }
 }
