@@ -19,7 +19,7 @@ api_router.include_router(api_auth.router,
                           tags=["User"])
 
 api_router.include_router(car_photo.router,
-                          prefix="/v1/car_photo",
+                          prefix="/v1/car_photos",
                           tags=["Car photo"],
                           dependencies=[Depends(get_current_user)])
 

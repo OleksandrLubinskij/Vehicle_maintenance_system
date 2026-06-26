@@ -1,6 +1,6 @@
 import { BaseWindow } from "./base_view";
 import { router } from "../router";
-import { api } from "../apiRoutes";
+import { api, BASE_CAR_PHOTO_GET_URL } from "../apiRoutes";
 import { ROLE, CAR_CARD_DETAILS, MAINTENANCE_TYPES, INDICATORS } from "../../config";
 import { icon_value_text } from "../components/icon_value_comp";
 import { Form } from "../components/form_elements";
@@ -108,8 +108,20 @@ export class GetCarPage extends BaseWindow {
         <div class="max-w-6xl w-full mx-auto p-4 md:p-8 animate-fade-in space-y-8">
             <article class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row items-stretch gap-6 md:gap-10 p-6 md:p-8">
                 <div class="w-full md:w-1/3 shrink-0 flex flex-col gap-4">
-                    <div class=" h-full aspect-video md:aspect-square w-full rounded-xl overflow-hidden bg-gray-50 border border-gray-100 flex items-center justify-center">
-                        <img src="assets/unknown_car.svg" alt="Car Photo" class="w-full h-full object-contain p-4" />
+                    <div class="relative h-full aspect-video md:aspect-square w-full rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
+                        <img 
+                            src="${this.car["photo_path"] ? `${BASE_CAR_PHOTO_GET_URL}/${this.car["photo_path"]}` : "assets/unknown_car.svg"}" 
+                            alt="Car Photo" 
+                            class="w-full h-full object-cover" 
+                        />
+                        
+                        ${!this.car["photo_path"] ? `
+                        <div class="absolute inset-0 bg-black/10 flex items-end p-3 sm:p-4">
+                            <div class="bg-black/70 backdrop-blur-sm text-white text-[11px] sm:text-xs font-semibold px-3 py-2 rounded-xl border border-white/20 w-full text-center leading-tight">
+                                "Для кращого відображення завантажуйте вертикальне фото"
+                            </div>
+                        </div>
+                        ` : ""}
                     </div>
                     <button data-path="/cars" class="w-full py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors text-center text-sm md:text-base">
                         ← Назад до списку
@@ -322,7 +334,7 @@ export class GetCarPage extends BaseWindow {
             
             return `
             <div class="maintenance-item w-full flex flex-col">
-                <div class="bg-white border-2 border-gray-900 rounded-xl overflow-hidden flex flex-row items-stretch shadow-sm min-h-[4rem] md:min-h-[5rem]">
+                <div class="bg-white border-2 border-gray-900 rounded-xl overflow-hidden flex flex-row items-stretch shadow-sm min-h-16 md:min-h-20">
                     
                     <div class="flex-1 flex flex-col sm:grid sm:grid-cols-3 justify-center items-start sm:items-center px-4 py-2 sm:py-0 gap-1 sm:gap-2 font-bold text-gray-900 text-xs sm:text-sm md:text-base">
                         <div class="line-clamp-2 sm:truncate pr-2 w-full">${log.maintenance_type}</div>
