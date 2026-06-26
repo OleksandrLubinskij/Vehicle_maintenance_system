@@ -1,8 +1,11 @@
 import { router } from "./router";
-const BASE_URL = "http://localhost:8001/v1";
-const BASE_CAR_URL = `${BASE_URL}/cars`;
-const BASE_MAINTENANCE_LOG_URL = `${BASE_URL}/maintenance_logs`;
-const BASE_USERS_URL = `${BASE_URL}/users`;
+const BASE_URL = "http://localhost:8001";
+const BASE_API_URL = `${BASE_URL}/v1`;
+export const BASE_CAR_PHOTO_URL = `${BASE_URL}/car_photos`;
+const BASE_CAR_URL = `${BASE_API_URL}/cars`;
+const BASE_MAINTENANCE_LOG_URL = `${BASE_API_URL}/maintenance_logs`;
+const BASE_USERS_URL = `${BASE_API_URL}/users`;
+
 const endpoint = {
     cars: {
         show_all_cars: () => `${BASE_CAR_URL}`,
@@ -29,7 +32,7 @@ const endpoint = {
         delete_mlog: (id) => `${BASE_MAINTENANCE_LOG_URL}/delete_maintenance_record/${id}`
     },
     enum: {
-        get_enums: (enum_id) => `${BASE_URL}/get_enums/${enum_id}`
+        get_enums: (enum_id) => `${BASE_API_URL}/get_enums/${enum_id}`
     },
     users: {
         register:() => `${BASE_USERS_URL}/register`,

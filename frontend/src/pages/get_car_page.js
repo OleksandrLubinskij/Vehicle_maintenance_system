@@ -1,6 +1,6 @@
 import { BaseWindow } from "./base_view";
 import { router } from "../router";
-import { api } from "../apiRoutes";
+import { api, BASE_CAR_PHOTO_URL } from "../apiRoutes";
 import { ROLE, CAR_CARD_DETAILS, MAINTENANCE_TYPES, INDICATORS } from "../../config";
 import { icon_value_text } from "../components/icon_value_comp";
 import { Form } from "../components/form_elements";
@@ -107,7 +107,7 @@ export class GetCarPage extends BaseWindow {
             <article class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row items-stretch gap-6 md:gap-10 p-6 md:p-8">
                 <div class="w-full md:w-1/3 shrink-0 flex flex-col gap-4">
                     <div class=" h-full aspect-video md:aspect-square w-full rounded-xl overflow-hidden bg-gray-50 border border-gray-100 flex items-center justify-center">
-                        <img src="assets/unknown_car.svg" alt="Car Photo" class="w-full h-full object-contain p-4" />
+                        <img src="${this.car["photo_path"] ? `${BASE_CAR_PHOTO_URL}/${this.car["photo_path"]}` : "assets/unknown_car.svg"}" alt="Car Photo" class="w-full h-full object-contain p-4" />
                     </div>
                     <button data-path="/cars" class="w-full py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors text-center text-sm md:text-base">
                         ← Назад до списку
