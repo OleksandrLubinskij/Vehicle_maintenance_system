@@ -46,25 +46,36 @@ export class CreateCarPage extends BaseWindow {
                         default_values?.[CAR.oil_type]
                     )}
                 </div>
-                <div class="mt-6 pt-4 border-t border-gray-100">
-                    <label for="car_image" class="block text-sm font-medium text-gray-700 mb-2">Фото автомобіля</label>
-                    <input type="file" id="car_image" name="car_image" accept="image/*" 
-                        class="block w-full text-sm text-gray-500
-                        file:mr-4 file:py-2 file:px-4
-                        file:rounded-md file:border-0
-                        file:text-sm file:font-semibold
-                        file:bg-emerald-50 file:text-emerald-700
-                        hover:file:bg-emerald-100 cursor-pointer">
-            </div>
+                <div class="mt-8 pt-6 border-t border-gray-100">
+                    <span class="block text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Фото автомобіля</span>
+                    
+                    <div class="w-full">
+                        <label for="car_image" class="relative flex flex-col items-center justify-center w-full h-32 md:h-40 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 hover:bg-emerald-50 hover:border-emerald-500 transition-colors duration-200 cursor-pointer group">
+                            <div class="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
+                                <svg class="w-8 h-8 mb-3 text-gray-400 group-hover:text-emerald-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <p class="mb-1 text-sm text-gray-500 font-medium">
+                                    <span class="font-bold text-emerald-600">Натисніть тут</span>, щоб обрати файл
+                                </p>
+                                <p class="text-xs text-gray-400 font-medium mt-1">
+                                    JPG, PNG (бажано вертикальне)
+                                </p>
+                            </div>
+                            <input type="file" id="car_image" name="car_image" accept="image/*" class="hidden">
+                        </label>
+                        <div id="file_name_display" class="mt-2 text-xs text-center text-emerald-600 font-bold hidden"></div>
+                    </div>
+                </div>
             <input 
                 type="submit" 
                 value="${this.id === null ? "Додати" : "Зберегти зміни"}"
                 class="w-full py-3 px-6 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 mt-5 cursor-pointer">
         </form>
-        `;
+        `; 
     }
 
-    content(fuel_enum, oil_enum, default_values = null, car_brand_model = null) {
+    content(fuel_enum, oil_enum, default_values = null, car_brand_model = null) { 
         return `
             <div class="flex flex-col">
                 <h1 class="text-center font-bold text-lg md:text-2xl lg:text-4xl mb-4">
@@ -93,6 +104,19 @@ export class CreateCarPage extends BaseWindow {
             const html = this.content(fuel_enum, oil_enum, default_values, car_brand_model);
             super.render(html);
 
+            const fileInput = document.querySelector("#car_image");
+            const fileNameDisplay = document.querySelector("#file_name_display");
+
+            if (fileInput && fileNameDisplay) {
+                fileInput.addEventListener("change", function() {
+                    if (this.files && this.files.length > 0) {
+                        fileNameDisplay.textContent = `Вибрано файл: ${this.files[0].name}`;
+                        fileNameDisplay.classList.remove("hidden");
+                    } else {
+                        fileNameDisplay.classList.add("hidden");
+                    }
+                });
+            }
             const create_car_form = document.querySelector("#create_car_form");
             if (create_car_form) {
                 create_car_form.addEventListener("submit", async (event) => {
@@ -124,8 +148,6 @@ export class CreateCarPage extends BaseWindow {
                         console.error("Помилка при відправці даних:", error);
                         alert("Не вдалося зберегти дані автомобіля.");
                     }
-
-
                 });
             }
             
