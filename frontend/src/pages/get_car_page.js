@@ -110,7 +110,7 @@ export class GetCarPage extends BaseWindow {
                 <div class="w-full md:w-1/3 shrink-0 flex flex-col gap-4">
                     <div class="relative h-full aspect-video md:aspect-square w-full rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
                         <img 
-                            src="${this.car["photo_path"] ? `${BASE_CAR_PHOTO_GET_URL}/${this.car["photo_path"]}` : "assets/unknown_car.svg"}" 
+                            src="${this.car["photo_path"] ? `${BASE_CAR_PHOTO_GET_URL}/${this.car["photo_path"]}` : "assets/no_photo.png"}" 
                             alt="Car Photo" 
                             class="w-full h-full object-cover" 
                         />
@@ -332,40 +332,39 @@ export class GetCarPage extends BaseWindow {
                 });
             }
             
-            return `
-            <div class="maintenance-item w-full flex flex-col">
-                <div class="bg-white border-2 border-gray-900 rounded-xl overflow-hidden flex flex-row items-stretch shadow-sm min-h-16 md:min-h-20">
-                    
-                    <div class="flex-1 flex flex-col sm:grid sm:grid-cols-3 justify-center items-start sm:items-center px-4 py-2 sm:py-0 gap-1 sm:gap-2 font-bold text-gray-900 text-xs sm:text-sm md:text-base">
-                        <div class="line-clamp-2 sm:truncate pr-2 w-full">${log.maintenance_type}</div>
-                        <div class="text-left sm:text-center text-gray-700 font-medium text-[11px] sm:text-sm md:text-base">${log.mileage_on_maintain} км</div>
-                        <div class="text-left sm:text-right text-gray-500 sm:text-gray-600 font-mono text-[10px] sm:text-sm md:text-base">${formatted_date}</div>
-                    </div>
-
-                    <div class="flex flex-row items-stretch shrink-0">
-                        <button class="show_description_btn px-2.5 sm:px-4 bg-white hover:bg-gray-50 text-gray-900 transition-colors flex items-center justify-center border-r-2 border-gray-900">
-                            ${this.images.arrow}
-                        </button>
-                        <button id="edit_log" data-path="/edit_maintenance_record/${log.id}" class="${this.visibility} px-2.5 sm:px-4 bg-[#db8956] hover:bg-orange-500 text-gray-900 transition-colors flex items-center justify-center border-r-2 border-gray-900" title="Редагувати">
-                            ${this.images.edit}
-                        </button>
-                        <button id="delete_log" class="${this.visibility} px-2.5 sm:px-4 bg-[#be5651] hover:bg-red-600 text-white transition-colors flex items-center justify-center" title="Видалити" data-id=${log.id}>
-                            ${this.images.delete}
-                        </button>
-                    </div>
-
-                </div>
-
-                <div class="description_block hidden px-4 sm:px-8 mt-0.5">
-                    <div class="bg-white border-2 border-t-0 border-gray-900 rounded-b-xl p-4 max-w-2xl shadow-inner">
-                        <h4 class="font-black text-gray-900 text-sm sm:text-base mb-1">Опис</h4>
-                        <p class="text-xs sm:text-sm font-semibold text-gray-700 leading-relaxed whitespace-pre-line">
-                            ${log.description || "Опис відсутній для цього запису."}
-                        </p>
-                    </div>
-                </div>
+           return `
+    <div class="maintenance-item w-full flex flex-col">
+        <div class="bg-white border-2 border-gray-900 rounded-xl overflow-hidden flex flex-row items-stretch shadow-sm min-h-16 md:min-h-20 relative z-10">
+            
+            <div class="flex-1 min-w-0 flex flex-col sm:grid sm:grid-cols-3 justify-center items-start sm:items-center px-4 py-2 sm:py-0 gap-1 sm:gap-2 font-bold text-gray-900 text-xs sm:text-sm md:text-base">
+                <div class="line-clamp-2 sm:truncate pr-2 w-full break-words">${log.maintenance_type}</div>
+                <div class="text-left sm:text-center text-gray-700 font-medium text-[11px] sm:text-sm md:text-base truncate w-full">${log.mileage_on_maintain} км</div>
+                <div class="text-left sm:text-right text-gray-500 sm:text-gray-600 font-mono text-[10px] sm:text-sm md:text-base truncate w-full">${formatted_date}</div>
             </div>
-            `;
+
+            <div class="flex flex-row items-stretch shrink-0">
+                <button class="show_description_btn px-2.5 sm:px-4 bg-white hover:bg-gray-50 text-gray-900 transition-colors flex items-center justify-center border-r-2 border-gray-900">
+                    ${this.images.arrow}
+                </button>
+                <button id="edit_log" data-path="/edit_maintenance_record/${log.id}" class="${this.visibility} px-2.5 sm:px-4 bg-[#db8956] hover:bg-orange-500 text-gray-900 transition-colors flex items-center justify-center border-r-2 border-gray-900" title="Редагувати">
+                    ${this.images.edit}
+                </button>
+                <button id="delete_log" class="${this.visibility} px-2.5 sm:px-4 bg-[#be5651] hover:bg-red-600 text-white transition-colors flex items-center justify-center" title="Видалити" data-id=${log.id}>
+                    ${this.images.delete}
+                </button>
+            </div>
+        </div>
+
+        <div class="description_block hidden px-4 sm:px-8">
+            <div class="bg-white border-2 border-t-0 border-gray-900 rounded-b-xl p-4 pt-5 w-full shadow-inner">
+                <h4 class="font-black text-gray-900 text-sm sm:text-base mb-1">Опис</h4>
+                <p class="text-xs sm:text-sm font-semibold text-gray-700 leading-relaxed whitespace-pre-line break-words">
+                    ${log.description || "Опис відсутній для цього запису."}
+                </p>
+            </div>
+        </div>
+    </div>
+`;
         });
         return result.join("");
     }
