@@ -5,20 +5,20 @@ from app.models import User
 from app.config import USER 
 from app.security import get_password_hash
 
-async def create_user(user, db):
+async def create_user(user, db,role="User"):
     new_user_dict = user.model_dump()
     raw_password = new_user_dict.pop(USER.PASSWORD)
     hashed_password = get_password_hash(raw_password)
     new_user = User(
         login = new_user_dict.get(USER.LOGIN),
         password = hashed_password,
-        role="User"
+        role=role
     )
     try:
         db.add(new_user)
         await db.commit()
         await db.refresh(new_user)
-        return new_user_dict
+        return new_user
     except Exception as e:
         await db.rollback()
         raise HTTPException(status_code=500, detail=f"Помилка бази даних {str(e)}")
