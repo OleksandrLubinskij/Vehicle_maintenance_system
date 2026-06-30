@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
-from app.schemas import UserCreate, UserLogin
+from app.schemas import UserCreate, UserLogin, ResetPasssword
 import crud.users as users
-from sqlalchemy import select
+from sqlalchemy import select, update
 from app.models import User
 from app.schemas import UserResponce
 from api.v1.auth.get_current_user import get_current_user
@@ -67,5 +67,20 @@ async def get_all_users(db: AsyncSession = Depends(get_db)):
     return users
 
 @router.get("/get_me", response_model=UserResponce)
-async def get_me(current_user:User =  Depends(get_current_user)) -> User:
+async def get_me(current_user:User = Depends(get_current_user)) -> User:
     return current_user;
+
+@router.put("/change_password")
+async def change_password(passwords: ResetPasssword,
+                         current_user:User = Depends(get_current_user),
+                         db: AsyncSession = Depends(get_db)):
+
+    if not verify_password(passwords.old_password, current_user.password):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail={
+                                "code": 2,
+                                "message": "Неправильний старий пароль"})
+    stmt = update(User).where(User.id == current_user.id).values(password=users.get_password_hash(passwords.new_password))
+    await db.execute(stmt)
+    await db.commit()
+    return {"message": "Пароль успішно змінено"}

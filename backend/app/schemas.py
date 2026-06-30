@@ -51,3 +51,7 @@ class CarResponse(BaseModel):
     oil_type: str
     service_indicators: Dict[str, Any] = {}
     photo_path: str | None
+
+class ResetPasssword(BaseModel):
+    old_password: str
+    new_password: str
