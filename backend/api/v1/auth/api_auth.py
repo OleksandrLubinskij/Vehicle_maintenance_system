@@ -78,9 +78,9 @@ async def change_password(passwords: ResetPasssword,
     if not verify_password(passwords.old_password, current_user.password):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail={
-                                "code": 2,
-                                "message": "Неправильний старий пароль"})
+                                "code": 0,
+                                "message": "Старий пароль неправильний!"})
     stmt = update(User).where(User.id == current_user.id).values(password=users.get_password_hash(passwords.new_password))
     await db.execute(stmt)
     await db.commit()
-    return {"message": "Пароль успішно змінено"}
+    return {"message": "Password changed successfully"}
