@@ -27,4 +27,5 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
-CAR_PHOTO_PATH = pathlib.Path(__file__).parent.parent / "static" / "car_images"
+BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
+CAR_PHOTO_PATH = BASE_DIR / "static" / "car_images"
