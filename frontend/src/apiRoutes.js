@@ -1,5 +1,4 @@
 import { router } from "./router";
-const BASE_URL = "http://localhost:8001";
 const BASE_URL = window.location.hostname === "localhost" 
   ? "http://localhost:8001" 
   : "https://vehicle-maintenance-system-nqzv.onrender.com";
