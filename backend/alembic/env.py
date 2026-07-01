@@ -3,7 +3,7 @@ import os
 from logging.config import fileConfig
 
 from sqlalchemy import pool
-from sqlalchemy.ext.asyncio import async_engine_from_config # Додано імпорт для асинхронного рушія
+from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 import app.models as models
@@ -38,7 +38,7 @@ def run_migrations_online() -> None:
     """Run migrations in 'online' mode using async."""
     database_url = os.getenv("DATABASE_URL")
     if not database_url:
-        database_url = f"postgresql+asyncpg://{os.getenv('DB_USER', 'postgres')}:{os.getenv('DB_PASSWORD')}@db:5432/{os.getenv('DB_NAME')}"
+        database_url = os.getenv("DB_URL") 
     
     configuration = config.get_section(config.config_ini_section, {})
     configuration["sqlalchemy.url"] = database_url

@@ -5,30 +5,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import CAR_PHOTO_PATH
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
-from scripts.create_super_user import create_super_user
+from app.scripts.create_super_user import create_super_user
 import os
 from alembic.config import Config
 from alembic import command
-from config import BASE_DIR
-
-def run_migrations():
-    print("Запуск міграцій Alembic...")
-    
-    alembic_cfg = Config(f"{BASE_DIR}/alembic.ini")
-    database_url = os.getenv("DATABASE_URL")
-    
-    if database_url:
-        if database_url.startswith("postgres://"):
-            database_url = database_url.replace("postgres://", "postgresql://", 1)
-            
-        alembic_cfg.set_main_option("sqlalchemy.url", database_url)
-    
-    command.upgrade(alembic_cfg, "head")
-    print("Міграції успішно застосовано.")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    run_migrations()
     await create_super_user()
     yield
 
