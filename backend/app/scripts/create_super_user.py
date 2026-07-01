@@ -13,8 +13,8 @@ CYAN = "\033[96m"
 RESET = "\033[0m"
 
 async def create_super_user():
-    username =  f"{{os.getenv('ADMIN_LOGIN')}}"
-    raw_password = f"{{os.getenv('ADMIN_PASSWORD')}}"
+    username = os.getenv('ADMIN_LOGIN')
+    raw_password = os.getenv('ADMIN_PASSWORD')
 
     if not username or not raw_password:
         print(f"{RED}Помилка: ADMIN_LOGIN та ADMIN_PASSWORD зчитати не вдалось!{RESET}")
