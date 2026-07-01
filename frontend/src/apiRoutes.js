@@ -1,5 +1,8 @@
 import { router } from "./router";
 const BASE_URL = "http://localhost:8001";
+const BASE_URL = window.location.hostname === "localhost" 
+  ? "http://localhost:8001" 
+  : "https://vehicle-maintenance-system-nqzv.onrender.com";
 const BASE_API_URL = `${BASE_URL}/v1`;
 export const BASE_CAR_PHOTO_GET_URL = `${BASE_URL}/car_photos`;
 export const BASE_CAR_PHOTO_API_URL = `${BASE_API_URL}/car_photos`;
