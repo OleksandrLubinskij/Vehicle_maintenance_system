@@ -26,11 +26,12 @@ app.mount("/car_photos", StaticFiles(directory=CAR_PHOTO_PATH), name="photos")
 origins = [
     "http://127.0.0.1:5173",
     "http://localhost:5173",
+    "https://vehicle-maintenance-system-frontend.onrender.com"
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[origins],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
