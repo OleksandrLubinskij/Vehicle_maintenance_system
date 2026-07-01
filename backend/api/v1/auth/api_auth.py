@@ -50,8 +50,8 @@ async def login(response: Response,
         key="access_token",
         value=f"{access_token}",
         httponly=True,     
-        secure=False,    
-        samesite="lax",
+        samesite="none",
+        secure=True
     )
     return {"message": "Successful login"}
 
