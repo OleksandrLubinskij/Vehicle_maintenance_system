@@ -17,7 +17,7 @@ engine = create_async_engine(
         "prepared_statement_cache_size": 0 
     }
 )
-
+use_insertmanyvalues=False
 SessionLocal = async_sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 async def get_db():
