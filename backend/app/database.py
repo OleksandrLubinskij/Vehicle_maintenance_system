@@ -10,7 +10,13 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 connect_args = {}
 if "pooler.supabase.com" in DATABASE_URL:
     connect_args = {"server_settings": {"statement_cache_size": "0"}}
-engine = create_async_engine(DATABASE_URL,connect_args=connect_args)
+engine = create_async_engine(
+    DATABASE_URL,
+    connect_args={
+        "server_settings": {"statement_cache_size": "0"},
+        "prepared_statement_cache_size": 0 
+    }
+)
 
 SessionLocal = async_sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
