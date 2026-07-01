@@ -6,9 +6,12 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    raise ValueError("Змінна DATABASE_URL не знайдена в оточенні!")
+
+connect_args = {}
+if "pooler.supabase.com" in DATABASE_URL:
+    connect_args = {"server_settings": {"statement_cache_size": "0"}}
 engine = create_async_engine(DATABASE_URL)
+
 SessionLocal = async_sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 async def get_db():
