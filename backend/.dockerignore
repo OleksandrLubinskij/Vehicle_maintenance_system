@@ -10,7 +10,7 @@ env/
 *.pyd
 .pytest_cache/
 
-alembic/
+
 
 .git/
 .gitignore
