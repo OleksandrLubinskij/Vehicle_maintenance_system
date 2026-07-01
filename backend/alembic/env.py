@@ -36,9 +36,9 @@ def do_run_migrations(connection):
 
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode using async."""
-    database_url = os.getenv("DATABASE_URL")
+    database_url = os.getenv("DIRECT_URL") 
     if not database_url:
-        database_url = os.getenv("DB_URL") 
+        database_url = os.getenv("DB_URL")
     
     configuration = config.get_section(config.config_ini_section, {})
     configuration["sqlalchemy.url"] = database_url
