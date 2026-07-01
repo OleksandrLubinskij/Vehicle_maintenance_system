@@ -5,18 +5,9 @@ from app.models import Base
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DB_URL")
 
-connect_args = {}
-if "pooler.supabase.com" in DATABASE_URL:
-    connect_args = {"server_settings": {"statement_cache_size": "0"}}
-engine = create_async_engine(
-    DATABASE_URL,
-    connect_args={
-        "server_settings": {"statement_cache_size": "0"},
-        "prepared_statement_cache_size": 0 
-    }
-)
+engine = create_async_engine(DATABASE_URL)
 use_insertmanyvalues=False
 SessionLocal = async_sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
