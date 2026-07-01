@@ -2,6 +2,7 @@ import asyncio
 from app.database import SessionLocal
 from app.models import User
 from passlib.context import CryptContext
+from sqlalchemy import select
 import os
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
