@@ -24,9 +24,9 @@ app.add_exception_handler(RecordNotFoundError, record_not_found_error_handler)
 
 app.mount("/car_photos", StaticFiles(directory=CAR_PHOTO_PATH), name="photos")
 origins = [
+    "https://vehicle-maintenance-system-frontend.onrender.com",
     "http://127.0.0.1:5173",
     "http://localhost:5173",
-    "https://vehicle-maintenance-system-frontend.onrender.com"
 ]
 
 app.add_middleware(
