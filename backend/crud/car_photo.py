@@ -23,7 +23,7 @@ SECRET_S3_KEY=os.getenv("SECRET_S3_KEY")
 CAR_PHOTOS_URL = os.getenv("CAR_PHOTOS_URl")
 s3 = S3Client(
     access_key=ACCESS_KEY,
-    secret__s3_key=SECRET_S3_KEY,
+    secret_key=SECRET_S3_KEY,
     endpoint_url=ENDPOINT_URL,
     bucket_name=BUCKET_NAME
 )
