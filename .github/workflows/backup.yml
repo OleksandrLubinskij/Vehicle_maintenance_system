@@ -1,0 +1,30 @@
+name: Supabase Database Backup
+
+on:
+  schedule:
+    # Запуск щодня о 03:00 ночі
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Supabase CLI
+        run: npm install -g supabase
+
+      - name: Run Database Dump
+        env:
+          SUPABASE_DB_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          supabase db dump -d postgres --db-url "$SUPABASE_DB_URL" > ./backup.sql
+
+      - name: Upload Backup as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ github.run_id }}
+          path: ./backup.sql
+          retention-days: 7
