@@ -13,14 +13,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Supabase CLI
-        run: npm install -g supabase
-
-      - name: Run Database Dump
+      - name: Run Database Dump via Docker
         env:
-          SUPABASE_DB_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          supabase db dump -d postgres --db-url "$SUPABASE_DB_URL" > ./backup.sql
+          # Запускаємо pg_dump всередині офіційного контейнера postgres:17
+          # Прапорець --rm видалить контейнер після роботи, а -i дозволить передати вивід
+          docker run --rm -i postgres:17 pg_dump "$DATABASE_URL" > ./backup.sql
 
       - name: Upload Backup as Artifact
         uses: actions/upload-artifact@v4
