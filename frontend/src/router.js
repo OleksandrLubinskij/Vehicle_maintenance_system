@@ -7,6 +7,9 @@ import { GetCarPage } from "./pages/get_car_page.js";
 import { PAGE_MODE, AUTHORIZATION_PAGE_MODE } from "../config.js";
 import { control_nav_menu_visibility } from "./utils/nav_menu_visibility.js";
 import { updateActiveNavLink } from "./utils/update_active_nav_link.js";
+import "./components/navbar_burger_menu.js";
+import "./utils/settings_floating_window.js";
+import "./utils/change_password_scripts.js"
 class Router {
     constructor() {
         this.routes = {
