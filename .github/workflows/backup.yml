@@ -19,7 +19,8 @@ jobs:
       - name: Run Database Dump
         env:
           SUPABASE_DB_URL: ${{ secrets.DATABASE_URL }}
-        run: pg_dump "$SUPABASE_DB_URL" -F p -v > ./backup.sql
+        run: |
+          supabase db dump --db-url "$SUPABASE_DB_URL" --data-only=false > ./backup.sql
 
       - name: Upload Backup as Artifact
         uses: actions/upload-artifact@v4
