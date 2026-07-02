@@ -13,14 +13,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Supabase CLI
-        run: npm install -g supabase
+      - name: Install PostgreSQL Client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
 
       - name: Run Database Dump
         env:
-          SUPABASE_DB_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          supabase db dump --db-url "$SUPABASE_DB_URL" --data-only=false > ./backup.sql
+          # pg_dump витягне і структуру, і всі дані у файл backup.sql
+          pg_dump "$DATABASE_URL" > ./backup.sql
 
       - name: Upload Backup as Artifact
         uses: actions/upload-artifact@v4
