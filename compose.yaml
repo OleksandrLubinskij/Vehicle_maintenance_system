@@ -27,7 +27,9 @@ services:
       - vms-net
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile_dev
     image: vms-backend-img
     container_name: vms-backend
     restart: on-failure

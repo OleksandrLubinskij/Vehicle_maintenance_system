@@ -71,8 +71,10 @@ export class ShowCarPage extends BaseWindow {
                     <p class="text-lg md:text-xl lg:text-2xl font-bold">
                         ${car_data["brand"]} ${car_data["model"]}
                     </p>
-                    <div class="w-50 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[14px] font-bold bg-gray-100 border border-gray-200 uppercase       tracking-wide" style="color: ${textColor}"> 
-                        <img src="${indicatorImg}" alt="" class="h-4.5 w-4.5 shrink-0" />
+                    <div class="w-fit flex items-center gap-1.5 px-2 py-1 rounded-md text-[14px] font-bold bg-gray-100 border border-gray-200 uppercase tracking-wide" style="color: ${textColor}"> 
+                        <div class="h-4 w-4 md:h-5 md:w-5 shrink-0 flex items-center justify-center">
+                            ${indicatorImg}
+                        </div>
                         <span>${car_data["service_indicators"]["text_indicator"]}</span>
                     </div>
                     ${

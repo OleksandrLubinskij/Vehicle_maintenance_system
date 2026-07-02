@@ -1,4 +1,11 @@
-export function icon_value_text(svg_code, text, element = "div", data_path = "", extra_clases = "", icon_size="h-5 w-5 md:h-7 md:w-7 lg:h-9 lg:w-9", icon_color="text-current", text_size="text-xs md:text-base lg:text-lg") {
+export function icon_value_text(svg_code, 
+                                text, 
+                                element = "div", 
+                                data_path = "", 
+                                extra_clases = "", 
+                                icon_size="h-5 w-5 md:h-7 md:w-7 lg:h-9 lg:w-9", 
+                                icon_color="text-current", 
+                                text_size="text-xs md:text-base lg:text-lg") {
     
     const pathAttr = (element === "button" && data_path) ? `data-path="${data_path}"` : "";
 
