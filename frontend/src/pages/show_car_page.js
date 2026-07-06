@@ -19,9 +19,8 @@ export class ShowCarPage extends BaseWindow {
 </svg>`,
 
       // Fuel Pump (Тип пального)
-      fuel_type: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fuel-pump" viewBox="0 0 16 16">
-  <path d="M3 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5z"/>
-  <path d="M1 2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8a2 2 0 0 1 2 2v.5a.5.5 0 0 0 1 0V8h-.5a.5.5 0 0 1-.5-.5V4.375a.5.5 0 0 1 .5-.5h1.495c-.011-.476-.053-.894-.201-1.222a.97.97 0 0 0-.394-.458c-.184-.11-.464-.195-.9-.195a.5.5 0 0 1 0-1q.846-.002 1.412.336c.383.228.634.551.794.907.295.655.294 1.465.294 2.081v3.175a.5.5 0 0 1-.5.501H15v4.5a1.5 1.5 0 0 1-3 0V12a1 1 0 0 0-1-1v4h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1zm9 0a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v13h8z"/>
+      fuel_type: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fire" viewBox="0 0 16 16">
+  <path d="M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16m0-1c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3C6.125 10 7 10.5 7 10.5c-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15"/>
 </svg>`,
 
       // Droplet (Тип масла)
@@ -41,6 +40,10 @@ export class ShowCarPage extends BaseWindow {
       edit_car: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
   <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
   <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+</svg>`,
+      refueling: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fuel-pump" viewBox="0 0 16 16">
+  <path d="M3 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5z"/>
+  <path d="M1 2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8a2 2 0 0 1 2 2v.5a.5.5 0 0 0 1 0V8h-.5a.5.5 0 0 1-.5-.5V4.375a.5.5 0 0 1 .5-.5h1.495c-.011-.476-.053-.894-.201-1.222a.97.97 0 0 0-.394-.458c-.184-.11-.464-.195-.9-.195a.5.5 0 0 1 0-1q.846-.002 1.412.336c.383.228.634.551.794.907.295.655.294 1.465.294 2.081v3.175a.5.5 0 0 1-.5.501H15v4.5a1.5 1.5 0 0 1-3 0V12a1 1 0 0 0-1-1v4h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1zm9 0a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v13h8z"/>
 </svg>`,
     };
 
@@ -66,51 +69,59 @@ export class ShowCarPage extends BaseWindow {
     return `
         <article data-path="/get_car/${car_data["id"]}" class="car_card_main cursor-pointer border border-gray-200 bg-white flex flex-col md:flex-row items-stretch rounded-xl overflow-hidden shadow-sm m-4 hover:shadow-lg transition-shadow">
             
-            <img
-                src="${car_data["photo_path"] ? `${car_data["photo_path"]}` : "assets/no_photo.png"}"
-                alt=""
-                class="w-full h-48 md:w-80 md:h-auto object-cover shrink-0 self-stretch"
-            />
+    <img
+        src="${car_data["photo_path"] ? `${car_data["photo_path"]}` : "assets/no_photo.png"}"
+        alt=""
+        class="w-full h-48 md:w-80 md:h-auto object-cover shrink-0 self-stretch"
+    />
 
-            <div class="car_info flex-1 p-5 flex flex-col sm:flex-row justify-start items-start sm:items-center gap-6 md:gap-16">
-                
-                <div class="info_about_car flex flex-col gap-4 w-full">
-                    <p class="text-lg md:text-xl lg:text-2xl font-bold">
-                        ${car_data["brand"]} ${car_data["model"]}
-                    </p>
-                    <div class="w-fit flex items-center gap-1.5 px-2 py-1 rounded-md text-[14px] font-bold bg-gray-100 border border-gray-200 uppercase tracking-wide" style="color: ${textColor}"> 
-                        <div class="h-4 w-4 md:h-5 md:w-5 shrink-0 flex items-center justify-center">
-                            ${indicatorImg}
-                        </div>
-                        <span>${car_data["service_indicators"]["text_indicator"]}</span>
-                    </div>
-                    ${this.info_about_car_keys
-                      .map((key) =>
-                        icon_value_text(this.images[key], car_data[key]),
-                      )
-                      .join("")}
+    <div class="car_info flex-1 p-5 flex flex-col sm:flex-row justify-between items-stretch gap-6 md:gap-16">
+        
+        <div class="info_about_car flex flex-col gap-4 w-full">
+            <p class="text-lg md:text-xl lg:text-2xl font-bold">
+                ${car_data["brand"]} ${car_data["model"]}
+            </p>
+            <div class="w-fit flex items-center gap-1.5 px-2 py-1 rounded-md text-[14px] font-bold bg-gray-100 border border-gray-200 uppercase tracking-wide" style="color: ${textColor}"> 
+                <div class="h-4 w-4 md:h-5 md:w-5 shrink-0 flex items-center justify-center">
+                    ${indicatorImg}
                 </div>
-
-                <div class="mt-5 manage_btn_and_indicators w-full sm:w-auto flex flex-col-reverse gap-2 whitespace-nowrap">
-                    ${icon_value_text(
-                      this.images.add_note_img,
-                      "Додати ремонт",
-                      "button",
-                      `/create_maintenance_record/${car_data["id"]}`,
-                      `${this.visibility} border border-transparent hover:border-emerald-500 hover:bg-emerald-50 rounded-lg lg:px-3 lg:py-1.5 text-gray-700 hover:text-emerald-700`,
-                    )}
-
-                    ${icon_value_text(
-                      this.images.edit_car,
-                      "Редагувати",
-                      "button",
-                      `/edit_car/${car_data["id"]}`,
-                      `${this.visibility} border border-transparent hover:border-[#a05228] hover:bg-orange-50 rounded-lg lg:px-3 lg:py-1.5 text-gray-700 hover:text-[#a05228]`,
-                    )}
-                </div>
+                <span>${car_data["service_indicators"]["text_indicator"]}</span>
             </div>
-            <div class="car_indicator h-4 w-full md:h-auto md:w-16 shrink-0" style="background-color: ${indicatorColor}"></div>
-        </article>
+            ${this.info_about_car_keys
+              .map((key) =>
+                icon_value_text(this.images[key], car_data[key]),
+              )
+              .join("")}
+        </div>
+
+        <div class="manage_btn_and_indicators w-full sm:w-auto flex flex-col justify-end gap-4 whitespace-nowrap shrink-0 mt-4 sm:mt-0">
+          ${icon_value_text(
+            this.images.refueling,
+            "Заправити",
+            "button",
+            `/create_maintenance_record/${car_data["id"]}`,
+            `${this.visibility} border border-transparent hover:border-[#8c322e] hover:bg-rose-50 rounded-lg lg:px-3 lg:py-1.5 text-gray-700 hover:text-[#8c322e]`,
+          )}
+
+          ${icon_value_text(
+            this.images.edit_car,
+            "Редагувати",
+            "button",
+            `/edit_car/${car_data["id"]}`,
+            `${this.visibility} border border-transparent hover:border-[#a05228] hover:bg-orange-50 rounded-lg lg:px-3 lg:py-1.5 text-gray-700 hover:text-[#a05228]`,
+          )}
+
+          ${icon_value_text(
+            this.images.add_note_img,
+            "Додати ремонт",
+            "button",
+            `/create_maintenance_record/${car_data["id"]}`,
+            `${this.visibility} border border-transparent hover:border-emerald-500 hover:bg-emerald-50 rounded-lg lg:px-3 lg:py-1.5 text-gray-700 hover:text-emerald-700`,
+          )}
+      </div>
+    </div>
+    <div class="car_indicator h-4 w-full md:h-auto md:w-16 shrink-0" style="background-color: ${indicatorColor}"></div>
+</article>
     `;
   }
   content() {

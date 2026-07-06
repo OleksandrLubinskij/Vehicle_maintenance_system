@@ -32,14 +32,14 @@ async def get_fuel_logs_endpoint(car_id: int, db: AsyncSession = Depends(get_db)
     
 @router.post("/create_fuel_log/{car_id}")
 async def create_fuel_log_endpoint(car_id: int, fuel_log_data: FuelLogModel, db: AsyncSession = Depends(get_db), current_user: User = Depends(RoleChecker(["Admin"]))):
-    # try:
-    current_mileage = await get_mileage(car_id, db)
-    if fuel_log_data.current_mileage < current_mileage:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Пробіг який ви ввели, не може бути меншим за поточний пробіг автомобіля.")
-    fuel_log_data = fuel_log_data.model_dump()
-    fuel_log = await create_fuel_log(car_id, fuel_log_data, db)
-    car_update_data = CarUpdate(**{"mileage": fuel_log_data["current_mileage"]})
-    await edit_car_db(car_id, car_update_data, db)
-    return fuel_log
-    # except Exception as e:
-    #     raise HTTPException(status_code=500, detail=str(e))
+    try:
+        current_mileage = await get_mileage(car_id, db)
+        if fuel_log_data.current_mileage < current_mileage:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Пробіг який ви ввели, не може бути меншим за поточний пробіг автомобіля.")
+        fuel_log_data = fuel_log_data.model_dump()
+        fuel_log = await create_fuel_log(car_id, fuel_log_data, db)
+        car_update_data = CarUpdate(**{"mileage": fuel_log_data["current_mileage"]})
+        await edit_car_db(car_id, car_update_data, db)
+        return fuel_log
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
