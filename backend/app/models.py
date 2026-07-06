@@ -22,6 +22,9 @@ class Car(Base):
     maintenance_logs: Mapped[List["Maintenance_log"]] = relationship(
         back_populates="car", cascade="all, delete-orphan"
     )
+    fuel_log: Mapped[List["FuelLog"]] = relationship(
+        back_populates="car", cascade="all, delete-orphan"
+    )
 
 class User(Base):
     __tablename__ = "user"
@@ -40,3 +43,13 @@ class Maintenance_log(Base):
     mileage_on_maintain: Mapped[int] = mapped_column(nullable=False)
     
     car: Mapped["Car"] = relationship(back_populates="maintenance_logs")
+
+class FuelLog(Base):
+    __tablename__ = "fuel_log"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    car_id: Mapped[int] = mapped_column(ForeignKey("car.id", ondelete="CASCADE"), nullable=False)
+    current_mileage: Mapped[int] = mapped_column(nullable=False)
+    liters: Mapped[int] = mapped_column(nullable=False)
+    date: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    car: Mapped["Car"] = relationship(back_populates="fuel_log") 
