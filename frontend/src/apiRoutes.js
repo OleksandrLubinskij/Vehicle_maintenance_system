@@ -8,6 +8,7 @@ export const BASE_CAR_PHOTO_API_URL = `${BASE_API_URL}/car_photos`;
 const BASE_CAR_URL = `${BASE_API_URL}/cars`;
 const BASE_MAINTENANCE_LOG_URL = `${BASE_API_URL}/maintenance_logs`;
 const BASE_USERS_URL = `${BASE_API_URL}/users`;
+const BASE_FUEL_LOG_URL = `${BASE_API_URL}/fuel_logs`;
 
 const endpoint = {
   cars: {
@@ -56,6 +57,10 @@ const endpoint = {
     get_me: () => `${BASE_USERS_URL}/get_me`,
     change_password: () => `${BASE_USERS_URL}/change_password`,
   },
+  fuel_log: {
+    get_logs: (car_id) => `${BASE_FUEL_LOG_URL}/get_fuel_logs/${car_id}`,
+    create_log: (car_id) => `${BASE_FUEL_LOG_URL}/create_fuel_log/${car_id}`,
+  }
 };
 
 async function request(URL, method = "GET", data = null) {
@@ -134,5 +139,10 @@ export const api = {
     get_me: () => request(endpoint.users.get_me()),
     change_password: (data) =>
       request(endpoint.users.change_password(), "PUT", data),
+  },
+  fuel_log: {
+    get_logs: (car_id) => request(endpoint.fuel_log.get_logs(car_id)),
+    create_log: (car_id, data) =>
+      request(endpoint.fuel_log.create_log(car_id), "POST", data),
   },
 };
