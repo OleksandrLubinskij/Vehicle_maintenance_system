@@ -55,3 +55,7 @@ class CarResponse(BaseModel):
 class ResetPasssword(BaseModel):
     old_password: str
     new_password: str
+
+class FuelLogModel(BaseModel):
+    current_mileage: int
+    liters: int
