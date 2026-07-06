@@ -48,11 +48,15 @@ async def get_car_by_id(car_id: int,
     await cache.hset(CACHE.CARS, car.id, responce_car.model_dump())
     return responce_car
 
+async def get_mileage(car_id:int, db: AsyncSession):
+    stmt = select(Car.mileage).where(Car.id == car_id)
+    mileage = (await db.execute(stmt)).scalar_one_or_none()
+    return mileage
+
 @router.get("/get_car_mileage/{car_id}")
 async def get_car_mileage(car_id: int, 
                           db: AsyncSession = Depends(get_db)):
-    stmt = select(Car.mileage).where(Car.id == car_id)
-    mileage = (await db.execute(stmt)).scalar_one_or_none()
+    mileage = await get_mileage(car_id, db)
     return mileage
 
 @router.get("/get_car_brand_and_model/{car_id}")
@@ -78,18 +82,16 @@ async def create_car(car:CarModel,
         print(e)
         raise DBErrors()
 
-@router.patch("/edit_car/{car_id}")
-async def edit_car(car:CarUpdate, 
-             car_id:int, 
-             db:AsyncSession = Depends(get_db),
-             current_user: User = Depends(allow_admin_only)
-             ):
+async def edit_car_db(
+        car_id:int, 
+        car_data: CarUpdate, 
+        db: AsyncSession):
     stmt = select(Car).where(Car.id == car_id)
     car_db = (await db.execute(stmt)).scalar()
     if not car_db:
         raise RecordNotFoundError()
     
-    update_data = car.model_dump(exclude_unset=True)
+    update_data = car_data.model_dump(exclude_unset=True)
 
     for key, value in update_data.items():
         setattr(car_db, key, value)
@@ -97,7 +99,15 @@ async def edit_car(car:CarUpdate,
     await db.commit()
     await db.refresh(car_db)
     await cache.delete(CACHE.CARS)
-    return car_db
+
+@router.patch("/edit_car/{car_id}")
+async def edit_car(car:CarUpdate, 
+             car_id:int, 
+             db:AsyncSession = Depends(get_db),
+             current_user: User = Depends(allow_admin_only)
+             ):
+    car = await edit_car_db(car_id, car, db)
+    return car
 
 @router.delete("/delete_car/{car_id}")
 async def delete_car(car_id:int, 
