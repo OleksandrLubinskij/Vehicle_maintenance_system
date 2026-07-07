@@ -58,9 +58,9 @@ const endpoint = {
     change_password: () => `${BASE_USERS_URL}/change_password`,
   },
   fuel_log: {
-    get_logs: (car_id, params = {}) => {
+    get_logs: (car_id, params ={}) => {
+      console.log(params)
       let query_params = new URLSearchParams();
-
       for (const [key, value] of Object.entries(params)) {
         if (value !== undefined && value !== null && value !== "") {
           query_params.append(key, value);
@@ -154,7 +154,7 @@ export const api = {
       request(endpoint.users.change_password(), "PUT", data),
   },
   fuel_log: {
-    get_logs: (car_id) => request(endpoint.fuel_log.get_logs(car_id)),
+    get_logs: (car_id, params = {}) => request(endpoint.fuel_log.get_logs(car_id, params)),
     create_log: (car_id, data) =>
       request(endpoint.fuel_log.create_log(car_id), "POST", data),
   },

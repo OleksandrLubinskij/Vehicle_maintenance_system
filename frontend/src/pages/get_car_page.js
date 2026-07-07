@@ -6,7 +6,7 @@ import {
   CAR_CARD_DETAILS,
   MAINTENANCE_TYPES,
   INDICATORS,
-  TABS
+  TABS,
 } from "../../config";
 import { icon_value_text } from "../components/icon_value_comp";
 import { Form } from "../components/form_elements";
@@ -215,17 +215,25 @@ export class GetCarPage extends BaseWindow {
                   </div>
 
                   <div class="flex-1 w-full flex flex-col">
-                      <div id="maintenances" class="w-full space-y-4"></div>
-                      <div id="refuelings" class="w-full space-y-4"></div>
-                      
-                      <div id="load_more_wrapper" class="hidden flex justify-center pt-8 pb-4">
-                          <button id="load_more_btn" class="group flex items-center justify-center gap-2 w-full sm:w-auto py-3 px-8 text-sm font-bold text-[#146c43] bg-white hover:bg-emerald-50 border-2 border-[#146c43] rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer active:scale-95 uppercase tracking-wide">
-                              Завантажити ще
-                          </button>
-                      </div>
+                    <div id="maintenance_container" class="w-full">
+                        <div id="maintenances" class="w-full space-y-4"></div>
+                        <div id="load_more_maintenances_wrapper" class="hidden flex justify-center pt-8 pb-4">
+                            <button id="load_more_maintenances_btn" class="group flex items-center justify-center gap-2 w-full sm:w-auto py-3 px-8 text-sm font-bold text-[#146c43] bg-white hover:bg-emerald-50 border-2 border-[#146c43] rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer active:scale-95 uppercase tracking-wide">
+                                Завантажити ще
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="refueling_container" class="w-full hidden">
+                        <div id="refuelings" class="w-full space-y-4"></div>
+                        <div id="load_more_refuelings_wrapper" class="hidden flex justify-center pt-8 pb-4">
+                            <button id="load_more_refuelings_btn" class="group flex items-center justify-center gap-2 w-full sm:w-auto py-3 px-8 text-sm font-bold text-[#146c43] bg-white hover:bg-emerald-50 border-2 border-[#146c43] rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer active:scale-95 uppercase tracking-wide">
+                                Завантажити ще
+                            </button>
+                        </div>
+                    </div>
                   </div>
-              </div>
-            </div>               
+                </div>               
             <div class="flex justify-center pt-4">
                 <button id="delete_car" class="${this.visibility} py-2 px-4 text-xs font-bold text-gray-400 hover:text-red-600 border border-gray-300 hover:border-red-200 bg-transparent rounded-lg transition-all duration-200 cursor-pointer text-center uppercase">
                     Видалити машину
@@ -238,8 +246,8 @@ export class GetCarPage extends BaseWindow {
   show_maintenance_logs() {
     const filter_form = document.querySelector("#filter_form");
     const maintenances = document.querySelector("#maintenances");
-    const load_more_btn = document.querySelector("#load_more_btn");
-    const load_more_wrapper = document.querySelector("#load_more_wrapper");
+    const load_more_btn = document.querySelector("#load_more_maintenances_btn");
+    const load_more_wrapper = document.querySelector("#load_more_maintenances_wrapper");
 
     const fetchAndRender = async (isLoadMore = false) => {
       const form_data = new FormData(filter_form);
@@ -338,38 +346,43 @@ export class GetCarPage extends BaseWindow {
 
   show_refueling_logs() {
     const refuelings = document.querySelector("#refuelings");
-    const load_more_btn = document.querySelector("#load_more_btn");
-    const load_more_wrapper = document.querySelector("#load_more_wrapper");
+    const load_more_btn = document.querySelector("#load_more_refuelings_btn");
+    const load_more_wrapper = document.querySelector("#load_more_refuelings_wrapper");
 
     const fetchAndRenderRefuelings = async (isLoadMore = false) => {
-      refuel_veiw_settings = {
-        limit: this.refueling_limit,
-        offset: this.refueling_offset,
-      };
       if (!isLoadMore) {
         this.refueling_offset = 0;
         refuelings.innerHTML =
           "<div class='text-center p-6 text-gray-400 font-medium'>Завантаження історії...</div>";
       }
+
       try {
-        const refueling_logs = await api.fuel_log.get_fuel_logs(
+        
+        let refuel_view_settings = {
+        limit: this.refueling_limit,
+        offset: this.refueling_offset,
+      };
+        console.log("Fetching refueling logs with settings:", refuel_view_settings);
+        const refueling_logs = await api.fuel_log.get_logs(
           this.id,
-          refuel_veiw_settings,
+          refuel_view_settings,
         );
-      
-        if(!refueling_logs || refueling_logs.length === 0) {
-          refuelings.innerHTML = `<div class="bg-white border border-gray-200 rounded-xl p-8 text-center text-gray-500 font-semibold shadow-sm">Записів про заправки не знайдено.</div>`;
-        } else {
-          if (!isLoadMore) {
-            refuelings.innerHTML = "";
-          }
+
+        if (!isLoadMore) {
+          refuelings.innerHTML = "";
+        }
+
+        if (refueling_logs && refueling_logs.length > 0) {
           refuelings.insertAdjacentHTML(
             "beforeend",
             this.render_refueling_log(refueling_logs),
           );
           this.refueling_offset += this.refueling_limit;
+        } else if (!isLoadMore) {
+          refuelings.innerHTML = `<div class="bg-white border border-gray-200 rounded-xl p-8 text-center text-gray-500 font-semibold shadow-sm">Записів про заправки не знайдено.</div>`;
         }
 
+        // Ховаємо або показуємо кнопку "Завантажити ще"
         if (!refueling_logs || refueling_logs.length < this.refueling_limit) {
           load_more_wrapper.classList.add("hidden");
         } else {
@@ -377,19 +390,29 @@ export class GetCarPage extends BaseWindow {
         }
       } catch (error) {
         console.error("Помилка завантаження логів:", error);
-        if (!isLoadMore)
+        if (!isLoadMore) {
           refuelings.innerHTML =
             "<div class='text-center p-6 text-red-500 font-medium'>Помилка завантаження</div>";
+        }
       }
     };
 
-    if(refuelings) {
-      refuelings.innerHTML = "";
+    if (refuelings) {
+      // Тут не потрібно refuelings.innerHTML = ""; оскільки це робиться всередині fetchAndRenderRefuelings
       fetchAndRenderRefuelings(false);
     }
+
     if (load_more_btn) {
       load_more_btn.addEventListener("click", async () => {
-        fetchAndRenderRefuelings(true);
+        // Додано блокування кнопки та await, щоб запити не дублювалися
+        const originalText = load_more_btn.innerText;
+        load_more_btn.innerText = "Завантаження...";
+        load_more_btn.disabled = true;
+
+        await fetchAndRenderRefuelings(true);
+
+        load_more_btn.innerText = originalText;
+        load_more_btn.disabled = false;
       });
     }
   }
@@ -466,6 +489,11 @@ export class GetCarPage extends BaseWindow {
   }
 
   render_refueling_log(logs) {
+    // Перевірка на порожній масив, аналогічно до ремонтів
+    if (!logs || logs.length === 0) {
+      return `<div class="bg-white border border-gray-200 rounded-xl p-8 text-center text-gray-500 font-semibold shadow-sm">Записів про заправки не знайдено.</div>`;
+    }
+
     const result = logs.map((log) => {
       const date_obj = new Date(log.date);
       let formatted_date = "—";
@@ -478,10 +506,28 @@ export class GetCarPage extends BaseWindow {
       }
 
       return `
-        <div class="bg-white border-2 border-gray-900 rounded-xl overflow-hidden flex items-stretch shadow-sm min-h-16 md:min-h-20 relative z-10">
-          <div>${log.current_mileage}</div>
-          <div>${log.liters}</div>
-          <div>${formatted_date}</div>
+        <div class="refueling-item w-full flex flex-col">
+            <div class="bg-white border-2 border-gray-900 rounded-xl overflow-hidden flex flex-row items-stretch shadow-sm min-h-16 md:min-h-20 relative z-10">
+                
+                <div class="flex-1 min-w-0 flex flex-col sm:grid sm:grid-cols-3 justify-center items-start sm:items-center px-4 py-3 sm:py-0 gap-1 sm:gap-2 font-bold text-gray-900 text-xs sm:text-sm md:text-base">
+                    
+                    <div class="flex items-center gap-2 text-left sm:text-left text-[#146c43] font-black md:text-lg truncate w-full break-words">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fuel-pump shrink-0" viewBox="0 0 16 16">
+                            <path d="M3 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5z"/>
+                            <path d="M1 2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8a2 2 0 0 1 2 2v.5a.5.5 0 0 0 1 0V8h-.5a.5.5 0 0 1-.5-.5V4.375a.5.5 0 0 1 .5-.5h1.495c-.011-.476-.053-.894-.201-1.222a.97.97 0 0 0-.394-.458c-.184-.11-.464-.195-.9-.195a.5.5 0 0 1 0-1c.564 0 1.034.11 1.412.336.383.228.634.551.794.907.295.655.294 1.465.294 2.081v3.175a.5.5 0 0 1-.5.501H15v4.5a1.5 1.5 0 0 1-3 0V12a1 1 0 0 0-1-1v4h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1zm9 0a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v13h8z"/>
+                        </svg>
+                        <span>${log.liters} л</span>
+                    </div>
+                    
+                    <div class="text-left sm:text-center text-gray-700 font-medium text-[11px] sm:text-sm md:text-base truncate w-full">
+                        ${log.current_mileage} км
+                    </div>
+                    
+                    <div class="text-left sm:text-right text-gray-500 sm:text-gray-600 font-mono text-[10px] sm:text-sm md:text-base truncate w-full">
+                        ${formatted_date}
+                    </div>
+                </div>
+            </div>
         </div>
     `;
     });
@@ -498,12 +544,8 @@ export class GetCarPage extends BaseWindow {
       const html = this.content(maintenance_enum);
       super.render(html);
       this.tab_switching();
-      if(this.active_tab === TABS.MAINTENANCE) {
-        this.show_maintenance_logs();
-      } else if(this.active_tab === TABS.REFUELING) {
-        this.show_refueling_logs();
-      }
-      
+      this.show_maintenance_logs();
+      this.show_refueling_logs();
 
       const delete_car_btn = document.querySelector("#delete_car");
       const modal_overlay = document.querySelector("#delete_modal_overlay");
@@ -561,8 +603,8 @@ export class GetCarPage extends BaseWindow {
   tab_switching() {
     const maintenance_tab = document.querySelector("#maintenance_tab");
     const refueling_tab = document.querySelector("#refueling_tab");
-    const maintenances = document.querySelector("#maintenances");
-    const refuelings = document.querySelector("#refuelings");
+    const maintenances = document.querySelector("#maintenance_container");
+    const refuelings = document.querySelector("#refueling_container");
     const filter_form = document.querySelector("#filter");
 
     const set_active_tab = (active_tab, inactive_tab) => {
@@ -571,7 +613,7 @@ export class GetCarPage extends BaseWindow {
 
       inactive_tab.classList.add("bg-gray-100", "text-gray-600");
       inactive_tab.classList.remove("bg-white", "text-gray-800");
-    }
+    };
     if (maintenance_tab && refueling_tab && maintenances && refuelings) {
       maintenance_tab.addEventListener("click", () => {
         this.active_tab = TABS.MAINTENANCE;
@@ -579,7 +621,6 @@ export class GetCarPage extends BaseWindow {
         maintenances.classList.remove("hidden");
         filter_form.classList.remove("hidden");
         refuelings.classList.add("hidden");
-
       });
 
       refueling_tab.addEventListener("click", () => {
