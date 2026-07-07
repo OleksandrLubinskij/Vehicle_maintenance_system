@@ -107,7 +107,7 @@ export class GetCarPage extends BaseWindow {
                     )}
                 </div>
 
-                <div class="flex gap-3 pt-2">http://localhost:5173/
+                <div class="flex gap-3 pt-2">
                     <button id="cancel_delete_btn" class="flex-1 py-2 px-4 text-sm font-bold text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
                         Скасувати
                     </button>
