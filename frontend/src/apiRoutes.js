@@ -73,6 +73,7 @@ const endpoint = {
       return `${BASE_FUEL_LOG_URL}/get_fuel_logs/${car_id}${sufix}`;
     },
     create_log: (car_id) => `${BASE_FUEL_LOG_URL}/create_fuel_log/${car_id}`,
+    get_fuel_consumption: (car_id) => `${BASE_FUEL_LOG_URL}/monthly_fuel_consumption/${car_id}`
   }
 };
 
@@ -155,7 +156,7 @@ export const api = {
   },
   fuel_log: {
     get_logs: (car_id, params = {}) => request(endpoint.fuel_log.get_logs(car_id, params)),
-    create_log: (car_id, data) =>
-      request(endpoint.fuel_log.create_log(car_id), "POST", data),
+    create_log: (car_id, data) => request(endpoint.fuel_log.create_log(car_id), "POST", data),
+    get_monthly_consumption: (car_id) => request(endpoint.fuel_log.get_fuel_consumption(car_id), "GET"),
   },
 };
