@@ -172,11 +172,11 @@ export class GetCarPage extends BaseWindow {
             </article>
             <div>
               <div id="tabs" class="flex items-end ml-3">
-                <button id="maintenance_tab" class="px-4 py-2 bg-white text-gray-800 font-medium rounded-t-2xl border-t border-l border-r border-gray-200 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-2 focus:ring-emerald-500 z-10 relative -mb-px">
+                <button id="maintenance_tab" class="px-4 py-2 bg-white text-gray-800 font-medium rounded-t-2xl border-t border-l border-r border-gray-200 hover:bg-gray-50 focus:z-10  z-10 relative -mb-px">
                   Ремонти
                 </button>            
 
-                <button id="refueling_tab" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-t-2xl border-t border-l border-r border-transparent hover:bg-gray-200 focus:z-10 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors">
+                <button id="refueling_tab" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-t-2xl border-t border-l border-r border-transparent hover:bg-gray-200 focus:z-10 transition-colors">
                   Заправки
                 </button>            
               </div>
@@ -215,14 +215,14 @@ export class GetCarPage extends BaseWindow {
                   </div>
 
                   <div class="flex-1 w-full flex flex-col">
-                    <div id="maintenance_container" class="w-full">
-                        <div id="maintenances" class="w-full space-y-4"></div>
-                        <div id="load_more_maintenances_wrapper" class="hidden flex justify-center pt-8 pb-4">
-                            <button id="load_more_maintenances_btn" class="group flex items-center justify-center gap-2 w-full sm:w-auto py-3 px-8 text-sm font-bold text-[#146c43] bg-white hover:bg-emerald-50 border-2 border-[#146c43] rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer active:scale-95 uppercase tracking-wide">
-                                Завантажити ще
-                            </button>
-                        </div>
-                    </div>
+                    <div id="maintenance_container" class="w-full flex-1 min-w-0">
+                      <div id="maintenances" class="w-full min-w-0 space-y-4"></div>
+                      <div id="load_more_maintenances_wrapper" class="hidden flex justify-center pt-8 pb-4">
+                          <button id="load_more_maintenances_btn" class="group flex items-center justify-center gap-2 w-full sm:w-auto py-3 px-8 text-sm font-bold text-[#146c43] bg-white hover:bg-emerald-50 border-2 border-[#146c43] rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer active:scale-95 uppercase tracking-wide">
+                              Завантажити ще
+                          </button>
+                      </div>
+                  </div>
 
                     <div id="refueling_container" class="w-full hidden">
                         <div id="refuelings" class="w-full space-y-4"></div>
@@ -357,7 +357,7 @@ export class GetCarPage extends BaseWindow {
       }
 
       try {
-        
+
         let refuel_view_settings = {
         limit: this.refueling_limit,
         offset: this.refueling_offset,
@@ -382,7 +382,6 @@ export class GetCarPage extends BaseWindow {
           refuelings.innerHTML = `<div class="bg-white border border-gray-200 rounded-xl p-8 text-center text-gray-500 font-semibold shadow-sm">Записів про заправки не знайдено.</div>`;
         }
 
-        // Ховаємо або показуємо кнопку "Завантажити ще"
         if (!refueling_logs || refueling_logs.length < this.refueling_limit) {
           load_more_wrapper.classList.add("hidden");
         } else {
@@ -398,13 +397,11 @@ export class GetCarPage extends BaseWindow {
     };
 
     if (refuelings) {
-      // Тут не потрібно refuelings.innerHTML = ""; оскільки це робиться всередині fetchAndRenderRefuelings
       fetchAndRenderRefuelings(false);
     }
 
     if (load_more_btn) {
       load_more_btn.addEventListener("click", async () => {
-        // Додано блокування кнопки та await, щоб запити не дублювалися
         const originalText = load_more_btn.innerText;
         load_more_btn.innerText = "Завантаження...";
         load_more_btn.disabled = true;
@@ -452,44 +449,53 @@ export class GetCarPage extends BaseWindow {
       }
 
       return `
-    <div class="maintenance-item w-full flex flex-col">
-        <div class="bg-white border-2 border-gray-900 rounded-xl overflow-hidden flex flex-row items-stretch shadow-sm min-h-16 md:min-h-20 relative z-10">
+    <div class="maintenance-item w-full flex flex-col mb-3">
+    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col lg:flex-row items-stretch shadow-sm hover:shadow-md transition-all relative z-10">
+        
+        <div class="flex-1 flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-3 gap-2 sm:gap-4 min-h-[4rem]">
             
-            <div class="flex-1 min-w-0 flex flex-col sm:grid sm:grid-cols-3 justify-center items-start sm:items-center px-4 py-2 sm:py-0 gap-1 sm:gap-2 font-bold text-gray-900 text-xs sm:text-sm md:text-base">
-                <div class="line-clamp-2 sm:truncate pr-2 w-full break-words">${log.maintenance_type}</div>
-                <div class="text-left sm:text-center text-gray-700 font-medium text-[11px] sm:text-sm md:text-base truncate w-full">${log.mileage_on_maintain} км</div>
-                <div class="text-left sm:text-right text-gray-500 sm:text-gray-600 font-mono text-[10px] sm:text-sm md:text-base truncate w-full">${formatted_date}</div>
+            <div class="flex-1 min-w-0 flex items-center gap-1.5 px-1.5 py-1 rounded-lg font-bold text-sm md:text-base">
+                <span class="break-words w-full">${log.maintenance_type}</span>
             </div>
-
-            <div class="flex flex-row items-stretch shrink-0">
-                <button class="show_description_btn px-2.5 sm:px-4 bg-white hover:bg-gray-50 text-gray-900 transition-colors flex items-center justify-center border-r-2 border-gray-900">
-                    ${this.images.arrow}
-                </button>
-                <button id="edit_log" data-path="/edit_maintenance_record/${log.id}" class="${this.visibility} px-2.5 sm:px-4 bg-[#db8956] hover:bg-orange-500 text-gray-900 transition-colors flex items-center justify-center border-r-2 border-gray-900" title="Редагувати">
-                    ${this.images.edit}
-                </button>
-                <button id="delete_log" class="${this.visibility} px-2.5 sm:px-4 bg-[#be5651] hover:bg-red-600 text-white transition-colors flex items-center justify-center" title="Видалити" data-id=${log.id}>
-                    ${this.images.delete}
-                </button>
+            
+            <div class="flex flex-row w-full sm:w-auto justify-between sm:justify-end gap-4 text-sm md:text-base px-1 sm:px-0">
+                <div class="text-gray-700 font-medium whitespace-nowrap shrink-0">
+                    ${log.mileage_on_maintain} км
+                </div>
+                <div class="text-gray-500 font-mono whitespace-nowrap shrink-0">
+                    ${formatted_date}
+                </div>
             </div>
         </div>
 
-        <div class="description_block hidden px-4 sm:px-8">
-            <div class="bg-white border-2 border-t-0 border-gray-900 rounded-b-xl p-4 pt-5 w-full shadow-inner">
-                <h4 class="font-black text-gray-900 text-sm sm:text-base mb-1">Опис</h4>
-                <p class="text-xs sm:text-sm font-semibold text-gray-700 leading-relaxed whitespace-pre-line break-words">
-                    ${log.description || "Опис відсутній для цього запису."}
-                </p>
-            </div>
+        <div class="flex flex-row w-full lg:w-auto shrink-0 border-t lg:border-t-0 lg:border-l border-gray-200">
+            <button class="show_description_btn flex-1 lg:flex-none px-4 py-2.5 lg:py-0 bg-white hover:bg-gray-50 text-gray-600 transition-colors flex items-center justify-center">
+                ${this.images.arrow}
+            </button>
+            <button id="edit_log" data-path="/edit_maintenance_record/${log.id}" class="${this.visibility} bg-[#db8956] flex-1 lg:flex-none px-4 py-2.5 lg:py-0 hover:bg-orange-400 text-black transition-colors flex items-center justify-center" title="Редагувати">
+                ${this.images.edit}
+            </button>
+            <button id="delete_log" class="${this.visibility} bg-[#be5651] flex-1 lg:flex-none px-4 py-2.5 lg:py-0 hover:bg-red-600 text-white transition-colors flex items-center justify-center" title="Видалити" data-id=${log.id}>
+                ${this.images.delete}
+            </button>
         </div>
     </div>
+
+    <div class="description_block hidden px-0 sm:px-4 mt-2">
+        <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 w-full shadow-inner">
+            <h4 class="font-bold text-gray-800 text-sm sm:text-base mb-1">Опис</h4>
+            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed whitespace-pre-line break-words">
+                ${log.description || "Опис відсутній для цього запису."}
+            </p>
+        </div>
+    </div>
+</div>
 `;
     });
     return result.join("");
   }
 
   render_refueling_log(logs) {
-    // Перевірка на порожній масив, аналогічно до ремонтів
     if (!logs || logs.length === 0) {
       return `<div class="bg-white border border-gray-200 rounded-xl p-8 text-center text-gray-500 font-semibold shadow-sm">Записів про заправки не знайдено.</div>`;
     }
@@ -506,29 +512,29 @@ export class GetCarPage extends BaseWindow {
       }
 
       return `
-        <div class="refueling-item w-full flex flex-col">
-            <div class="bg-white border-2 border-gray-900 rounded-xl overflow-hidden flex flex-row items-stretch shadow-sm min-h-16 md:min-h-20 relative z-10">
-                
-                <div class="flex-1 min-w-0 flex flex-col sm:grid sm:grid-cols-3 justify-center items-start sm:items-center px-4 py-3 sm:py-0 gap-1 sm:gap-2 font-bold text-gray-900 text-xs sm:text-sm md:text-base">
-                    
-                    <div class="flex items-center gap-2 text-left sm:text-left text-[#146c43] font-black md:text-lg truncate w-full break-words">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fuel-pump shrink-0" viewBox="0 0 16 16">
-                            <path d="M3 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5z"/>
-                            <path d="M1 2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8a2 2 0 0 1 2 2v.5a.5.5 0 0 0 1 0V8h-.5a.5.5 0 0 1-.5-.5V4.375a.5.5 0 0 1 .5-.5h1.495c-.011-.476-.053-.894-.201-1.222a.97.97 0 0 0-.394-.458c-.184-.11-.464-.195-.9-.195a.5.5 0 0 1 0-1c.564 0 1.034.11 1.412.336.383.228.634.551.794.907.295.655.294 1.465.294 2.081v3.175a.5.5 0 0 1-.5.501H15v4.5a1.5 1.5 0 0 1-3 0V12a1 1 0 0 0-1-1v4h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1zm9 0a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v13h8z"/>
-                        </svg>
-                        <span>${log.liters} л</span>
-                    </div>
-                    
-                    <div class="text-left sm:text-center text-gray-700 font-medium text-[11px] sm:text-sm md:text-base truncate w-full">
-                        ${log.current_mileage} км
-                    </div>
-                    
-                    <div class="text-left sm:text-right text-gray-500 sm:text-gray-600 font-mono text-[10px] sm:text-sm md:text-base truncate w-full">
-                        ${formatted_date}
-                    </div>
-                </div>
+        <div class="refueling-item w-full flex flex-col mb-3">
+    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-3 sm:px-5 sm:py-4 shadow-sm hover:shadow-md transition-all gap-2 sm:gap-0 relative z-10">
+        
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-6 md:gap-8">
+            
+            <div class="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg font-bold text-sm md:text-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-droplet-fill shrink-0" viewBox="0 0 16 16">
+                    <path d="M8 16a6 6 0 0 0 6-6c0-1.655-1.122-2.904-2.432-4.362C10.254 4.176 8.75 2.503 8 0c-.75 2.503-2.254 4.176-3.568 5.638C3.122 7.096 2 8.345 2 10a6 6 0 0 0 6 6z"/>
+                </svg>
+                <span>${log.liters} л</span>
+            </div>
+            
+            <div class="text-gray-700 font-medium text-sm md:text-base px-1 sm:px-0">
+                ${log.current_mileage} км
             </div>
         </div>
+        
+        <div class="text-gray-500 font-mono text-sm md:text-base px-1 sm:px-0">
+            ${formatted_date}
+        </div>
+        
+    </div>
+</div>
     `;
     });
     return result.join("");
