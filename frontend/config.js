@@ -142,3 +142,8 @@ export const INDICATORS = {
                 "text_color": "#212529" // Майже чорний/графітовий для протермінованого
             },
         };
+
+export const TABS = {
+    MAINTENANCE: "maintenance",
+    REFUELING: "refueling"
+}

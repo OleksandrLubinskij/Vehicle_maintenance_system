@@ -10,12 +10,27 @@ from api.v1.auth.dependencies import RoleChecker
 from .cars import get_mileage, edit_car_db
 
 router = APIRouter()
-async def get_fuel_logs(car_id:int, db: AsyncSession):
-    stmt = select(FuelLog).where(FuelLog.car_id == car_id).order_by(desc(FuelLog.date))
+async def get_fuel_logs(
+        car_id:int, 
+        db: AsyncSession,
+        limit: int = 10,
+        offset: int = 0
+    ):
+    stmt = select(
+        FuelLog
+        ).where(
+            FuelLog.car_id == car_id
+        ).order_by(desc(FuelLog.date)
+        ).limit(limit).offset(offset)
+    
     fuel_logs = (await db.execute(stmt)).scalars().all()
     return fuel_logs
 
-async def create_fuel_log(car_id:int, fuel_log_data: dict, db: AsyncSession):
+async def create_fuel_log(
+        car_id:int, 
+        fuel_log_data: dict, 
+        db: AsyncSession
+    ):
     fuel_log = FuelLog(car_id=car_id, **fuel_log_data)
     db.add(fuel_log)
     await db.commit()
@@ -23,15 +38,25 @@ async def create_fuel_log(car_id:int, fuel_log_data: dict, db: AsyncSession):
     return fuel_log
 
 @router.get("/get_fuel_logs/{car_id}")
-async def get_fuel_logs_endpoint(car_id: int, db: AsyncSession = Depends(get_db)):
+async def get_fuel_logs_endpoint(
+            car_id: int, 
+            db: AsyncSession = Depends(get_db),
+            limit: int = 10,
+            offset: int = 0,
+        ):
     try:
-        fuel_logs = await get_fuel_logs(car_id, db)
+        fuel_logs = await get_fuel_logs(car_id, db, limit, offset)
         return fuel_logs
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
 @router.post("/create_fuel_log/{car_id}")
-async def create_fuel_log_endpoint(car_id: int, fuel_log_data: FuelLogModel, db: AsyncSession = Depends(get_db), current_user: User = Depends(RoleChecker(["Admin"]))):
+async def create_fuel_log_endpoint(
+            car_id: int, 
+            fuel_log_data: FuelLogModel, 
+            db: AsyncSession = Depends(get_db), 
+            current_user: User = Depends(RoleChecker(["Admin"]))
+        ):
     try:
         current_mileage = await get_mileage(car_id, db)
         if fuel_log_data.current_mileage < current_mileage:

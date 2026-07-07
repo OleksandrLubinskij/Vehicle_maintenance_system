@@ -6,6 +6,7 @@ import {
   CAR_CARD_DETAILS,
   MAINTENANCE_TYPES,
   INDICATORS,
+  TABS
 } from "../../config";
 import { icon_value_text } from "../components/icon_value_comp";
 import { Form } from "../components/form_elements";
@@ -20,6 +21,10 @@ export class GetCarPage extends BaseWindow {
       localStorage.getItem("role") === ROLE.USER ? "hidden" : "";
     this.offset = 0;
     this.limit = 10;
+
+    this.refueling_offset = 0;
+    this.refueling_limit = 10;
+    this.active_tab = TABS.MAINTENANCE;
     this.images = {
       arrow: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down-fill transition-transform duration-200 target-arrow" viewBox="0 0 16 16">
                 <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
@@ -102,7 +107,7 @@ export class GetCarPage extends BaseWindow {
                     )}
                 </div>
 
-                <div class="flex gap-3 pt-2">
+                <div class="flex gap-3 pt-2">http://localhost:5173/
                     <button id="cancel_delete_btn" class="flex-1 py-2 px-4 text-sm font-bold text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
                         Скасувати
                     </button>
@@ -332,6 +337,18 @@ export class GetCarPage extends BaseWindow {
     }
   }
 
+  show_refueling_logs() {
+    const refuelings = document.querySelector("#refuelings");
+    const load_more_btn = document.querySelector("#load_more_btn");
+    const load_more_wrapper = document.querySelector("#load_more_wrapper");
+
+    const fetchAndRenderRefuelings = async (isLoadMore = false) => {
+      if (!isLoadMore) {
+        this.refueling_offset = 0;
+        refuelings.innerHTML =
+          "<div class='text-center p-6 text-gray-400 font-medium'>Завантаження історії...</div>";
+      }
+  }
   init_accordion_events() {
     const logs = document.querySelectorAll(".maintenance-item");
     logs.forEach((item) => {
@@ -400,6 +417,29 @@ export class GetCarPage extends BaseWindow {
         </div>
     </div>
 `;
+    });
+    return result.join("");
+  }
+
+  render_refueling_log(logs) {
+    const result = logs.map((log) => {
+      const date_obj = new Date(log.date);
+      let formatted_date = "—";
+      if (!isNaN(date_obj)) {
+        formatted_date = date_obj.toLocaleDateString("uk-UA", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+      }
+
+      return `
+        <div class="bg-white border-2 border-gray-900 rounded-xl overflow-hidden flex items-stretch shadow-sm min-h-16 md:min-h-20 relative z-10">
+          <div>${log.current_mileage}</div>
+          <div>${log.liters}</div>
+          <div>${formatted_date}</div>
+        </div>
+    `;
     });
     return result.join("");
   }
@@ -485,6 +525,7 @@ export class GetCarPage extends BaseWindow {
     }
     if (maintenance_tab && refueling_tab && maintenances && refuelings) {
       maintenance_tab.addEventListener("click", () => {
+        this.active_tab = TABS.MAINTENANCE;
         set_active_tab(maintenance_tab, refueling_tab);
         maintenances.classList.remove("hidden");
         filter_form.classList.remove("hidden");
@@ -493,6 +534,7 @@ export class GetCarPage extends BaseWindow {
       });
 
       refueling_tab.addEventListener("click", () => {
+        this.active_tab = TABS.REFUELING;
         set_active_tab(refueling_tab, maintenance_tab);
         refuelings.classList.remove("hidden");
         filter_form.classList.add("hidden");
