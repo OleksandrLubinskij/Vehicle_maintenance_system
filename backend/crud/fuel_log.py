@@ -8,7 +8,7 @@ from app.models import FuelLog, User
 from app.database import get_db
 from app.schemas import FuelLogModel, CarUpdate
 from api.v1.auth.dependencies import RoleChecker
-from .cars import get_mileage, edit_car_db
+from .cars_db import get_mileage, edit_car_db
 
 router = APIRouter()
 async def get_fuel_logs(
