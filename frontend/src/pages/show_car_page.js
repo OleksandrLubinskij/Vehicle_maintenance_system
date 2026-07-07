@@ -87,7 +87,7 @@ export class ShowCarPage extends BaseWindow {
               .join("")}
         </div>
 
-        <div class="manage_btn_and_indicators w-full sm:w-auto flex flex-col justify-end gap-4 whitespace-nowrap shrink-0 mt-4 sm:mt-0">
+        <div class="manage_btn_and_indicators w-full sm:w-auto flex flex-col justify-center gap-4 whitespace-nowrap shrink-0 mt-4 sm:mt-0">
           
           ${icon_value_text(
             this.images.refueling,
