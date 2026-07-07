@@ -168,6 +168,16 @@ export class GetCarPage extends BaseWindow {
                             ${this.generate_indicators_fields().join("")}
                         </div>
                     </div>
+                      <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 mb-1 border-b border-gray-100 pb-2">Статистика</h3>
+                    <div class="inline-flex items-center gap-4 rounded-xl w-max">
+                        <div class="flex flex-col">
+                            <span class="text-[11px] font-bold text-gray-400 mb-0.5 uppercase tracking-widest">Витрата пального за місяць</span>
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-xl md:text-2xl font-black text-gray-900">${this.car["monthly_fuel_consumption"]}</span>
+                            </div>
+                    </div>
+                </div>
                 </div>
             </article>
             <div>
