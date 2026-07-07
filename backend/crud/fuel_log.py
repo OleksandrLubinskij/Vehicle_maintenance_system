@@ -1,11 +1,12 @@
+import calendar
+from datetime import date
+
 from fastapi import Depends, HTTPException, APIRouter, status
-from sqlalchemy import asc, desc, select
+from sqlalchemy import desc, select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import FuelLog, User
 from app.database import get_db
 from app.schemas import FuelLogModel, CarUpdate
-from app.cache.redis import RedisCache
-from app.config import CACHE
 from api.v1.auth.dependencies import RoleChecker
 from .cars import get_mileage, edit_car_db
 
@@ -37,6 +38,24 @@ async def create_fuel_log(
     await db.refresh(fuel_log)
     return fuel_log
 
+async def get_monthly_fuel_consumption(car_id, db, target_date: date = None):
+    if target_date is None:
+        target_date = date.today()
+    first_day = target_date.replace(day=1)
+    _, days_in_month = calendar.monthrange(target_date.year, target_date.month)
+    last_day = target_date.replace(day=days_in_month)
+
+    stmt = (
+        select(func.sum(FuelLog.liters))
+        .where(FuelLog.car_id == car_id)
+        .where(FuelLog.date >= first_day)
+        .where(FuelLog.date <= last_day)
+    )
+    
+    total_fuel = await db.scalar(stmt)
+    
+    return total_fuel or 0.0
+
 @router.get("/get_fuel_logs/{car_id}")
 async def get_fuel_logs_endpoint(
             car_id: int, 
@@ -66,5 +85,17 @@ async def create_fuel_log_endpoint(
         car_update_data = CarUpdate(**{"mileage": fuel_log_data["current_mileage"]})
         await edit_car_db(car_id, car_update_data, db)
         return fuel_log
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.get("/monthly_fuel_consumption/{car_id}")
+async def monthly_fuel_consumption_endpoint(
+            car_id: int, 
+            db: AsyncSession = Depends(get_db),
+            target_date: date = None
+        ):
+    try:
+        total_fuel = await get_monthly_fuel_consumption(car_id, db, target_date)
+        return {"total_fuel": total_fuel}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
