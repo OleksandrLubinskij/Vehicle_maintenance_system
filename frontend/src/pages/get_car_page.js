@@ -257,7 +257,6 @@ export class GetCarPage extends BaseWindow {
       filter_data.limit = this.limit;
 
       try {
-        console.log(filter_data);
         const maintenance_logs = await api.maintenance_log.show_all_mlog(
           this.id,
           filter_data,
@@ -343,11 +342,56 @@ export class GetCarPage extends BaseWindow {
     const load_more_wrapper = document.querySelector("#load_more_wrapper");
 
     const fetchAndRenderRefuelings = async (isLoadMore = false) => {
+      refuel_veiw_settings = {
+        limit: this.refueling_limit,
+        offset: this.refueling_offset,
+      };
       if (!isLoadMore) {
         this.refueling_offset = 0;
         refuelings.innerHTML =
           "<div class='text-center p-6 text-gray-400 font-medium'>Завантаження історії...</div>";
       }
+      try {
+        const refueling_logs = await api.fuel_log.get_fuel_logs(
+          this.id,
+          refuel_veiw_settings,
+        );
+      
+        if(!refueling_logs || refueling_logs.length === 0) {
+          refuelings.innerHTML = `<div class="bg-white border border-gray-200 rounded-xl p-8 text-center text-gray-500 font-semibold shadow-sm">Записів про заправки не знайдено.</div>`;
+        } else {
+          if (!isLoadMore) {
+            refuelings.innerHTML = "";
+          }
+          refuelings.insertAdjacentHTML(
+            "beforeend",
+            this.render_refueling_log(refueling_logs),
+          );
+          this.refueling_offset += this.refueling_limit;
+        }
+
+        if (!refueling_logs || refueling_logs.length < this.refueling_limit) {
+          load_more_wrapper.classList.add("hidden");
+        } else {
+          load_more_wrapper.classList.remove("hidden");
+        }
+      } catch (error) {
+        console.error("Помилка завантаження логів:", error);
+        if (!isLoadMore)
+          refuelings.innerHTML =
+            "<div class='text-center p-6 text-red-500 font-medium'>Помилка завантаження</div>";
+      }
+    };
+
+    if(refuelings) {
+      refuelings.innerHTML = "";
+      fetchAndRenderRefuelings(false);
+    }
+    if (load_more_btn) {
+      load_more_btn.addEventListener("click", async () => {
+        fetchAndRenderRefuelings(true);
+      });
+    }
   }
   init_accordion_events() {
     const logs = document.querySelectorAll(".maintenance-item");
@@ -454,7 +498,12 @@ export class GetCarPage extends BaseWindow {
       const html = this.content(maintenance_enum);
       super.render(html);
       this.tab_switching();
-      this.show_maintenance_logs();
+      if(this.active_tab === TABS.MAINTENANCE) {
+        this.show_maintenance_logs();
+      } else if(this.active_tab === TABS.REFUELING) {
+        this.show_refueling_logs();
+      }
+      
 
       const delete_car_btn = document.querySelector("#delete_car");
       const modal_overlay = document.querySelector("#delete_modal_overlay");

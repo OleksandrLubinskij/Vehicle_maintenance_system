@@ -58,7 +58,20 @@ const endpoint = {
     change_password: () => `${BASE_USERS_URL}/change_password`,
   },
   fuel_log: {
-    get_logs: (car_id) => `${BASE_FUEL_LOG_URL}/get_fuel_logs/${car_id}`,
+    get_logs: (car_id, params = {}) => {
+      let query_params = new URLSearchParams();
+
+      for (const [key, value] of Object.entries(params)) {
+        if (value !== undefined && value !== null && value !== "") {
+          query_params.append(key, value);
+        }
+      }
+
+      const query_string = query_params.toString();
+      const sufix = query_string ? `?${query_string}` : "";
+
+      return `${BASE_FUEL_LOG_URL}/get_fuel_logs/${car_id}${sufix}`;
+    },
     create_log: (car_id) => `${BASE_FUEL_LOG_URL}/create_fuel_log/${car_id}`,
   }
 };
