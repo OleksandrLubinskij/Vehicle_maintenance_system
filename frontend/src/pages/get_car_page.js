@@ -165,50 +165,62 @@ export class GetCarPage extends BaseWindow {
                     </div>
                 </div>
             </article>
+            <div>
+              <div id="tabs" class="flex items-end ml-3">
+                <button id="maintenance_tab" class="px-4 py-2 bg-white text-gray-800 font-medium rounded-t-2xl border-t border-l border-r border-gray-200 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-2 focus:ring-emerald-500 z-10 relative -mb-px">
+                  Ремонти
+                </button>            
 
-            <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6 md:p-8 flex flex-col lg:flex-row gap-8 items-start">
-                <div id="filter" class="w-full lg:w-1/4 shrink-0 bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
-                    <h3 class="text-xl font-black text-gray-900 mb-4">Фільтр</h3>
-                    <form id="filter_form" class="space-y-5">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Види робіт</label>
-                            ${form.create_select(
-                              "",
-                              "maintenance_type",
-                              ["", ...maintenance_type_values],
-                              "",
-                              "w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500",
-                              ["Усі", ...maintenance_type_show_values],
-                            )}
-                        </div>
-                        <fieldset class="border-none p-0 mb-5">
-                            <legend class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Сортування</legend>
-                            <div class="space-y-2.5">
-                                <label class="flex items-center gap-3 cursor-pointer group">
-                                    <input type="radio" name="sort_order" value="desc" checked class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-gray-300">
-                                    <span class="text-sm font-semibold text-gray-700 group-hover:text-gray-900">Спочатку найновіші</span>
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer group">
-                                    <input type="radio" name="sort_order" value="asc" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-gray-300">
-                                    <span class="text-sm font-semibold text-gray-700 group-hover:text-gray-900">Спочатку найстаріші</span>
-                                </label>
-                            </div>
-                        </fieldset>
-                        <input type="submit" value="Підтвердити" class="w-full py-2.5 px-4 text-sm font-bold text-white bg-[#146c43] hover:bg-emerald-700 active:bg-emerald-800 rounded-xl shadow-sm transition-all duration-200 cursor-pointer text-center">
-                    </form>
-                </div>
+                <button id="refueling_tab" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-t-2xl border-t border-l border-r border-transparent hover:bg-gray-200 focus:z-10 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors">
+                  Заправки
+                </button>            
+              </div>
 
-                <div class="flex-1 w-full flex flex-col">
-                    <div id="maintenances" class="w-full space-y-4"></div>
-                    
-                    <div id="load_more_wrapper" class="hidden flex justify-center pt-8 pb-4">
-                        <button id="load_more_btn" class="group flex items-center justify-center gap-2 w-full sm:w-auto py-3 px-8 text-sm font-bold text-[#146c43] bg-white hover:bg-emerald-50 border-2 border-[#146c43] rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer active:scale-95 uppercase tracking-wide">
-                            Завантажити ще
-                        </button>
-                    </div>
-                </div>
-            </div>
+            
+              <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6 md:p-8 flex flex-col lg:flex-row gap-8 items-start">
+                  <div id="filter" class="w-full lg:w-1/4 shrink-0 bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+                      <h3 class="text-xl font-black text-gray-900 mb-4">Фільтр</h3>
+                      <form id="filter_form" class="space-y-5">
+                          <div>
+                              <label class="block text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Види робіт</label>
+                              ${form.create_select(
+                                "",
+                                "maintenance_type",
+                                ["", ...maintenance_type_values],
+                                "",
+                                "w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500",
+                                ["Усі", ...maintenance_type_show_values],
+                              )}
+                          </div>
+                          <fieldset class="border-none p-0 mb-5">
+                              <legend class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Сортування</legend>
+                              <div class="space-y-2.5">
+                                  <label class="flex items-center gap-3 cursor-pointer group">
+                                      <input type="radio" name="sort_order" value="desc" checked class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-gray-300">
+                                      <span class="text-sm font-semibold text-gray-700 group-hover:text-gray-900">Спочатку найновіші</span>
+                                  </label>
+                                  <label class="flex items-center gap-3 cursor-pointer group">
+                                      <input type="radio" name="sort_order" value="asc" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-gray-300">
+                                      <span class="text-sm font-semibold text-gray-700 group-hover:text-gray-900">Спочатку найстаріші</span>
+                                  </label>
+                              </div>
+                          </fieldset>
+                          <input type="submit" value="Підтвердити" class="w-full py-2.5 px-4 text-sm font-bold text-white bg-[#146c43] hover:bg-emerald-700 active:bg-emerald-800 rounded-xl shadow-sm transition-all duration-200 cursor-pointer text-center">
+                      </form>
+                  </div>
 
+                  <div class="flex-1 w-full flex flex-col">
+                      <div id="maintenances" class="w-full space-y-4"></div>
+                      <div id="refuelings" class="w-full space-y-4"></div>
+                      
+                      <div id="load_more_wrapper" class="hidden flex justify-center pt-8 pb-4">
+                          <button id="load_more_btn" class="group flex items-center justify-center gap-2 w-full sm:w-auto py-3 px-8 text-sm font-bold text-[#146c43] bg-white hover:bg-emerald-50 border-2 border-[#146c43] rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer active:scale-95 uppercase tracking-wide">
+                              Завантажити ще
+                          </button>
+                      </div>
+                  </div>
+              </div>
+            </div>               
             <div class="flex justify-center pt-4">
                 <button id="delete_car" class="${this.visibility} py-2 px-4 text-xs font-bold text-gray-400 hover:text-red-600 border border-gray-300 hover:border-red-200 bg-transparent rounded-lg transition-all duration-200 cursor-pointer text-center uppercase">
                     Видалити машину
@@ -401,6 +413,7 @@ export class GetCarPage extends BaseWindow {
       const maintenance_enum = await api.enum.get_enums(3);
       const html = this.content(maintenance_enum);
       super.render(html);
+      this.tab_switching();
       this.show_maintenance_logs();
 
       const delete_car_btn = document.querySelector("#delete_car");
@@ -453,6 +466,38 @@ export class GetCarPage extends BaseWindow {
       super.render(
         "<div class='text-center p-10 text-red-500 font-bold'>Не вдалося завантажити дані автомобіля.</div>",
       );
+    }
+  }
+
+  tab_switching() {
+    const maintenance_tab = document.querySelector("#maintenance_tab");
+    const refueling_tab = document.querySelector("#refueling_tab");
+    const maintenances = document.querySelector("#maintenances");
+    const refuelings = document.querySelector("#refuelings");
+    const filter_form = document.querySelector("#filter");
+
+    const set_active_tab = (active_tab, inactive_tab) => {
+      active_tab.classList.add("bg-white", "text-gray-800");
+      active_tab.classList.remove("bg-gray-100", "text-gray-600");
+
+      inactive_tab.classList.add("bg-gray-100", "text-gray-600");
+      inactive_tab.classList.remove("bg-white", "text-gray-800");
+    }
+    if (maintenance_tab && refueling_tab && maintenances && refuelings) {
+      maintenance_tab.addEventListener("click", () => {
+        set_active_tab(maintenance_tab, refueling_tab);
+        maintenances.classList.remove("hidden");
+        filter_form.classList.remove("hidden");
+        refuelings.classList.add("hidden");
+
+      });
+
+      refueling_tab.addEventListener("click", () => {
+        set_active_tab(refueling_tab, maintenance_tab);
+        refuelings.classList.remove("hidden");
+        filter_form.classList.add("hidden");
+        maintenances.classList.add("hidden");
+      });
     }
   }
 }

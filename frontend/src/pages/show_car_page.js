@@ -114,7 +114,7 @@ export class ShowCarPage extends BaseWindow {
           )}
       </div>
     </div>
-    <div class="car_indicator h-4 w-full md:h-auto md:w-16 shrink-0" style="background-color: ${indicatorColor}"></div>
+    <div class="car_indicator h-6 w-full md:h-auto md:w-16 shrink-0" style="background-color: ${indicatorColor}"></div>
 </article>
     `;
   }
@@ -139,7 +139,7 @@ export class ShowCarPage extends BaseWindow {
             
             <div class="mb-6">
               ${this.form.create_entry(
-                "Ціна за літр (грн)", 
+                "Літри", 
                 "liters", 
                 "input", 
                 "w-full px-3 py-2 outline-none focus:ring-2 focus:ring-[#8c322e]", 
