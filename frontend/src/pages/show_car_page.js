@@ -75,7 +75,7 @@ export class ShowCarPage extends BaseWindow {
                 ${car_data["brand"]} ${car_data["model"]}
             </p>
             <div class="w-fit flex items-center gap-1.5 px-2 py-1 rounded-md text-[14px] font-bold bg-gray-100 border border-gray-200 uppercase tracking-wide" style="color: ${textColor}"> 
-                <div class="h-4 w-4 md:h-5 md:w-5 shrink-0 flex items-center justify-center">
+                <div class="h-4 w-4 md:w-5 shrink-0 flex items-center justify-center">
                     ${indicatorImg}
                 </div>
                 <span>${car_data["service_indicators"]["text_indicator"]}</span>
@@ -114,7 +114,7 @@ export class ShowCarPage extends BaseWindow {
           )}
       </div>
     </div>
-    <div class="car_indicator h-6 w-full md:h-auto md:w-16 shrink-0" style="background-color: ${indicatorColor}"></div>
+    <div class="car_indicator h-9 w-full md:h-auto md:w-16 shrink-0" style="background-color: ${indicatorColor}"></div>
 </article>
     `;
   }
