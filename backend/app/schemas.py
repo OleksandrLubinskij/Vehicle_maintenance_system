@@ -36,6 +36,7 @@ class CarUpdate(BaseModel):
 
 
 class MaintainenceLogUpdate(BaseModel):
+    mileage_on_maintain: Optional[int] = None
     maintenance_type: Optional[MaintenanceType] = None
     description: Optional[str] = None
 
