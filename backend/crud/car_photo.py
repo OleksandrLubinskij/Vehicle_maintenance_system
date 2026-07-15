@@ -7,7 +7,7 @@ from fastapi import HTTPException, status
 from app.cache.redis import RedisCache
 from app.config import CACHE, CAR_PHOTO_PATH
 import aiofiles
-from services.convert_images import convert_image_webp
+from app.utils.convert_images import convert_image_webp
 from PIL import UnidentifiedImageError
 from app.models import Car
 import os

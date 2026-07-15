@@ -1,5 +1,5 @@
 from datetime import datetime
-from app.models import Maintenance_log
+from app.models import MaintenanceLog
 from app.enums import MaintenanceType
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
@@ -7,25 +7,25 @@ from app.config import LIMITATIONS, TEXT_INDICATORS
 async def calculate_maintenance_delta(car_id: int, 
                                 current_mileage:int,  
                                 db: AsyncSession):
-    subq = (
-        select(
-            Maintenance_log,
-            func.row_number().over(
-                partition_by=Maintenance_log.maintenance_type,
-                order_by=Maintenance_log.date.desc()
-            ).label("rn")
-        ).where(
-            Maintenance_log.car_id == car_id,
-            Maintenance_log.maintenance_type.in_([
-                MaintenanceType.Oil_and_filters, 
-                MaintenanceType.Belt_replacement,
-                MaintenanceType.Inspection
-            ])
-        )
-    ).subquery()
+    # subq = (
+    #     select(
+    #         Maintenance_log,
+    #         func.row_number().over(
+    #             partition_by=Maintenance_log.maintenance_type,
+    #             order_by=Maintenance_log.date.desc()
+    #         ).label("rn")
+    #     ).where(
+    #         Maintenance_log.car_id == car_id,
+    #         Maintenance_log.maintenance_type.in_([
+    #             MaintenanceType.Oil_and_filters, 
+    #             MaintenanceType.Belt_replacement,
+    #             MaintenanceType.Inspection
+    #         ])
+    #     )
+    # ).subquery()
 
-    stmt = select(subq).where(subq.c.rn == 1)
-    res = (await db.execute(stmt)).all()
+    # stmt = select(subq).where(subq.c.rn == 1)
+    # res = (await db.execute(stmt)).all()
     data = {
         "Oil_filters_mileage": None,
         "Belt_mileage": None,

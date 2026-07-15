@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy import asc, desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models import Maintenance_log, User
+from app.models import MaintenanceLog, User
 from app.database import get_db
 from app.schemas import MaintainenceLogModel, MaintainenceLogUpdate
 from app.cache.redis import RedisCache
@@ -19,13 +19,13 @@ async def get_maintainence_log(car_id: int,
                                limit: int = 10,
                                offset: int = 0,
                                db: AsyncSession = Depends(get_db)):
-    condition = [Maintenance_log.car_id == car_id]
+    condition = [MaintenanceLog.car_id == car_id]
     if maintenance_type and maintenance_type != "Усі":
-        condition.append(Maintenance_log.maintenance_type == maintenance_type)
-    sort_order_condition = asc(Maintenance_log.date) if sort_order == "asc" else desc(Maintenance_log.date) 
+        condition.append(MaintenanceLog.maintenance_type == maintenance_type)
+    sort_order_condition = asc(MaintenanceLog.date) if sort_order == "asc" else desc(MaintenanceLog.date) 
     
     stmt = select(
-            Maintenance_log
+            MaintenanceLog
         ).where(
             *condition
         ).order_by(
@@ -42,9 +42,9 @@ async def get_maintainence_log(car_id: int,
 async def get_maintainence_log_by_id(log_id: int, 
                                      db:AsyncSession = Depends(get_db)):
     stmt = select(
-        Maintenance_log
+        MaintenanceLog
     ).where(
-        Maintenance_log.id == log_id 
+        MaintenanceLog.id == log_id 
     )
     res = (await db.execute(stmt)).scalar_one_or_none()
     return res
@@ -57,7 +57,7 @@ async def create_maintainence_record(car_id: int,
                                      current_user: User = Depends(allow_admin_only)):
     new_log_dict = log.model_dump()
     new_log_dict["car_id"] = car_id
-    new_log_obj = Maintenance_log(**new_log_dict)
+    new_log_obj = MaintenanceLog(**new_log_dict)
     try:
         db.add(new_log_obj)
         await db.commit()
@@ -74,9 +74,9 @@ async def edit_maintainence_record(edited_record: MaintainenceLogUpdate,
                                    db: AsyncSession = Depends(get_db),
                                    current_user: User = Depends(allow_admin_only)):
     stmt = select(
-            Maintenance_log
+            MaintenanceLog
         ).where(
-            Maintenance_log.id == record_id
+            MaintenanceLog.id == record_id
         )
     
     record_obj = (await db.execute(stmt)).scalar_one()
@@ -97,7 +97,7 @@ async def edit_maintainence_record(edited_record: MaintainenceLogUpdate,
 async def delete_maintainence_record(record_id: int, 
                                      db: AsyncSession = Depends(get_db),
                                      current_user: User = Depends(allow_admin_only)):
-    record_to_delete = await db.get(Maintenance_log, record_id)
+    record_to_delete = await db.get(MaintenanceLog, record_id)
     if not record_to_delete:
         raise HTTPException(status_code=404, detail="Запис не знайдено")
 

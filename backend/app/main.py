@@ -1,14 +1,12 @@
 from fastapi import FastAPI
-from api.v1 import endpoints
+from api.v1 import routes
 from app.exceptions import DBErrors, RecordNotFoundError, general_db_errors_handler, record_not_found_error_handler
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import CAR_PHOTO_PATH
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from app.scripts.create_super_user import create_super_user
-import os
-from alembic.config import Config
-from alembic import command
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -17,7 +15,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(endpoints.api_router)
+app.include_router(routes.api_router)
 
 app.add_exception_handler(DBErrors, general_db_errors_handler)
 app.add_exception_handler(RecordNotFoundError, record_not_found_error_handler)

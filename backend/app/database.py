@@ -12,11 +12,16 @@ use_insertmanyvalues=False
 SessionLocal = async_sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 async def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        await db.close()
+    async with SessionLocal() as db:
+        try:
+            yield db
+            await db.commit()
+        except Exception as e:
+            await db.rollback()
+            print(f"Database error: {e}")
+            raise
+        finally:
+            await db.close()
 
 async def init_db(engine):
     async with engine.begin() as conn:
