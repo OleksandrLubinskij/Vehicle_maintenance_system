@@ -50,7 +50,7 @@ class CarResponce(BaseModel):
     engine_capacity:float
     fuel_type: str
     oil_type: str
-    # service_indicators: Dict[str, Any] = {}
+    service_indicators: Dict[str, Any] = {}
     photo_path: str | None
     # monthly_fuel_consumption: float | None = 0.0
 

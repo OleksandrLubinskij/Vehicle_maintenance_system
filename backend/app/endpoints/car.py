@@ -2,29 +2,25 @@ from typing import Dict
 from app.schemas import CarResponce, CarModel, CarUpdate
 from fastapi import Depends, APIRouter
 from api.v1.auth.dependencies import RoleChecker
-from app.cache.redis import RedisCache, get_redis_cache
-from app.database import get_db
-from crud.cars_db import VehicleRepository
+from services.cars.fabric_car_service import get_vehicle_service
 from services.cars.car_service import VehicleService
-from sqlalchemy.ext.asyncio import AsyncSession
+from services.dashboard_facade import DashboardFacade
 
 router = APIRouter()
 allow_admin_only = RoleChecker(["Admin"])
 
-def get_vehicle_repo(db: AsyncSession = Depends(get_db)) -> VehicleRepository:
-    return VehicleRepository(db=db)
-
-def get_vehicle_service(cache: RedisCache = Depends(get_redis_cache),
-                        repo: VehicleRepository = Depends(get_vehicle_repo)) -> VehicleService:
-      return VehicleService(cache=cache, repo=repo)
-
-@router.get("/", response_model=Dict[int, CarResponce])
-async def read_all_cars(vehicle_service: VehicleService = Depends(get_vehicle_service)):
+# @router.get("/", response_model=Dict[int, CarResponce])
+@router.get("/")
+async def read_all_cars(vehicle_service: VehicleService = Depends(get_vehicle_service),
+                        dashboard_facade: DashboardFacade = Depends()):
     car_data = await vehicle_service.fetchVehicles()
     res = {}
+    car_id_list = []
     for car in car_data:
          res[car.id] = car
-    return res
+         car_id_list.append(car.id)
+    result = await dashboard_facade.compile_car_and_car_indicaors(car_id_list)
+    return result
 
 @router.get("/{id}")
 async def read_car(id: int, vehicle_service: VehicleService = Depends(get_vehicle_service)):
