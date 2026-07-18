@@ -21,13 +21,14 @@ class FuelLogRepository(BaseRepository[FuelLog]):
         return list(result.scalars().all())
 
     async def get_total_fuel_in_range(self,
-                                      car_id: int,
+                                      car_id_list: list[int],
                                       start_date: date,
-                                      end_date: date)-> float:
-        stmt = select(func.sum(self.model.liters)
-        ).where(self.model.car_id == car_id
+                                      end_date: date)-> dict[int, float]:
+        stmt = select(self.model.car_id, func.sum(self.model.liters)
+        ).where(self.model.car_id.in_(car_id_list)
         ).where(self.model.date >= start_date
-        ).where(self.model.date <= end_date)
+        ).where(self.model.date <= end_date
+        ).group_by(self.model.car_id)
 
-        result = await self.db.scalar(stmt)
-        return result or 0.0
+        result = await self.db.execute(stmt)
+        return dict(result.all())

@@ -19,12 +19,15 @@ async def read_all_cars(vehicle_service: VehicleService = Depends(get_vehicle_se
     for car in car_data:
          res[car.id] = car
          car_id_list.append(car.id)
-    result = await dashboard_facade.compile_car_and_car_indicaors(car_id_list)
+    result = await dashboard_facade.compile_car_and_car_indicaors(car_data, car_id_list)
     return result
 
 @router.get("/{id}")
-async def read_car(id: int, vehicle_service: VehicleService = Depends(get_vehicle_service)):
-    return await vehicle_service.fetch_by_id(id)
+async def read_car(id: int, 
+                   vehicle_service: VehicleService = Depends(get_vehicle_service),
+                   dashboard_facade: DashboardFacade = Depends()):
+    car = await vehicle_service.fetch_by_id(id)
+    return await dashboard_facade.compile_car_and_car_indicaors([car], [id])
 
 @router.post("/")
 async def create_car(car_data: CarModel, vehicle_service: VehicleService = Depends(get_vehicle_service)):
