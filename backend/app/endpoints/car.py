@@ -40,20 +40,3 @@ async def edit_car(id: int, car_new_data: CarUpdate, vehicle_service: VehicleSer
 @router.delete("/{id}")
 async def delete_car(id:int, vehicle_service: VehicleService = Depends(get_vehicle_service)):
      await vehicle_service.remove(id)
-
-# @router.get("/indicators/{car_id}")
-# async def get_serivce_indicators(car_id: int,  
-#                             db: AsyncSession):
-#         diffs = await calculate_maintenance_delta(car_id, current_mileage, db)
-
-#         output =  {
-#             key: evaluate_status(diff, LIMITATIONS[key])
-#             for key, diff in zip(LIMITATIONS.keys(), diffs)
-#         }
-#         worst_maintenance_code = max(output.values())
-#         output["worst_maintenance"] = worst_maintenance_code
-#         output["text_indicator"] = TEXT_INDICATORS[worst_maintenance_code]
-#         inspection_mileage = output.pop("inspection_mileage")
-#         inspection_time = output.pop("inspection_time")
-#         output["inspection"] = max((inspection_mileage, inspection_time))
-#         return output
