@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuToggle = document.querySelector("#menu_toggle");
   const navMenu = document.querySelector("#mobile_dropdown_menu");
   const menu_elem_btns = document.querySelectorAll(".menu_btn");
-  console.log(navMenu)
   if (menuToggle && navMenu) {
     menuToggle.addEventListener("click", () => {
       console.log("Hello")

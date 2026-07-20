@@ -95,7 +95,6 @@ export class AuthorizationPage extends BaseWindow {
                                     setTimeout(() => {
                                         router.navigate("/cars");
                                     }, 50);
-                                    console.log(user_data)
                                     localStorage.setItem("is_authenticated", "true");
                                     const current_user = await api.users.get_me();
                                     localStorage.setItem("role", current_user.role);
