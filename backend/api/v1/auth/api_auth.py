@@ -6,10 +6,10 @@ import crud.users as users
 from sqlalchemy import select, update
 from app.models import User
 from app.schemas import UserResponce
-from api.v1.auth.get_current_user import get_current_user
+# from api.v1.auth.get_current_user import get_current_user
 from app.security import  verify_password, create_access_token
-
-
+from services.users.fabric_users import get_user_service
+from services.users.user_service import UserService
 router = APIRouter()
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
@@ -66,21 +66,73 @@ async def get_all_users(db: AsyncSession = Depends(get_db)):
     users = (await db.execute(stmt)).scalars().all()
     return users
 
-@router.get("/get_me", response_model=UserResponce)
-async def get_me(current_user:User = Depends(get_current_user)) -> User:
-    return current_user;
+# @router.get("/get_me", response_model=UserResponce)
+# async def get_me(current_user:User = Depends(get_current_user)) -> User:
+#     return current_user;
 
-@router.put("/change_password")
-async def change_password(passwords: ResetPasssword,
-                         current_user:User = Depends(get_current_user),
-                         db: AsyncSession = Depends(get_db)):
+# @router.put("/change_password")
+# async def change_password(passwords: ResetPasssword,
+#                          current_user:User = Depends(get_current_user),
+#                          db: AsyncSession = Depends(get_db)):
 
-    if not verify_password(passwords.old_password, current_user.password):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail={
-                                "code": 0,
-                                "message": "Старий пароль неправильний!"})
-    stmt = update(User).where(User.id == current_user.id).values(password=users.get_password_hash(passwords.new_password))
-    await db.execute(stmt)
-    await db.commit()
-    return {"message": "Password changed successfully"}
+#     if not verify_password(passwords.old_password, current_user.password):
+#         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+#                             detail={
+#                                 "code": 0,
+#                                 "message": "Старий пароль неправильний!"})
+#     stmt = update(User).where(User.id == current_user.id).values(password=users.get_password_hash(passwords.new_password))
+#     await db.execute(stmt)
+#     await db.commit()
+#     return {"message": "Password changed successfully"}
+
+class AuthFacade:
+    def __init__(self,
+                 user_service: UserService = Depends(get_user_service)):
+        self.user_service = user_service
+
+    async def login_user(self,
+                         response: Response,
+                         user_data: UserLogin):
+        user = await self.user_service.fetch_user_by_login(user_data.login)
+        if not user:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                detail={
+                                    "code": 1,
+                                    "message":"Користувача не знайдено"})
+        if not verify_password(user_data.password, user.password):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                detail={
+                                    "code": 2,
+                                    "message": "Неправильний пароль"})
+        
+        token_data = {
+            "sub": user.login,
+            "role": user.role.value
+        }
+        access_token = create_access_token(token_data)
+
+        response.set_cookie(
+            key="access_token",
+            value=f"{access_token}",
+            httponly=True,     
+            samesite="none",
+            secure=True
+        )
+        return {"message": "Successful login"}
+
+    async def register_user(self,
+                            new_user_data: UserCreate):
+        existing_user = await self.user_service.fetch_user_by_login(new_user_data.login)
+        if (existing_user):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                detail={
+                                    "code":0,
+                                    "message":"Користувач з таким іменем уже існує"})
+        await self.user_service.register(new_user_data)
+        return {"message": "User registered successfully"}
+
+    async def logout_user(self):
+        pass
+
+    async def change_password(self):
+        pass

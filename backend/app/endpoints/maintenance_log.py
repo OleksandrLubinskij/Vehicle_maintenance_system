@@ -19,6 +19,7 @@ async def read_maintenance_log(id: int, maintenance_log_service: MaintenanceLogS
 @router.post("/{car_id}")
 async def create_maintenance_log(car_id:int, car_data: MaintainenceLogModel, maintenance_log_service: MaintenanceLogService = Depends(get_maintenance_log_service)):
     await maintenance_log_service.register(car_id, car_data)
+    
 
 @router.patch("/{id}")
 async def edit_maintenance_log(id: int, car_new_data: MaintainenceLogUpdate, maintenance_log_service: MaintenanceLogService = Depends(get_maintenance_log_service)):

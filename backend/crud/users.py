@@ -29,6 +29,6 @@ class UserRepository(BaseRepository):
 #         await db.rollback()
 #         raise HTTPException(status_code=500, detail=f"Помилка бази даних {str(e)}")
 
-async def get_user_by_login(login, db) -> User | None:
-    stmt = select(User).where(User.login == login)
-    return (await db.execute(stmt)).scalar_one_or_none()
+    async def get_user_by_login(self, login: str) -> User | None:
+        stmt = select(User).where(User.login == login)
+        return (await self.db.execute(stmt)).scalar_one_or_none()
