@@ -1,4 +1,3 @@
-from app.models import Car
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from sqlalchemy.orm import load_only

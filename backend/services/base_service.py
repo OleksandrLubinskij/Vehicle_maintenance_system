@@ -1,6 +1,6 @@
-from typing import Generic, TypeVar, Type, Any
+from typing import Generic, TypeVar, Any
 from pydantic import BaseModel
-from fastapi import HTTPException, status
+from app.exceptions import NotFoundError
 
 ModelType = TypeVar("ModelType")
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel) 
@@ -16,25 +16,24 @@ class BaseCRUDService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     
     async def fetch_by_id(self, id:int) -> ModelType:
         instance = await self.repo.get_by_id(id=id)
+        print(instance)
         if instance is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                detail="Not found!")
+            raise NotFoundError()
         return instance
     
     async def register(self, new_data: CreateSchemaType) -> ModelType:
         data = new_data.model_dump()
         instance = ModelType(**data)
         await self.repo.add(instance)
+        return instance
         
     async def update(self, id:int, new_data:UpdateSchemaType) -> ModelType:
         data = new_data.model_dump()
         result = await self.repo.update(id, data)
         if result is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                detail="Not found!") 
+            raise NotFoundError()
         
     async def remove(self, id:int) -> bool:
         result = await self.repo.delete(id)
         if not result:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                detail="Not found")
+            raise NotFoundError()

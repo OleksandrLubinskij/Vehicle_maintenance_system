@@ -1,14 +1,13 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from api.v1 import routes
-from app.exceptions import DBErrors, RecordNotFoundError, general_db_errors_handler, record_not_found_error_handler
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import CAR_PHOTO_PATH
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from app.scripts.create_super_user import create_super_user
 from api.v1.auth.exceptions import InvalidPasswordError, UserAlreadyExistsError, UserNotFoundError, NotAuthenticatedError, PermissionDeniedError
-
+from app.exceptions import NotFoundError
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -18,9 +17,6 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(routes.api_router)
-
-app.add_exception_handler(DBErrors, general_db_errors_handler)
-app.add_exception_handler(RecordNotFoundError, record_not_found_error_handler)
 
 app.mount("/car_photos", StaticFiles(directory=CAR_PHOTO_PATH), name="photos")
 origins = [
@@ -70,4 +66,11 @@ async def not_authenticated(request: Request, exc: PermissionDeniedError):
     return JSONResponse(
         status_code=status.HTTP_403_FORBIDDEN,
         content={"detail": f"You do not have rights to perform this operation!"}
+    )
+
+@app.exception_handler(NotFoundError)
+async def not_found(request: Request, exc: PermissionDeniedError):
+    return JSONResponse(
+        status_code=status.HTTP_404_NOT_FOUND,
+        content={"detail": "Not found!"}
     )

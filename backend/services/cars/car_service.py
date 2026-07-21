@@ -1,15 +1,6 @@
-from datetime import datetime
-
-from fastapi import HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.cache.redis import RedisCache
 from app.config import CACHE
-from app.enums import MaintenanceType
 from app.models import Car
-from app.schemas import CarModel, CarUpdate
-from app.exceptions import DBErrors
 from services.base_service import BaseCRUDService
-from services.cars.car_indicators_service import get_serivce_indicators
 
 class VehicleService(BaseCRUDService):
     def __init__(self, repo, cache):

@@ -6,6 +6,7 @@ from app.schemas import ResetPassword, UserCreate
 from crud.users import UserRepository
 from fastapi import HTTPException, status
 from app.config import USER
+from app.exceptions import NotFoundError
 class UserService(BaseCRUDService):
     repo: UserRepository
     def __init__(self, repo: UserRepository):
@@ -14,8 +15,7 @@ class UserService(BaseCRUDService):
     async def fetch_user_by_login(self, login: str) -> User:
         user = await self.repo.get_user_by_login(login)
         if not user:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                detail="Not found!")
+            raise NotFoundError()
         return user
 
     async def fetch_user_by_login_or_fail(self, login: str) -> User | None:
@@ -40,7 +40,5 @@ class UserService(BaseCRUDService):
             raise InvalidPasswordError("Старий пароль неправильний!")
         
         hashed_new_password = get_password_hash(passwords.new_password)
-        result = await self.repo.update_password(id=id, new_password=hashed_new_password)
-        if result is None:
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                                detail="Database error!")
+        await self.repo.update_password(id=id, new_password=hashed_new_password)
+        
