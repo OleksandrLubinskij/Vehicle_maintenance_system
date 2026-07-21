@@ -1,7 +1,8 @@
-from app.security import get_password_hash
+from app.security import get_password_hash, verify_password
+from api.v1.auth.exceptions import InvalidPasswordError
 from services.base_service import BaseCRUDService
 from app.models import User
-from app.schemas import UserCreate
+from app.schemas import ResetPassword, UserCreate
 from crud.users import UserRepository
 from fastapi import HTTPException, status
 from app.config import USER
@@ -17,6 +18,12 @@ class UserService(BaseCRUDService):
                                 detail="Not found!")
         return user
 
+    async def fetch_user_by_login_or_fail(self, login: str) -> User | None:
+        user = await self.repo.get_user_by_login(login)
+        if not user:
+            return None
+        return user
+    
     async def register(self, new_user_data: UserCreate, role="User") -> UserCreate:
         new_user_dict = new_user_data.model_dump()
         raw_password = new_user_dict.pop(USER.PASSWORD)
@@ -26,4 +33,14 @@ class UserService(BaseCRUDService):
             password = hashed_password,
             role=role
         )
-        self.repo.add(new_user)
+        await self.repo.add(new_user)
+
+    async def update_user_password(self, id:int, passwords: ResetPassword, current_password: str):
+        if not verify_password(passwords.old_password, current_password):
+            raise InvalidPasswordError("Старий пароль неправильний!")
+        
+        hashed_new_password = get_password_hash(passwords.new_password)
+        result = await self.repo.update_password(id=id, new_password=hashed_new_password)
+        if result is None:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                detail="Database error!")

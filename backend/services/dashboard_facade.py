@@ -28,13 +28,14 @@ class DashboardFacade:
         
         return maintenance_delta
     
-    async def compile_car_and_car_indicaors(self, cars: list[Car], car_id_list: list[int]):
+    async def compile_car_and_car_indicators(self, cars: list[Car], car_id_list: list[int]):
         maintenance_delta = await self.get_car_indicators(car_id_list)
         fuel_monthly_consumption = await self.fuel_log_service.get_monthly_fuel_consumption(car_id_list)
         result = {}
         for car in cars:
             car_data = {
                 "id": car.id,
+                "vin": car.vin,
                 "brand": car.brand,
                 "model": car.model, 
                 "mileage": car.mileage,

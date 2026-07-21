@@ -54,7 +54,7 @@ class CarResponce(BaseModel):
     photo_path: str | None
     # monthly_fuel_consumption: float | None = 0.0
 
-class ResetPasssword(BaseModel):
+class ResetPassword(BaseModel):
     old_password: str
     new_password: str
 
