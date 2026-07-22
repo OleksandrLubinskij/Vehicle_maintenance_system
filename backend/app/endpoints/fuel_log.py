@@ -1,6 +1,5 @@
 from fastapi import Depends, APIRouter
 from api.v1.auth.dependencies import RoleChecker
-from services.cars.fabric_car_service import get_vehicle_service
 from services.fuel_logs.fabric_fuel_log import get_fuel_log_service
 from services.fuel_logs.fuel_logs_service import FuelLogService
 from app.schemas import FuelLogModel

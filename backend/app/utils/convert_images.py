@@ -1,6 +1,5 @@
 import io
 from PIL import Image
-from fastapi import UploadFile
 import asyncio
 
 def process_image(photo_b:bytes):

@@ -1,5 +1,5 @@
 from enum import Enum
-from fastapi import Cookie, Depends, HTTPException, status
+from fastapi import Cookie, Depends
 from jose import JWTError, jwt
 from app.models import User
 from app.config import ALGORITHM, SECRET_KEY

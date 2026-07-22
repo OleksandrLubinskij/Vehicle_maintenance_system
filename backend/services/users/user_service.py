@@ -4,7 +4,6 @@ from services.base_service import BaseCRUDService
 from app.models import User
 from app.schemas import ResetPassword, UserCreate
 from crud.users import UserRepository
-from fastapi import HTTPException, status
 from app.config import USER
 from app.exceptions import NotFoundError
 class UserService(BaseCRUDService):

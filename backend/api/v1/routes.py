@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends
 from app.endpoints import car, maintenance_log, fuel_log, user, car_photo
-import api.v1.auth.api_auth as api_auth
 from services import get_enums
 from api.v1.auth.dependencies import get_current_user
 from app.utils import do_not_sleep

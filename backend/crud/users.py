@@ -1,9 +1,5 @@
-from fastapi import Depends, HTTPException
 from sqlalchemy import select, update
-from sqlalchemy.orm import Session
 from app.models import User
-from app.config import USER 
-from app.security import get_password_hash
 from crud.base_repository import BaseRepository
 from sqlalchemy.ext.asyncio import AsyncSession
 

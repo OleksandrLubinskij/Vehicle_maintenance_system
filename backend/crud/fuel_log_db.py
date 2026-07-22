@@ -3,7 +3,6 @@ from datetime import date
 from app.models import FuelLog
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import func, select
-from sqlalchemy.orm import load_only
 from .base_repository import BaseRepository
 
 class FuelLogRepository(BaseRepository[FuelLog]):

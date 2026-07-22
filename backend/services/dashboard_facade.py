@@ -7,7 +7,6 @@ from services.maintenance_logs.fabric_maintenance_log_service import get_mainten
 from services.fuel_logs.fabric_fuel_log import get_fuel_log_service
 from fastapi import Depends
 from services.cars.car_indicators_service import calculate_maintenance_delta, process_car_maintenance_indicators
-from app.schemas import FuelLogModel
 class DashboardFacade:
     def __init__(self,
                  vehicle_service: VehicleService = Depends(get_vehicle_service),
