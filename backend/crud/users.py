@@ -18,5 +18,4 @@ class UserRepository(BaseRepository):
     async def update_password(self, id: int, new_password: str) -> str | None:
         stmt = update(User).where(User.id == id).values(password = new_password)
         result = await self.db.execute(stmt)
-        await self.db.commit()
         return result

@@ -29,3 +29,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
 CAR_PHOTO_PATH = BASE_DIR / "static" / "car_images"
+
+S3_FOLDER = "car_photos"
+CAR_PHOTOS_URL = os.getenv("CAR_PHOTOS_URl")

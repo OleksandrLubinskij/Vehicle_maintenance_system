@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from app.endpoints import car, maintenance_log, fuel_log, user
+from app.endpoints import car, maintenance_log, fuel_log, user, car_photo
 import api.v1.auth.api_auth as api_auth
 from services import get_enums
 from api.v1.auth.dependencies import get_current_user
@@ -13,22 +13,22 @@ api_router.include_router(car.router,
 
 api_router.include_router(maintenance_log.router,
                           prefix="/v1/maintenance_logs",
-                          tags=["Maintenance log"],)
-                          # dependencies=[Depends(get_current_user)])
+                          tags=["Maintenance log"],
+                          dependencies=[Depends(get_current_user)])
 
 api_router.include_router(user.router,
                           prefix="/v1/users",
                           tags=["User"])
 
-# api_router.include_router(car_photo.router,
-#                           prefix="/v1/car_photos",
-#                           tags=["Car photo"],
-#                           dependencies=[Depends(get_current_user)])
+api_router.include_router(car_photo.router,
+                          prefix="/v1/car_photos",
+                          tags=["Car photo"],
+                          dependencies=[Depends(get_current_user)])
 
 api_router.include_router(fuel_log.router,
                           prefix="/v1/fuel_logs",
-                          tags=["Fuel log"],)
-                          # dependencies=[Depends(get_current_user)])
+                          tags=["Fuel log"],
+                          dependencies=[Depends(get_current_user)])
 
 api_router.include_router(get_enums.router,
                           prefix="/v1/get_enums",
