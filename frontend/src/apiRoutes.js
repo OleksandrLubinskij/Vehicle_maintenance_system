@@ -13,15 +13,14 @@ const BASE_FUEL_LOG_URL = `${BASE_API_URL}/fuel_logs`;
 const endpoint = {
   cars: {
     show_all_cars: () => `${BASE_CAR_URL}`,
-    show_car_by_id: (id) => `${BASE_CAR_URL}/get_car_by_id/${id}`,
-    create_car: () => `${BASE_CAR_URL}/create_car`,
-    edit_car: (id) => `${BASE_CAR_URL}/edit_car/${id}`,
-    delete_car: (id) => `${BASE_CAR_URL}/delete_car/${id}`,
+    show_car_by_id: (id) => `${BASE_CAR_URL}/${id}`,
+    create_car: () => `${BASE_CAR_URL}`,
+    edit_car: (id) => `${BASE_CAR_URL}/${id}`,
+    delete_car: (id) => `${BASE_CAR_URL}/${id}`,
     get_car_mileage: (id) => `${BASE_CAR_URL}/get_car_mileage/${id}`,
     get_car_brand_and_model: (id) =>
       `${BASE_CAR_URL}/get_car_brand_and_model/${id}`,
     upload_car_photo: (id) => `${BASE_CAR_PHOTO_API_URL}/upload/${id}`,
-    edit_car_photo: (id) => `${BASE_CAR_PHOTO_API_URL}/edit_car_photo/${id}`,
   },
   maintenance_log: {
     show_all_mlog: (car_id, params = {}) => {
@@ -39,13 +38,13 @@ const endpoint = {
       return `${BASE_MAINTENANCE_LOG_URL}/${car_id}${sufix}`;
     },
     show_mlog_by_id: (id) =>
-      `${BASE_MAINTENANCE_LOG_URL}/get_maintenance_record_by_id/${id}`,
+      `${BASE_MAINTENANCE_LOG_URL}/${id}`,
     create_mlog: (car_id) =>
-      `${BASE_MAINTENANCE_LOG_URL}/create_maintenance_record/${car_id}`,
+      `${BASE_MAINTENANCE_LOG_URL}/${car_id}`,
     edit_mlog: (id) =>
-      `${BASE_MAINTENANCE_LOG_URL}/edit_maintenance_record/${id}`,
+      `${BASE_MAINTENANCE_LOG_URL}/${id}`,
     delete_mlog: (id) =>
-      `${BASE_MAINTENANCE_LOG_URL}/delete_maintenance_record/${id}`,
+      `${BASE_MAINTENANCE_LOG_URL}/${id}`,
   },
   enum: {
     get_enums: (enum_id) => `${BASE_API_URL}/get_enums/${enum_id}`,
@@ -70,9 +69,9 @@ const endpoint = {
       const query_string = query_params.toString();
       const sufix = query_string ? `?${query_string}` : "";
 
-      return `${BASE_FUEL_LOG_URL}/get_fuel_logs/${car_id}${sufix}`;
+      return `${BASE_FUEL_LOG_URL}/${car_id}${sufix}`;
     },
-    create_log: (car_id) => `${BASE_FUEL_LOG_URL}/create_fuel_log/${car_id}`,
+    create_log: (car_id) => `${BASE_FUEL_LOG_URL}/${car_id}`,
     get_fuel_consumption: (car_id) => `${BASE_FUEL_LOG_URL}/monthly_fuel_consumption/${car_id}`
   }
 };
@@ -128,8 +127,6 @@ export const api = {
       request(endpoint.cars.get_car_brand_and_model(id), "GET"),
     upload_car_photo: (id, photo) =>
       request(endpoint.cars.upload_car_photo(id), "POST", photo),
-    edit_car_photo: (id, photo) =>
-      request(endpoint.cars.edit_car_photo(id), "PUT", photo),
   },
   maintenance_log: {
     show_all_mlog: (car_id, params = {}) =>
@@ -152,7 +149,7 @@ export const api = {
     logout: (data) => request(endpoint.users.logout()),
     get_me: () => request(endpoint.users.get_me()),
     change_password: (data) =>
-      request(endpoint.users.change_password(), "PUT", data),
+      request(endpoint.users.change_password(), "PATCH", data),
   },
   fuel_log: {
     get_logs: (car_id, params = {}) => request(endpoint.fuel_log.get_logs(car_id, params)),

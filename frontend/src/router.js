@@ -10,82 +10,125 @@ import { updateActiveNavLink } from "./utils/update_active_nav_link.js";
 import "./components/navbar_burger_menu.js";
 import "./utils/settings_floating_window.js";
 import "./utils/change_password_scripts.js"
+
 class Router {
     constructor() {
+        // this.routes = {
+        //     "/cars": { Class: ShowCarPage },
+        //     "/create_car": { Class: CreateCarPage, mode: PAGE_MODE.CREATE, useParam: false },
+        //     "/edit_car": { Class: CreateCarPage, mode: PAGE_MODE.EDIT },
+        //     "/get_car": {Class: GetCarPage},
+        //     "/create_maintenance_record": { Class: ManageMaintenancePage, mode: PAGE_MODE.CREATE },
+        //     "/edit_maintenance_record": { Class: ManageMaintenancePage, mode: PAGE_MODE.EDIT },
+        //     "/register": { Class: AuthorizationPage, mode: AUTHORIZATION_PAGE_MODE.REGISTER },
+        //     "/login": { Class: AuthorizationPage, mode: AUTHORIZATION_PAGE_MODE.LOGIN },
+        //     "/404": { Class: ErrorPage }
+        // };
         this.routes = {
-            "/cars": { Class: ShowCarPage },
-            "/create_car": { Class: CreateCarPage, mode: PAGE_MODE.CREATE, useParam: false },
-            "/edit_car": { Class: CreateCarPage, mode: PAGE_MODE.EDIT },
-            "/get_car": {Class: GetCarPage},
-            "/create_maintenance_record": { Class: ManageMaintenancePage, mode: PAGE_MODE.CREATE },
-            "/edit_maintenance_record": { Class: ManageMaintenancePage, mode: PAGE_MODE.EDIT },
-            "/register": { Class: AuthorizationPage, mode: AUTHORIZATION_PAGE_MODE.REGISTER },
-            "/login": { Class: AuthorizationPage, mode: AUTHORIZATION_PAGE_MODE.LOGIN },
-            "/404": { Class: ErrorPage }
+            "cars": {
+                "GET": { Class: ShowCarPage },
+                "POST": { Class: CreateCarPage, mode: PAGE_MODE.CREATE, useParam: false },
+                "PATCH": { Class: CreateCarPage, mode: PAGE_MODE.EDIT },
+                "DELETE": {} 
+            },
+            "maintenance_log": {
+                "GET": { },
+                "POST": { Class: ManageMaintenancePage, mode: PAGE_MODE.CREATE },
+                "PATCH": { Class: ManageMaintenancePage, mode: PAGE_MODE.EDIT },
+                "DELETE": {} 
+            },
+            // Додаємо 404 як сутність, щоб роутер не ламався при помилках
+            "404": {
+                "GET": { Class: ErrorPage }
+            }
         };
-        this._current_path = "/";
+        this._current_path = window.location.pathname;
     }
 
     get current_path() { return this._current_path; }
     set current_path(new_path) { this._current_path = new_path; }
 
-    load_page(raw_path) {
-        console.log("=== РОУТЕР НАМАГАЄТЬСЯ ЗАВАНТАЖИТИ ШЛЯХ ==:", raw_path);
+    // Задаємо значення за замовчуванням
+    load_page(method = null, entity = null, id = null) {
         control_nav_menu_visibility();
-        const raw_path_arr = raw_path.split("/").filter(Boolean);
-        if (raw_path_arr.length === 0) {
-            this.navigate("/cars");
-            return;
-        }
-
-        const path = `/${raw_path_arr[0]}`;
-        const routeConfig = this.routes[path];
-        const path_param = (routeConfig && routeConfig.useParam === false) ? null : (raw_path_arr[1] || null);
         
+        // 1. Якщо аргументи не передані (прямий захід по URL або popstate), парсимо адресний рядок
+        const path_parts = window.location.pathname.split("/").filter(Boolean);
+        const current_entity = entity || path_parts[0] || "cars";
+        const current_id = id || (path_parts.length > 1 ? path_parts[1] : null);
+        const current_method = method || "GET"; // За замовчуванням GET для прямого заходу
+
+        // 2. Шукаємо конфігурацію роута
+        const entityRoutes = this.routes[current_entity];
+        const routeConfig = entityRoutes ? entityRoutes[current_method] : null;
+        console.log(entityRoutes);
+        console.log(routeConfig);
         let pageInstance;
 
-        if (!routeConfig) {
+        if (!routeConfig || !routeConfig.Class) {
             console.warn("Маршрут не знайдено! Перемикаємо на 404.");
-            this.current_path = "/404";
-            const ErrorClass = this.routes["/404"].Class;
+            this._current_path = "/404";
+            const ErrorClass = this.routes["404"]["GET"].Class;
             pageInstance = new ErrorClass("Not found", "404");
         } else {
-            this.current_path = raw_path;
-            const page_title = raw_path_arr[0].replace("_", " ");
+            this._current_path = window.location.pathname;
+            const page_title = current_entity.replace("_", " ");
             
-            const { Class, mode } = routeConfig;
-            
+            let { Class, mode } = routeConfig;
+            if (current_method === "GET" && current_entity === "cars") {
+                Class = current_id ? GetCarPage : ShowCarPage;
+            }
             if (mode !== undefined) {
-                console.log(`Router ${mode}`);
-                pageInstance = new Class(page_title, path_param, mode);
+                console.log(`Router mode: ${mode}`);
+                pageInstance = new Class(page_title, current_id, mode);
             } else {
-                pageInstance = new Class(page_title, path_param);
+                pageInstance = new Class(page_title, current_id);
             }
         }
-        updateActiveNavLink(path);
+        
+        updateActiveNavLink(`/${current_entity}`);
         pageInstance.render();
     }
 
-    navigate(path) {
-        if (this._current_path === path) return;
+    navigate(method, entity, id) {
+        // Формуємо новий шлях для браузера
+        let new_path = `/${entity}`;
+        if (id) new_path += `/${id}`;
 
-        window.history.pushState({}, "", path);
-        this._current_path = path;
-        this.load_page(path);
+        if (this._current_path === new_path && method === "GET") return;
+
+        // Зберігаємо method, entity та id у state історії браузера
+        window.history.pushState({ method, entity, id }, "", new_path);
+        this._current_path = new_path;
+        
+        this.load_page(method, entity, id);
     }
 }
 
 export const router = new Router();
-router.load_page(window.location.pathname);
+
+// Ініціалізація при першому завантаженні сторінки без аргументів (спрацює дефолтний парсинг URL)
+router.load_page();
 
 document.addEventListener("click", (event) => {
-    const button = event.target.closest("button[data-path]");
+    const button = event.target.closest("button[data-method]");
     if (button) {
-        const path = button.getAttribute("data-path");
-        router.navigate(path);
+        const method_attr = button.getAttribute("data-method");
+        const entity_attr = button.getAttribute("data-entity");
+        const id_attr = button.getAttribute("data-id");
+        console.log(method_attr);
+        console.log(entity_attr);
+        console.log(id_attr);
+        router.navigate(method_attr, entity_attr, id_attr);
     }
 });
 
-window.addEventListener("popstate", () => {
-    router.load_page(window.location.pathname);
+window.addEventListener("popstate", (event) => {
+    // Якщо користувач натиснув "Назад" і там є збережений state, використовуємо його
+    if (event.state) {
+        router.load_page(event.state.method, event.state.entity, event.state.id);
+    } else {
+        // Якщо state порожній, дозволяємо load_page самостійно розібрати URL
+        router.load_page();
+    }
 });
