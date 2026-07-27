@@ -13,7 +13,20 @@ const BASE_FUEL_LOG_URL = `${BASE_API_URL}/fuel_logs`;
 const endpoint = {
   cars: {
     show_all_cars: () => `${BASE_CAR_URL}`,
-    show_car_by_id: (id) => `${BASE_CAR_URL}/${id}`,
+    show_car_by_id: (car_id, params ={}) => {
+      console.log(params)
+      let query_params = new URLSearchParams();
+      for (const [key, value] of Object.entries(params)) {
+        if (value !== undefined && value !== null && value !== "") {
+          query_params.append(key, value);
+        }
+      }
+
+      const query_string = query_params.toString();
+      const suffix = query_string ? `?${query_string}` : "";
+
+      return `${BASE_FUEL_LOG_URL}/${car_id}${suffix}`;
+    },
     create_car: () => `${BASE_CAR_URL}`,
     edit_car: (id) => `${BASE_CAR_URL}/${id}`,
     delete_car: (id) => `${BASE_CAR_URL}/${id}`,
@@ -67,9 +80,9 @@ const endpoint = {
       }
 
       const query_string = query_params.toString();
-      const sufix = query_string ? `?${query_string}` : "";
+      const suffix = query_string ? `?${query_string}` : "";
 
-      return `${BASE_FUEL_LOG_URL}/${car_id}${sufix}`;
+      return `${BASE_FUEL_LOG_URL}/${car_id}${suffix}`;
     },
     create_log: (car_id) => `${BASE_FUEL_LOG_URL}/${car_id}`,
     get_fuel_consumption: (car_id) => `${BASE_FUEL_LOG_URL}/monthly_fuel_consumption/${car_id}`

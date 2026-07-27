@@ -24,9 +24,12 @@ async def read_all_cars(vehicle_service: VehicleService = Depends(get_vehicle_se
 
 @router.get("/{id}")
 async def read_car(id: int, 
+                   fields: str | None = None,
                    vehicle_service: VehicleService = Depends(get_vehicle_service),
                    dashboard_facade: DashboardFacade = Depends()):
-    car = await vehicle_service.fetch_by_id(id)
+    fields_list = fields.split(",") if fields else []
+    car = await vehicle_service.fetch_by_id(id, fields_list)
+    if len(fields_list) > 0: return car
     return await dashboard_facade.compile_car_and_car_indicators([car], [id])
 
 @router.post("/")

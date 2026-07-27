@@ -37,6 +37,9 @@ class Router {
                 "PATCH": { Class: ManageMaintenancePage, mode: PAGE_MODE.EDIT },
                 "DELETE": {} 
             },
+            "users": {
+                "POST": { Class: AuthorizationPage, mode: AUTHORIZATION_PAGE_MODE.LOGIN }
+            },
             // Додаємо 404 як сутність, щоб роутер не ламався при помилках
             "404": {
                 "GET": { Class: ErrorPage }
@@ -54,9 +57,9 @@ class Router {
         
         // 1. Якщо аргументи не передані (прямий захід по URL або popstate), парсимо адресний рядок
         const path_parts = window.location.pathname.split("/").filter(Boolean);
-        const current_entity = entity || path_parts[0] || "cars";
+        const current_entity = entity || path_parts[0] || "users";
         const current_id = id || (path_parts.length > 1 ? path_parts[1] : null);
-        const current_method = method || "GET"; // За замовчуванням GET для прямого заходу
+        const current_method = method || "POST"; // За замовчуванням GET для прямого заходу
 
         // 2. Шукаємо конфігурацію роута
         const entityRoutes = this.routes[current_entity];

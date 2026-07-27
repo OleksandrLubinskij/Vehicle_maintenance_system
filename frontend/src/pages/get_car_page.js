@@ -62,6 +62,7 @@ export class GetCarPage extends BaseWindow {
         </svg>`;
 
     MAINTENANCE_TYPES.forEach((field) => {
+      console.log(this.car);
       const indicatorStatus = this.car.service_indicators[field.ID];
       const colorHex = INDICATORS[indicatorStatus]?.color || "#dddddd";
 

@@ -20,12 +20,13 @@ class BaseRepository(Generic[ModelType]):
     async def get_by_id(self, id:int, fields: list[str] | None = None) -> ModelType | None:
         stmt = select(self.model).where(self.model.id == id)
         if fields:
-            colums_to_load = [getattr(self.model, field) for field in fields if hasattr(self.model, field)]
+            colums_to_load = [getattr(self.model, field)
+                              for field in fields 
+                              if hasattr(self.model, field)]
+            
             if colums_to_load:
                 stmt = stmt.options(load_only(*colums_to_load))
         result = await self.db.execute(stmt)
-        if not result:
-            return None
         return result.scalar_one_or_none()
     
     async def add(self, instance: ModelType) -> ModelType:

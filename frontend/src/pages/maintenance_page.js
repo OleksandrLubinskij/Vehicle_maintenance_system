@@ -75,7 +75,7 @@ export class ManageMaintenancePage extends BaseWindow {
             try {
                 const maintenance_type_enum = await api.enum.get_enums(3);
                 const actual_mileage = this.mode === PAGE_MODE.EDIT ? null : await api.cars.get_car_mileage(this.id);
-                const car_brand_model = this.mode === PAGE_MODE.EDIT ? null : await api.cars.get_car_brand_and_model(this.id); 
+                const car_brand_model = this.mode === PAGE_MODE.EDIT ? null : await api.cars.show_car_by_id; 
                 const default_values = this.mode === PAGE_MODE.CREATE ? null : await api.maintenance_log.show_mlog_by_id(this.id);
                 
                 const html = this.content(maintenance_type_enum, actual_mileage, default_values, car_brand_model);

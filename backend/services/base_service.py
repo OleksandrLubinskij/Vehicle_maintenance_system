@@ -14,8 +14,8 @@ class BaseCRUDService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         instance = await self.repo.get_all()
         return instance
     
-    async def fetch_by_id(self, id:int) -> ModelType:
-        instance = await self.repo.get_by_id(id=id)
+    async def fetch_by_id(self, id:int, fields:list[str]) -> ModelType:
+        instance = await self.repo.get_by_id(id=id, fields=fields)
         print(instance)
         if instance is None:
             raise NotFoundError()

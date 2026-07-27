@@ -88,12 +88,12 @@ export class AuthorizationPage extends BaseWindow {
                                     delete user_data.confirm_password;
                                     await api.users.register(user_data);
                                     console.log("Користувача створено");
-                                    router.navigate("/login");
+                                    router.navigate("POST", "users");
                                 } else {
                                     await api.users.login(user_data);
                                     console.log("Авторизація успішна");
                                     setTimeout(() => {
-                                        router.navigate("/cars");
+                                        router.navigate("GET", "cars");
                                     }, 50);
                                     console.log(user_data)
                                     localStorage.setItem("is_authenticated", "true");
