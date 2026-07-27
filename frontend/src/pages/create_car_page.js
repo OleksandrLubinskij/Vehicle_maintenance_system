@@ -13,7 +13,7 @@ export class CreateCarPage extends BaseWindow {
     create_add_car_form(fuel_enum, oil_enum, default_values = null) {
         const form = new Form();
         let form_fields = [];
-
+        console.log(default_values);
         const fuel_values = fuel_enum.map(val => val.name);
         const oil_values = oil_enum.map(val => val.name);
         
@@ -21,7 +21,6 @@ export class CreateCarPage extends BaseWindow {
             const extra_class = (field_identificator.LABEL === "VIN") ? "md:col-span-2" : "";
             
             const def_val = default_values ? default_values[field_identificator.ID] : null; 
-            
             const field = form.create_entry(field_identificator.LABEL, field_identificator.ID, "input", extra_class, def_val);
             form_fields.push(field);
         }
@@ -98,9 +97,8 @@ export class CreateCarPage extends BaseWindow {
         try {
             const fuel_enum = await api.enum.get_enums(1);
             const oil_enum = await api.enum.get_enums(2);
-            const car_brand_model = this.id === null ? null : await api.cars.get_car_brand_and_model(this.id);
+            const car_brand_model = this.id === null ? null : await api.cars.show_car_by_id(this.id, {"fields": "brand,model"});
             const default_values = this.id === null ? null : await api.cars.show_car_by_id(this.id);
-            
             const html = this.content(fuel_enum, oil_enum, default_values, car_brand_model);
             super.render(html);
 

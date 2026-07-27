@@ -40,6 +40,9 @@ class Router {
             "users": {
                 "POST": { Class: AuthorizationPage, mode: AUTHORIZATION_PAGE_MODE.LOGIN }
             },
+            "fuel_logs":{
+                
+            },
             // Додаємо 404 як сутність, щоб роутер не ламався при помилках
             "404": {
                 "GET": { Class: ErrorPage }
@@ -59,7 +62,7 @@ class Router {
         const path_parts = window.location.pathname.split("/").filter(Boolean);
         const current_entity = entity || path_parts[0] || "users";
         const current_id = id || (path_parts.length > 1 ? path_parts[1] : null);
-        const current_method = method || "POST"; // За замовчуванням GET для прямого заходу
+        const current_method = method || "GET"; // За замовчуванням GET для прямого заходу
 
         // 2. Шукаємо конфігурацію роута
         const entityRoutes = this.routes[current_entity];
@@ -93,12 +96,10 @@ class Router {
         pageInstance.render();
     }
 
-    navigate(method, entity, id) {
+    navigate(method=null, entity=null, id=null) {
         // Формуємо новий шлях для браузера
         let new_path = `/${entity}`;
         if (id) new_path += `/${id}`;
-
-        if (this._current_path === new_path && method === "GET") return;
 
         // Зберігаємо method, entity та id у state історії браузера
         window.history.pushState({ method, entity, id }, "", new_path);

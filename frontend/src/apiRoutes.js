@@ -25,14 +25,11 @@ const endpoint = {
       const query_string = query_params.toString();
       const suffix = query_string ? `?${query_string}` : "";
 
-      return `${BASE_FUEL_LOG_URL}/${car_id}${suffix}`;
+      return `${BASE_CAR_URL}/${car_id}${suffix}`;
     },
     create_car: () => `${BASE_CAR_URL}`,
     edit_car: (id) => `${BASE_CAR_URL}/${id}`,
     delete_car: (id) => `${BASE_CAR_URL}/${id}`,
-    get_car_mileage: (id) => `${BASE_CAR_URL}/get_car_mileage/${id}`,
-    get_car_brand_and_model: (id) =>
-      `${BASE_CAR_URL}/get_car_brand_and_model/${id}`,
     upload_car_photo: (id) => `${BASE_CAR_PHOTO_API_URL}/upload/${id}`,
   },
   maintenance_log: {
@@ -131,13 +128,10 @@ async function request(URL, method = "GET", data = null) {
 export const api = {
   cars: {
     show_all_cars: () => request(endpoint.cars.show_all_cars()),
-    show_car_by_id: (id) => request(endpoint.cars.show_car_by_id(id)),
+    show_car_by_id: (id, params={}) => request(endpoint.cars.show_car_by_id(id, params)),
     create_car: (data) => request(endpoint.cars.create_car(), "POST", data),
     edit_car: (id, data) => request(endpoint.cars.edit_car(id), "PATCH", data),
     delete_car: (id) => request(endpoint.cars.delete_car(id), "DELETE"),
-    get_car_mileage: (id) => request(endpoint.cars.get_car_mileage(id), "GET"),
-    get_car_brand_and_model: (id) =>
-      request(endpoint.cars.get_car_brand_and_model(id), "GET"),
     upload_car_photo: (id, photo) =>
       request(endpoint.cars.upload_car_photo(id), "POST", photo),
   },

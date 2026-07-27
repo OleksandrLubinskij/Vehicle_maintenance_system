@@ -30,7 +30,7 @@ async def read_car(id: int,
     fields_list = fields.split(",") if fields else []
     car = await vehicle_service.fetch_by_id(id, fields_list)
     if len(fields_list) > 0: return car
-    return await dashboard_facade.compile_car_and_car_indicators([car], [id])
+    return (await dashboard_facade.compile_car_and_car_indicators([car], [id]))[id]
 
 @router.post("/")
 async def create_car(car_data: CarModel, vehicle_service: VehicleService = Depends(get_vehicle_service)):

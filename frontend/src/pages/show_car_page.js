@@ -93,7 +93,9 @@ export class ShowCarPage extends BaseWindow {
             this.images.refueling,
             "Заправити",
             "button",
-            `#`, 
+            "POST",
+            "fuel_logs",
+            car_data["id"],
             `${this.visibility} btn-refuel border border-transparent hover:border-[#8c322e] hover:bg-rose-50 rounded-lg lg:px-3 lg:py-1.5 text-gray-700 hover:text-[#8c322e]`,
           )}
 
