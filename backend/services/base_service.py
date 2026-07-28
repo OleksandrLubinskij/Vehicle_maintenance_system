@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, Any
+from typing import Generic, Type, TypeVar, Any
 from pydantic import BaseModel
 from app.exceptions import NotFoundError
 
@@ -7,6 +7,7 @@ CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
 UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel) 
 
 class BaseCRUDService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
+    model: Type[ModelType]
     def __init__(self, repo: Any):
         self.repo = repo
 
@@ -22,7 +23,7 @@ class BaseCRUDService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     
     async def register(self, new_data: CreateSchemaType) -> ModelType:
         data = new_data.model_dump()
-        instance = ModelType(**data)
+        instance = self.model(**data)
         await self.repo.add(instance)
         return instance
         

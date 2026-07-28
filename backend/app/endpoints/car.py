@@ -34,7 +34,8 @@ async def read_car(id: int,
 
 @router.post("/")
 async def create_car(car_data: CarModel, vehicle_service: VehicleService = Depends(get_vehicle_service)):
-    await vehicle_service.register(car_data)
+    result = await vehicle_service.register(car_data)
+    return result
 
 @router.patch("/{id}")
 async def edit_car(id: int, car_new_data: CarUpdate, vehicle_service: VehicleService = Depends(get_vehicle_service)):

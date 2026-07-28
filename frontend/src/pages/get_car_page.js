@@ -272,12 +272,12 @@ export class GetCarPage extends BaseWindow {
         maintenances.innerHTML =
           "<div class='text-center p-6 text-gray-400 font-medium'>Завантаження історії...</div>";
       }
+      filter_data.car_id = this.id;
       filter_data.offset = this.offset;
       filter_data.limit = this.limit;
 
       try {
         const maintenance_logs = await api.maintenance_log.show_all_mlog(
-          this.id,
           filter_data,
         );
 
@@ -483,7 +483,7 @@ export class GetCarPage extends BaseWindow {
             <button class="show_description_btn flex-1 lg:flex-none px-4 py-2.5 lg:py-0 bg-white hover:bg-gray-50 text-gray-600 transition-colors flex items-center justify-center">
                 ${this.images.arrow}
             </button>
-            <button id="edit_log" data-path="/edit_maintenance_record/${log.id}" class="${this.visibility} bg-[#db8956] flex-1 lg:flex-none px-4 py-2.5 lg:py-0 hover:bg-orange-400 text-black transition-colors flex items-center justify-center" title="Редагувати">
+            <button id="edit_log" data-method="PATCH" data-entity="maintenance_log" data-id="${log.id}" class="${this.visibility} bg-[#db8956] flex-1 lg:flex-none px-4 py-2.5 lg:py-0 hover:bg-orange-400 text-black transition-colors flex items-center justify-center" title="Редагувати">
                 ${this.images.edit}
             </button>
             <button id="delete_log" class="${this.visibility} bg-[#be5651] flex-1 lg:flex-none px-4 py-2.5 lg:py-0 hover:bg-red-600 text-white transition-colors flex items-center justify-center" title="Видалити" data-id=${log.id}>
@@ -595,7 +595,7 @@ export class GetCarPage extends BaseWindow {
 
               await api.cars.delete_car(this.id);
               hideModal();
-              router.navigate("/cars");
+              router.navigate("GET", "cars");
             } catch (error) {
               console.error(error);
               alert("Не вдалося видалити автомобіль.");

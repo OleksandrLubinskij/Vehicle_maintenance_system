@@ -18,7 +18,8 @@ const endpoint = {
       let query_params = new URLSearchParams();
       for (const [key, value] of Object.entries(params)) {
         if (value !== undefined && value !== null && value !== "") {
-          query_params.append(key, value);
+          const final_value = Array.isArray(value) ? value.join(",") : value; 
+          query_params.append(key, final_value);
         }
       }
 
@@ -33,7 +34,7 @@ const endpoint = {
     upload_car_photo: (id) => `${BASE_CAR_PHOTO_API_URL}/upload/${id}`,
   },
   maintenance_log: {
-    show_all_mlog: (car_id, params = {}) => {
+    show_all_mlog: (params = {}) => {
       let query_params = new URLSearchParams();
 
       for (const [key, value] of Object.entries(params)) {
@@ -45,7 +46,7 @@ const endpoint = {
       const query_string = query_params.toString();
       const sufix = query_string ? `?${query_string}` : "";
 
-      return `${BASE_MAINTENANCE_LOG_URL}/${car_id}${sufix}`;
+      return `${BASE_MAINTENANCE_LOG_URL}/${sufix}`;
     },
     show_mlog_by_id: (id) =>
       `${BASE_MAINTENANCE_LOG_URL}/${id}`,
@@ -136,8 +137,8 @@ export const api = {
       request(endpoint.cars.upload_car_photo(id), "POST", photo),
   },
   maintenance_log: {
-    show_all_mlog: (car_id, params = {}) =>
-      request(endpoint.maintenance_log.show_all_mlog(car_id, params)),
+    show_all_mlog: (params = {}) =>
+      request(endpoint.maintenance_log.show_all_mlog(params)),
     show_mlog_by_id: (id) =>
       request(endpoint.maintenance_log.show_mlog_by_id(id)),
     create_mlog: (car_id, data) =>

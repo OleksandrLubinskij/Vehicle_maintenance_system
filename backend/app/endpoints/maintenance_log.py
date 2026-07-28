@@ -7,23 +7,29 @@ from services.maintenance_logs.maintenance_log_service import MaintenanceLogServ
 router = APIRouter()
 allow_admin_only = RoleChecker(["Admin"])
 
-@router.get("/")
-async def read_all_maintenance_logs(maintenance_log_service: MaintenanceLogService = Depends(get_maintenance_log_service)):
-    maintenance_data = await maintenance_log_service.fetch_all()
-    return maintenance_data
+# @router.get("/")
+# async def read_all_maintenance_logs(maintenance_log_service: MaintenanceLogService = Depends(get_maintenance_log_service)):
+#     maintenance_data = await maintenance_log_service.fetch_all()
+#     return maintenance_data
 
-@router.get("/{car_id}")
-async def read_maintenance_log(car_id: int, 
+@router.get("/")
+async def read_car_maintenance_logs(car_id: int, 
                                maintenance_type: str | None = None,
                                sort_order: str | None = None, 
                                limit: int = 10,
                                offset: int = 0,
                                maintenance_log_service: MaintenanceLogService = Depends(get_maintenance_log_service)):
-    return await maintenance_log_service.fetch_by_id(car_id=car_id,
+    return await maintenance_log_service.fetch_by_car_id(car_id=car_id,
                                                      maintenance_type=maintenance_type,
                                                      sort_order=sort_order,
                                                      limit=limit,
                                                      offset=offset)
+
+@router.get("/{log_id}")
+async def read_maintenance_log(log_id: int,
+                               maintenance_log_service: MaintenanceLogService = Depends(get_maintenance_log_service)):
+    result = await maintenance_log_service.fetch_by_id(log_id)
+    return result
 
 @router.post("/{car_id}")
 async def create_maintenance_log(car_id:int, 

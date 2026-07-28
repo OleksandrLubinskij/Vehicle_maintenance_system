@@ -5,6 +5,7 @@ from app.utils.convert_images import convert_image_webp
 from services.base_service import BaseCRUDService
 from app.exceptions import NotFoundError
 class VehicleService(BaseCRUDService):
+    model = Car
     def __init__(self, repo, cache):
         super().__init__(repo)
         self.cache = cache

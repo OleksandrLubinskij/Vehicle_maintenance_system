@@ -43,7 +43,6 @@ class Router {
             "fuel_logs":{
                 
             },
-            // Додаємо 404 як сутність, щоб роутер не ламався при помилках
             "404": {
                 "GET": { Class: ErrorPage }
             }
@@ -67,8 +66,6 @@ class Router {
         // 2. Шукаємо конфігурацію роута
         const entityRoutes = this.routes[current_entity];
         const routeConfig = entityRoutes ? entityRoutes[current_method] : null;
-        console.log(entityRoutes);
-        console.log(routeConfig);
         let pageInstance;
 
         if (!routeConfig || !routeConfig.Class) {
@@ -119,10 +116,7 @@ document.addEventListener("click", (event) => {
     if (button) {
         const method_attr = button.getAttribute("data-method");
         const entity_attr = button.getAttribute("data-entity");
-        const id_attr = button.getAttribute("data-id");
-        console.log(method_attr);
-        console.log(entity_attr);
-        console.log(id_attr);
+        const id_attr = parseInt(button.getAttribute("data-id"), 10);
         router.navigate(method_attr, entity_attr, id_attr);
     }
 });

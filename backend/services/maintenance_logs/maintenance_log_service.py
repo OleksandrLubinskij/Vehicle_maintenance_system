@@ -15,7 +15,7 @@ class MaintenanceLogService(BaseCRUDService):
         record = MaintenanceLog(**data)
         await self.repo.add(record)
 
-    async def fetch_by_id(self,
+    async def fetch_by_car_id(self,
                           car_id: int,
                           maintenance_type: str | None = None,
                           sort_order: str | None = None, 
@@ -31,5 +31,3 @@ class MaintenanceLogService(BaseCRUDService):
                                                                 limit=limit,
                                                                 offset=offset)
         return result
-
-         

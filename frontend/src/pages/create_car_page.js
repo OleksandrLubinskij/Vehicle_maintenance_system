@@ -141,7 +141,7 @@ export class CreateCarPage extends BaseWindow {
                             await photo_endpoint(new_car["car_id"], image_file, PAGE_MODE.CREATE);
                         }
                         
-                        router.navigate("/cars");
+                        router.navigate("GET", "cars");
                     } catch (error) {
                         console.error("Помилка при відправці даних:", error);
                         alert("Не вдалося зберегти дані автомобіля.");
