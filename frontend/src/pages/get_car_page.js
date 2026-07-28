@@ -141,7 +141,7 @@ export class GetCarPage extends BaseWindow {
                             : ""
                         }
                     </div>
-                    <button data-path="/cars" class="w-full py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors text-center text-sm md:text-base">
+                    <button data-method="GET" data-entity="cars" class="w-full py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors text-center text-sm md:text-base">
                         ← Назад до списку
                     </button>
                 </div>

@@ -58,6 +58,6 @@ class ResetPassword(BaseModel):
     old_password: str
     new_password: str
 
-class FuelLogModel(BaseModel):
+class RefuelCarModel(BaseModel):
     current_mileage: int
     liters: int

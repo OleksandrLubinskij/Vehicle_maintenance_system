@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, asc, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 from app.models import MaintenanceLog, Car
@@ -28,6 +28,29 @@ class MaintenanceLogRepository(BaseRepository):
                         MaintenanceLog.date.desc()
                     )
 
-        result = (await self.db.execute(stmt)).scalars().all() 
-        return result
-        
+        result = await self.db.execute(stmt)
+        return result.scalars().all() 
+
+    async def get_maintenance_logs_by_car_id(self,
+                                             car_id: int,
+                                             maintenance_type: str | None = None,
+                                             sort_order: str | None = None, 
+                                             limit: int = 10,
+                                             offset: int = 0):
+        conditions = [MaintenanceLog.car_id == car_id]
+        if maintenance_type is not None:
+            conditions.append(MaintenanceLog.maintenance_type == maintenance_type)
+        sort_order_condition = asc(MaintenanceLog.date) if sort_order == "asc" else desc(MaintenanceLog.date)
+
+        stmt = select(MaintenanceLog
+                      ).where(
+                          *conditions
+                      ).order_by(
+                          sort_order_condition
+                      ).limit(
+                          limit
+                      ).offset(
+                          offset
+                      )
+        result = await self.db.execute(stmt)
+        return result.scalars().all()

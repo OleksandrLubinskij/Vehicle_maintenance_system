@@ -14,4 +14,22 @@ class MaintenanceLogService(BaseCRUDService):
         data["car_id"] = car_id
         record = MaintenanceLog(**data)
         await self.repo.add(record)
-    
+
+    async def fetch_by_id(self,
+                          car_id: int,
+                          maintenance_type: str | None = None,
+                          sort_order: str | None = None, 
+                          limit: int = 10,
+                          offset: int = 0):
+
+        actual_maintenance_type = maintenance_type if maintenance_type != "Усі" else None
+        actual_sort_order = sort_order if sort_order == "asc" else "desc"
+
+        result = await self.repo.get_maintenance_logs_by_car_id(car_id=car_id,
+                                                                maintenance_type=actual_maintenance_type,
+                                                                sort_order=actual_sort_order,
+                                                                limit=limit,
+                                                                offset=offset)
+        return result
+
+         

@@ -16,7 +16,6 @@ class BaseCRUDService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     
     async def fetch_by_id(self, id:int, fields:list[str] | None = None) -> ModelType:
         instance = await self.repo.get_by_id(id=id, fields=fields)
-        print(instance)
         if instance is None:
             raise NotFoundError()
         return instance
@@ -28,7 +27,7 @@ class BaseCRUDService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return instance
         
     async def update(self, id:int, new_data:UpdateSchemaType) -> ModelType:
-        data = new_data.model_dump()
+        data = new_data.model_dump(exclude_unset=True, exclude_none=True)
         result = await self.repo.update(id, data)
         if result is None:
             raise NotFoundError()

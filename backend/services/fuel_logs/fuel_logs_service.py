@@ -1,7 +1,7 @@
 import calendar
 from datetime import date
 from services.base_service import BaseCRUDService
-from app.schemas import FuelLogModel
+from app.schemas import RefuelCarModel
 from app.models import FuelLog
 class FuelLogService(BaseCRUDService):
     def __init__(self, repo):
@@ -20,7 +20,7 @@ class FuelLogService(BaseCRUDService):
                                                    end_date=last_day)
         return result
     
-    async def register(self, car_id:int, new_fuel_log_data: FuelLogModel):
+    async def register(self, car_id:int, new_fuel_log_data: RefuelCarModel):
         data = new_fuel_log_data.model_dump()
         data["car_id"] = car_id
         fuel_log = FuelLog(**data)
