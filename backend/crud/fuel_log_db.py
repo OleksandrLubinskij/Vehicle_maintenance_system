@@ -31,3 +31,15 @@ class FuelLogRepository(BaseRepository[FuelLog]):
 
         result = await self.db.execute(stmt)
         return dict(result.all())
+
+    async def get_fuel_log_by_car_id(self,
+                                     car_id: int,
+                                     limit: int = 10,
+                                     offset: int = 0):
+        stmt = select(FuelLog
+        ).where(FuelLog.car_id == car_id
+        ).limit(limit
+        ).offset(offset)
+
+        result = await self.db.execute(stmt)
+        return result.scalars().all()

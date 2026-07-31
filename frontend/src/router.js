@@ -61,7 +61,7 @@ class Router {
         const path_parts = window.location.pathname.split("/").filter(Boolean);
         const current_entity = entity || path_parts[0] || "users";
         const current_id = id || (path_parts.length > 1 ? path_parts[1] : null);
-        const current_method = method || "GET"; // За замовчуванням GET для прямого заходу
+        const current_method = method || "POST"; // За замовчуванням GET для прямого заходу
 
         // 2. Шукаємо конфігурацію роута
         const entityRoutes = this.routes[current_entity];

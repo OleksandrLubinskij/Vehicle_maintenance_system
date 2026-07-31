@@ -3,6 +3,7 @@ from datetime import date
 from services.base_service import BaseCRUDService
 from app.schemas import RefuelCarModel
 from app.models import FuelLog
+from app.exceptions import NotFoundError
 class FuelLogService(BaseCRUDService):
     def __init__(self, repo):
         super().__init__(repo)
@@ -26,5 +27,17 @@ class FuelLogService(BaseCRUDService):
         fuel_log = FuelLog(**data)
         await self.repo.add(fuel_log)
 
-    
+
+    async def fetch_fuel_log_by_car_id(self,
+                                       car_id: int,
+                                       limit: int = 10,
+                                       offset: int = 0):
+        result = await self.repo.get_fuel_log_by_car_id(car_id = car_id,
+                                                        limit=limit,
+                                                        offset=offset)
+        
+        if not result:
+            raise NotFoundError()
+
+        return result 
 
