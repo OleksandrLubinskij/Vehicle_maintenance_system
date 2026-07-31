@@ -38,7 +38,7 @@ class Router {
                 "DELETE": {} 
             },
             "users": {
-                "POST": { Class: AuthorizationPage, mode: AUTHORIZATION_PAGE_MODE.LOGIN }
+                "POST": { Class: AuthorizationPage, mode: AUTHORIZATION_PAGE_MODE.LOGIN },
             },
             "fuel_logs":{
                 
@@ -59,10 +59,11 @@ class Router {
         
         // 1. Якщо аргументи не передані (прямий захід по URL або popstate), парсимо адресний рядок
         const path_parts = window.location.pathname.split("/").filter(Boolean);
+        console.log(path_parts);
         const current_entity = entity || path_parts[0] || "users";
-        const current_id = id || (path_parts.length > 1 ? path_parts[1] : null);
-        const current_method = method || "GET"; // За замовчуванням GET для прямого заходу
-
+        const current_id = id ?? (path_parts.length > 1 ? path_parts[1] : null);
+        const current_method = method || (current_entity === "users" ? "POST" : "GET");
+        console.log(current_id);
         // 2. Шукаємо конфігурацію роута
         const entityRoutes = this.routes[current_entity];
         const routeConfig = entityRoutes ? entityRoutes[current_method] : null;
@@ -81,7 +82,20 @@ class Router {
             if (current_method === "GET" && current_entity === "cars") {
                 Class = current_id ? GetCarPage : ShowCarPage;
             }
-            if (mode !== undefined) {
+            if (current_method === "POST" && current_entity === "users") {
+                Class = AuthorizationPage
+                switch (String(current_id)) {
+                    case "0":
+                        mode = AUTHORIZATION_PAGE_MODE.REGISTER;
+                        break;
+                    default:
+                        mode = AUTHORIZATION_PAGE_MODE.LOGIN;
+                        break;
+                }
+                console.log(mode);
+                pageInstance = new Class(page_title, mode);
+            }
+            else if (mode !== undefined) {
                 console.log(`Router mode: ${mode}`);
                 pageInstance = new Class(page_title, current_id, mode);
             } else {
@@ -96,12 +110,13 @@ class Router {
     navigate(method=null, entity=null, id=null) {
         // Формуємо новий шлях для браузера
         let new_path = `/${entity}`;
-        if (id) new_path += `/${id}`;
+        if (id !== null && id !== undefined) {
+            new_path += `/${id}`;
+        }
 
         // Зберігаємо method, entity та id у state історії браузера
         window.history.pushState({ method, entity, id }, "", new_path);
         this._current_path = new_path;
-        
         this.load_page(method, entity, id);
     }
 }
@@ -109,14 +124,27 @@ class Router {
 export const router = new Router();
 
 // Ініціалізація при першому завантаженні сторінки без аргументів (спрацює дефолтний парсинг URL)
+const initial_path_parts = window.location.pathname.split("/").filter(Boolean);
+const initial_entity = initial_path_parts[0] || "users";
+const initial_id = initial_path_parts.length > 1 ? initial_path_parts[1] : null;
+
+window.history.replaceState(
+    { method: null, entity: initial_entity, id: initial_id }, 
+    "", 
+    window.location.pathname
+);
+
 router.load_page();
 
 document.addEventListener("click", (event) => {
     const button = event.target.closest("button[data-method]");
     if (button) {
+        event.preventDefault();
         const method_attr = button.getAttribute("data-method");
         const entity_attr = button.getAttribute("data-entity");
-        const id_attr = parseInt(button.getAttribute("data-id"), 10);
+        const raw_id = button.getAttribute("data-id");
+        const id_attr = raw_id ? parseInt(raw_id, 10) : null;
+        
         router.navigate(method_attr, entity_attr, id_attr);
     }
 });
