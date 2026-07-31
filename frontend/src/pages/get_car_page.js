@@ -370,12 +370,12 @@ export class GetCarPage extends BaseWindow {
       try {
 
         let refuel_view_settings = {
+        car_id: this.id,
         limit: this.refueling_limit,
         offset: this.refueling_offset,
       };
         console.log("Fetching refueling logs with settings:", refuel_view_settings);
         const refueling_logs = await api.fuel_log.get_logs(
-          this.id,
           refuel_view_settings,
         );
 

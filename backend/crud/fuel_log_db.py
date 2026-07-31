@@ -36,8 +36,9 @@ class FuelLogRepository(BaseRepository[FuelLog]):
                                      car_id: int,
                                      limit: int = 10,
                                      offset: int = 0):
-        stmt = select(FuelLog
-        ).where(FuelLog.car_id == car_id
+        stmt = select(self.model
+        ).where(self.model.car_id == car_id
+        ).order_by(self.model.date.desc()
         ).limit(limit
         ).offset(offset)
 

@@ -68,7 +68,7 @@ const endpoint = {
     change_password: () => `${BASE_USERS_URL}/change_password`,
   },
   fuel_log: {
-    get_logs: (car_id, params ={}) => {
+    get_logs: (params ={}) => {
       console.log(params)
       let query_params = new URLSearchParams();
       for (const [key, value] of Object.entries(params)) {
@@ -80,7 +80,7 @@ const endpoint = {
       const query_string = query_params.toString();
       const suffix = query_string ? `?${query_string}` : "";
 
-      return `${BASE_FUEL_LOG_URL}/${car_id}${suffix}`;
+      return `${BASE_FUEL_LOG_URL}/${suffix}`;
     },
     create_log: (car_id) => `${BASE_FUEL_LOG_URL}/${car_id}`,
     get_fuel_consumption: (car_id) => `${BASE_FUEL_LOG_URL}/monthly_fuel_consumption/${car_id}`
