@@ -65,7 +65,7 @@ const endpoint = {
     login: () => `${BASE_USERS_URL}/login`,
     logout: () => `${BASE_USERS_URL}/logout`,
     get_me: () => `${BASE_USERS_URL}/get_me`,
-    change_password: () => `${BASE_USERS_URL}/change_password`,
+    change_password: () => `${BASE_USERS_URL}/edit_password`,
   },
   fuel_log: {
     get_logs: (params ={}) => {

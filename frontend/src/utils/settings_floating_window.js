@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.removeItem("is_authenticated")
             settings_dropdown.classList.add("hidden");
             localStorage.removeItem("role");
-            router.navigate("/login");
+            router.navigate("POST", "users", "1");
         }
         catch(error) {
             console.log(`Не вдалося вийти - ${error}`);

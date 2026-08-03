@@ -36,7 +36,7 @@ class UserService(BaseCRUDService):
 
     async def update_user_password(self, id:int, passwords: ResetPassword, current_password: str):
         if not verify_password(passwords.old_password, current_password):
-            raise InvalidPasswordError("Старий пароль неправильний!")
+            raise InvalidPasswordError()
         
         hashed_new_password = get_password_hash(passwords.new_password)
         await self.repo.update_password(id=id, new_password=hashed_new_password)

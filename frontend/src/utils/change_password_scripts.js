@@ -50,14 +50,14 @@ change_p_submit_btn.addEventListener("click", async (e) => {
             await api.users.change_password(data);
             change_p_modal.classList.add("hidden");
             await api.users.logout();
-            router.navigate("/login");
+            router.navigate("POST", "users", "1");
         }
         catch (error) {
             const old_password_error = document.querySelector("#old_password_error");
             const old_password_input = document.querySelector("#old_password");
-            
             if(error.code === 0) {
-                old_password_error.textContent = "Старий пароль неправильний!";
+                
+                old_password_error.textContent = error.message;
                 error_color_input(old_password_input);
                 old_password_error.classList.remove("hidden");
             }

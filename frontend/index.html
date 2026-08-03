@@ -93,14 +93,13 @@
       <div
         id="mobile_dropdown_menu"
         class="hidden absolute top-full left-0 bg-white border-t border-gray-300 flex-col gap-2 p-4 z-50 md:hidden text-sm rounded-lg shadow-xl"
-        data-method="POST",
-        data-entity="1"
       >
         <div class="text-left w-full px-3 text-sm text-gray-700">Меню</div>
         <hr class="border-gray-100my-1" />
         <button
           class="menu_btn text-left hover:text-emerald-700 hover:bg-gray-200 transition-colors duration-200 p-2 rounded-md"
-          data-path="/cars"
+          data-method="GET"
+          data-entity="cars"
         >
           Переглянути
         </button>
