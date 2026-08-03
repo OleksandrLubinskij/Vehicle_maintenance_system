@@ -13,11 +13,12 @@ class CarRefuelFacade():
 
     async def refuel_car(self, car_id: int, data:RefuelCarModel):
         car = await self.vehicle_service.fetch_by_id(car_id, ["mileage"])
-        print(data.current_mileage)
-        if data.current_mileage < car.mileage:
+        print(f"NEW - {data.current_mileage}")
+        print(f"OLD - {car.mileage}")
+        if data.current_mileage <= car.mileage:
             return None
 
         vehicle_update_data = CarUpdate(mileage=data.current_mileage)
         await self.fuel_log_service.register(car_id=car_id, new_fuel_log_data=data)
         await self.vehicle_service.update(id=car_id, new_data=vehicle_update_data)
-        
+        return car

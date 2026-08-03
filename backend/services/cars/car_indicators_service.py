@@ -15,18 +15,18 @@ def process_car_maintenance_indicators(car_maintenance_indicators: dict) -> dict
     worst_maintenance_code = max(car_maintenance_indicators.values())
     car_maintenance_indicators["worst_maintenance"] = worst_maintenance_code
     car_maintenance_indicators["text_indicator"] = TEXT_INDICATORS[worst_maintenance_code]
-    inspection_mileage = car_maintenance_indicators.pop("Inspection_mileage")
-    inspection_time = car_maintenance_indicators.pop("Inspection_date")
+    inspection_mileage = car_maintenance_indicators.pop("inspection_mileage")
+    inspection_time = car_maintenance_indicators.pop("inspection_date")
     car_maintenance_indicators["inspection"] = max((inspection_mileage, inspection_time))
     return car_maintenance_indicators
 
 async def calculate_maintenance_delta(last_maintenances: list, car_id_list: list) -> dict:
     maintenance_delta = {
         car_id: {
-            "Oil_filters_mileage": 0,
-            "Belt_mileage": 0,
-            "Inspection_mileage": 0,
-            "Inspection_date": 0   
+            "oil_and_filters": 0,
+            "belt_replacement": 0,
+            "inspection_mileage": 0,
+            "inspection_date": 0   
         } for car_id in car_id_list
     }
 
@@ -34,34 +34,34 @@ async def calculate_maintenance_delta(last_maintenances: list, car_id_list: list
         car_id = row.car.id
         if car_id not in maintenance_delta:
             maintenance_delta[car_id] = {
-                "Oil_filters_mileage": 0,
-                "Belt_mileage": 0,
-                "Inspection_mileage": 0,
-                "Inspection_date": 0
+                "oil_and_filters": 0,
+                "belt_replacement": 0,
+                "inspection_mileage": 0,
+                "inspection_date": 0
             }
 
         mileage_diff = row.car.mileage - row.mileage_on_maintain
         
         if row.maintenance_type == MaintenanceType.Oil_and_filters:
-            maintenance_delta[car_id]["Oil_filters_mileage"] = evaluate_status(
+            maintenance_delta[car_id]["oil_and_filters"] = evaluate_status(
                 mileage_diff, 
                 LIMITATIONS.oil_and_filters
             )
         
         elif row.maintenance_type == MaintenanceType.Belt_replacement:
-            maintenance_delta[car_id]["Belt_mileage"] = evaluate_status(
+            maintenance_delta[car_id]["belt_replacement"] = evaluate_status(
                 mileage_diff, 
                 LIMITATIONS.belt_replacement
             )
         
         elif row.maintenance_type == MaintenanceType.Inspection:
-            maintenance_delta[car_id]["Inspection_mileage"] = evaluate_status(
+            maintenance_delta[car_id]["inspection_mileage"] = evaluate_status(
                 mileage_diff, 
                 LIMITATIONS.inspection_mileage
             )
             
             time_now = datetime.now(row.date.tzinfo)
-            maintenance_delta[car_id]["Inspection_date"] = evaluate_status(
+            maintenance_delta[car_id]["inspection_date"] = evaluate_status(
                 ((time_now - row.date).days), 
                 LIMITATIONS.inspection_time
             )

@@ -60,19 +60,22 @@ export class GetCarPage extends BaseWindow {
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="w-full h-full">
             <circle cx="8" cy="8" r="8" fill="currentColor"/>
         </svg>`;
-
+    console.log(fields);
     MAINTENANCE_TYPES.forEach((field) => {
       console.log(this.car);
       const indicatorStatus = this.car.service_indicators[field.ID];
+      console.log(`Indicator for ${field.ID}:`, indicatorStatus);
       const colorHex = INDICATORS[indicatorStatus]?.color || "#dddddd";
-
+      
       fields.push(`
                 <div class="p-2">
                    ${icon_value_text(
                      svg_circle,
                      field.LABEL,
                      "button",
-                     "",
+                     null,
+                     null,
+                     null,
                      "text-sm md:text-base font-semibold text-gray-700 m-1",
                      "h-4 w-4 md:h-5 md:w-5",
                      colorHex,
