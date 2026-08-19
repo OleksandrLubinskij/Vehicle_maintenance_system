@@ -11,11 +11,6 @@ class VehicleService(BaseCRUDService):
         self.cache = cache
 
     async def fetchVehicles(self) -> list[Car]:
-        cars_cached = await self.cache.get_all_cached(CACHE.CARS)
-        total_in_db = await self.repo.count()
-        if cars_cached and total_in_db == len(cars_cached):
-            return cars_cached
-        
         cars = await self.repo.get_all()
         return cars
 

@@ -14,6 +14,7 @@ allow_admin_only = RoleChecker(["Admin"])
 async def read_all_cars(vehicle_service: VehicleService = Depends(get_vehicle_service),
                         dashboard_facade: DashboardFacade = Depends()):
     car_data = await vehicle_service.fetchVehicles()
+    print(car_data)
     res = {}
     car_id_list = []
     for car in car_data:
