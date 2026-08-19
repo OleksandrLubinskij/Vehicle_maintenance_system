@@ -19,7 +19,7 @@ class Car(Base):
     fuel_type: Mapped[FuelType] = mapped_column(Enum(FuelType))
     oil_type: Mapped[OilType] = mapped_column(Enum(OilType))
     photo_path: Mapped[str | None] = mapped_column(nullable=True)
-    maintenance_logs: Mapped[List["Maintenance_log"]] = relationship(
+    maintenance_logs: Mapped[List["MaintenanceLog"]] = relationship(
         back_populates="car", cascade="all, delete-orphan"
     )
     fuel_log: Mapped[List["FuelLog"]] = relationship(
@@ -33,7 +33,7 @@ class User(Base):
     password: Mapped[str] = mapped_column(nullable=False)
     role: Mapped[UserRole] = mapped_column(Enum(UserRole), default=UserRole.User)
 
-class Maintenance_log(Base):
+class MaintenanceLog(Base):
     __tablename__ = "maintenance_log"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     car_id: Mapped[int] = mapped_column(ForeignKey("car.id", ondelete="CASCADE"), nullable=False)

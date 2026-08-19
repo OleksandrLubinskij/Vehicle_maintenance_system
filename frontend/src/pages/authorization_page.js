@@ -5,9 +5,8 @@ import { api } from "../apiRoutes";
 import { router } from "../router";
 import { handleFormError, clearFormErrors } from "../utils/auth_error_handler";
 export class AuthorizationPage extends BaseWindow {
-    constructor(title, param, mode) {
+    constructor(title, mode) {
         super(title);
-        this.param = param;
         this.mode = mode;
     }
 
@@ -56,7 +55,9 @@ export class AuthorizationPage extends BaseWindow {
                     <button 
                         id="go-to-register" 
                         class="text-[#00966a] font-semibold hover:underline bg-transparent border-none p-0 cursor-pointer"
-                        data-path="/register"
+                        data-method="POST"
+                        data-entity="users"
+                        data-id="0"
                     >
                         Зареєструватися
                     </button>
@@ -88,12 +89,12 @@ export class AuthorizationPage extends BaseWindow {
                                     delete user_data.confirm_password;
                                     await api.users.register(user_data);
                                     console.log("Користувача створено");
-                                    router.navigate("/login");
+                                    router.navigate("POST", "users");
                                 } else {
                                     await api.users.login(user_data);
                                     console.log("Авторизація успішна");
                                     setTimeout(() => {
-                                        router.navigate("/cars");
+                                        router.navigate("GET", "cars");
                                     }, 50);
                                     localStorage.setItem("is_authenticated", "true");
                                     const current_user = await api.users.get_me();

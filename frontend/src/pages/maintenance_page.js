@@ -74,11 +74,10 @@ export class ManageMaintenancePage extends BaseWindow {
     async render() {
             try {
                 const maintenance_type_enum = await api.enum.get_enums(3);
-                const actual_mileage = this.mode === PAGE_MODE.EDIT ? null : await api.cars.get_car_mileage(this.id);
-                const car_brand_model = this.mode === PAGE_MODE.EDIT ? null : await api.cars.get_car_brand_and_model(this.id); 
                 const default_values = this.mode === PAGE_MODE.CREATE ? null : await api.maintenance_log.show_mlog_by_id(this.id);
-                
-                const html = this.content(maintenance_type_enum, actual_mileage, default_values, car_brand_model);
+                const actual_mileage = this.mode === PAGE_MODE.EDIT ? null : await api.cars.show_car_by_id(this.id, { fields: ["mileage"] });
+                const car_brand_model = this.mode === PAGE_MODE.EDIT ? null : await api.cars.show_car_by_id(this.id, { fields: ["brand", "model"] }); 
+                const html = this.content(maintenance_type_enum, actual_mileage.mileage, default_values, car_brand_model);
                 super.render(html);
     
                 const manage_maintenance_form = document.querySelector("#manage_maintenance_form");
@@ -99,7 +98,7 @@ export class ManageMaintenancePage extends BaseWindow {
                                 await api.maintenance_log.create_mlog(this.id, maintenance_data);
                                 console.log("Дані про ремонт успішно створено");
                             }
-                            router.navigate("/cars");
+                            router.navigate("GET", "cars");
                         } catch (error) {
                             console.error("Помилка при відправці даних:", error);
                             alert("Не вдалося зберегти дані про ремонт");

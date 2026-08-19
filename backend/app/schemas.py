@@ -40,7 +40,7 @@ class MaintainenceLogUpdate(BaseModel):
     maintenance_type: Optional[MaintenanceType] = None
     description: Optional[str] = None
 
-class CarResponse(BaseModel):
+class CarResponce(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
     vin: str
@@ -52,12 +52,12 @@ class CarResponse(BaseModel):
     oil_type: str
     service_indicators: Dict[str, Any] = {}
     photo_path: str | None
-    monthly_fuel_consumption: float | None = 0.0
+    # monthly_fuel_consumption: float | None = 0.0
 
-class ResetPasssword(BaseModel):
+class ResetPassword(BaseModel):
     old_password: str
     new_password: str
 
-class FuelLogModel(BaseModel):
+class RefuelCarModel(BaseModel):
     current_mileage: int
     liters: int

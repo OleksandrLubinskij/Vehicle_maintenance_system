@@ -60,18 +60,22 @@ export class GetCarPage extends BaseWindow {
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="w-full h-full">
             <circle cx="8" cy="8" r="8" fill="currentColor"/>
         </svg>`;
-
+    console.log(fields);
     MAINTENANCE_TYPES.forEach((field) => {
+      console.log(this.car);
       const indicatorStatus = this.car.service_indicators[field.ID];
+      console.log(`Indicator for ${field.ID}:`, indicatorStatus);
       const colorHex = INDICATORS[indicatorStatus]?.color || "#dddddd";
-
+      
       fields.push(`
                 <div class="p-2">
                    ${icon_value_text(
                      svg_circle,
                      field.LABEL,
                      "button",
-                     "",
+                     null,
+                     null,
+                     null,
                      "text-sm md:text-base font-semibold text-gray-700 m-1",
                      "h-4 w-4 md:h-5 md:w-5",
                      colorHex,
@@ -140,7 +144,7 @@ export class GetCarPage extends BaseWindow {
                             : ""
                         }
                     </div>
-                    <button data-path="/cars" class="w-full py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors text-center text-sm md:text-base">
+                    <button data-method="GET" data-entity="cars" class="w-full py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors text-center text-sm md:text-base">
                         ← Назад до списку
                     </button>
                 </div>
@@ -271,12 +275,12 @@ export class GetCarPage extends BaseWindow {
         maintenances.innerHTML =
           "<div class='text-center p-6 text-gray-400 font-medium'>Завантаження історії...</div>";
       }
+      filter_data.car_id = this.id;
       filter_data.offset = this.offset;
       filter_data.limit = this.limit;
 
       try {
         const maintenance_logs = await api.maintenance_log.show_all_mlog(
-          this.id,
           filter_data,
         );
 
@@ -369,12 +373,12 @@ export class GetCarPage extends BaseWindow {
       try {
 
         let refuel_view_settings = {
+        car_id: this.id,
         limit: this.refueling_limit,
         offset: this.refueling_offset,
       };
         console.log("Fetching refueling logs with settings:", refuel_view_settings);
         const refueling_logs = await api.fuel_log.get_logs(
-          this.id,
           refuel_view_settings,
         );
 
@@ -482,7 +486,7 @@ export class GetCarPage extends BaseWindow {
             <button class="show_description_btn flex-1 lg:flex-none px-4 py-2.5 lg:py-0 bg-white hover:bg-gray-50 text-gray-600 transition-colors flex items-center justify-center">
                 ${this.images.arrow}
             </button>
-            <button id="edit_log" data-path="/edit_maintenance_record/${log.id}" class="${this.visibility} bg-[#db8956] flex-1 lg:flex-none px-4 py-2.5 lg:py-0 hover:bg-orange-400 text-black transition-colors flex items-center justify-center" title="Редагувати">
+            <button id="edit_log" data-method="PATCH" data-entity="maintenance_log" data-id="${log.id}" class="${this.visibility} bg-[#db8956] flex-1 lg:flex-none px-4 py-2.5 lg:py-0 hover:bg-orange-400 text-black transition-colors flex items-center justify-center" title="Редагувати">
                 ${this.images.edit}
             </button>
             <button id="delete_log" class="${this.visibility} bg-[#be5651] flex-1 lg:flex-none px-4 py-2.5 lg:py-0 hover:bg-red-600 text-white transition-colors flex items-center justify-center" title="Видалити" data-id=${log.id}>
@@ -594,7 +598,7 @@ export class GetCarPage extends BaseWindow {
 
               await api.cars.delete_car(this.id);
               hideModal();
-              router.navigate("/cars");
+              router.navigate("GET", "cars");
             } catch (error) {
               console.error(error);
               alert("Не вдалося видалити автомобіль.");

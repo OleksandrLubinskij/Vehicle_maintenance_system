@@ -13,18 +13,28 @@ const BASE_FUEL_LOG_URL = `${BASE_API_URL}/fuel_logs`;
 const endpoint = {
   cars: {
     show_all_cars: () => `${BASE_CAR_URL}`,
-    show_car_by_id: (id) => `${BASE_CAR_URL}/get_car_by_id/${id}`,
-    create_car: () => `${BASE_CAR_URL}/create_car`,
-    edit_car: (id) => `${BASE_CAR_URL}/edit_car/${id}`,
-    delete_car: (id) => `${BASE_CAR_URL}/delete_car/${id}`,
-    get_car_mileage: (id) => `${BASE_CAR_URL}/get_car_mileage/${id}`,
-    get_car_brand_and_model: (id) =>
-      `${BASE_CAR_URL}/get_car_brand_and_model/${id}`,
+    show_car_by_id: (car_id, params ={}) => {
+      console.log(params)
+      let query_params = new URLSearchParams();
+      for (const [key, value] of Object.entries(params)) {
+        if (value !== undefined && value !== null && value !== "") {
+          const final_value = Array.isArray(value) ? value.join(",") : value; 
+          query_params.append(key, final_value);
+        }
+      }
+
+      const query_string = query_params.toString();
+      const suffix = query_string ? `?${query_string}` : "";
+
+      return `${BASE_CAR_URL}/${car_id}${suffix}`;
+    },
+    create_car: () => `${BASE_CAR_URL}`,
+    edit_car: (id) => `${BASE_CAR_URL}/${id}`,
+    delete_car: (id) => `${BASE_CAR_URL}/${id}`,
     upload_car_photo: (id) => `${BASE_CAR_PHOTO_API_URL}/upload/${id}`,
-    edit_car_photo: (id) => `${BASE_CAR_PHOTO_API_URL}/edit_car_photo/${id}`,
   },
   maintenance_log: {
-    show_all_mlog: (car_id, params = {}) => {
+    show_all_mlog: (params = {}) => {
       let query_params = new URLSearchParams();
 
       for (const [key, value] of Object.entries(params)) {
@@ -36,16 +46,16 @@ const endpoint = {
       const query_string = query_params.toString();
       const sufix = query_string ? `?${query_string}` : "";
 
-      return `${BASE_MAINTENANCE_LOG_URL}/${car_id}${sufix}`;
+      return `${BASE_MAINTENANCE_LOG_URL}/${sufix}`;
     },
     show_mlog_by_id: (id) =>
-      `${BASE_MAINTENANCE_LOG_URL}/get_maintenance_record_by_id/${id}`,
+      `${BASE_MAINTENANCE_LOG_URL}/${id}`,
     create_mlog: (car_id) =>
-      `${BASE_MAINTENANCE_LOG_URL}/create_maintenance_record/${car_id}`,
+      `${BASE_MAINTENANCE_LOG_URL}/${car_id}`,
     edit_mlog: (id) =>
-      `${BASE_MAINTENANCE_LOG_URL}/edit_maintenance_record/${id}`,
+      `${BASE_MAINTENANCE_LOG_URL}/${id}`,
     delete_mlog: (id) =>
-      `${BASE_MAINTENANCE_LOG_URL}/delete_maintenance_record/${id}`,
+      `${BASE_MAINTENANCE_LOG_URL}/${id}`,
   },
   enum: {
     get_enums: (enum_id) => `${BASE_API_URL}/get_enums/${enum_id}`,
@@ -55,10 +65,10 @@ const endpoint = {
     login: () => `${BASE_USERS_URL}/login`,
     logout: () => `${BASE_USERS_URL}/logout`,
     get_me: () => `${BASE_USERS_URL}/get_me`,
-    change_password: () => `${BASE_USERS_URL}/change_password`,
+    change_password: () => `${BASE_USERS_URL}/edit_password`,
   },
   fuel_log: {
-    get_logs: (car_id, params ={}) => {
+    get_logs: (params ={}) => {
       console.log(params)
       let query_params = new URLSearchParams();
       for (const [key, value] of Object.entries(params)) {
@@ -68,11 +78,11 @@ const endpoint = {
       }
 
       const query_string = query_params.toString();
-      const sufix = query_string ? `?${query_string}` : "";
+      const suffix = query_string ? `?${query_string}` : "";
 
-      return `${BASE_FUEL_LOG_URL}/get_fuel_logs/${car_id}${sufix}`;
+      return `${BASE_FUEL_LOG_URL}/${suffix}`;
     },
-    create_log: (car_id) => `${BASE_FUEL_LOG_URL}/create_fuel_log/${car_id}`,
+    create_log: (car_id) => `${BASE_FUEL_LOG_URL}/${car_id}`,
     get_fuel_consumption: (car_id) => `${BASE_FUEL_LOG_URL}/monthly_fuel_consumption/${car_id}`
   }
 };
@@ -119,21 +129,16 @@ async function request(URL, method = "GET", data = null) {
 export const api = {
   cars: {
     show_all_cars: () => request(endpoint.cars.show_all_cars()),
-    show_car_by_id: (id) => request(endpoint.cars.show_car_by_id(id)),
+    show_car_by_id: (id, params={}) => request(endpoint.cars.show_car_by_id(id, params)),
     create_car: (data) => request(endpoint.cars.create_car(), "POST", data),
     edit_car: (id, data) => request(endpoint.cars.edit_car(id), "PATCH", data),
     delete_car: (id) => request(endpoint.cars.delete_car(id), "DELETE"),
-    get_car_mileage: (id) => request(endpoint.cars.get_car_mileage(id), "GET"),
-    get_car_brand_and_model: (id) =>
-      request(endpoint.cars.get_car_brand_and_model(id), "GET"),
     upload_car_photo: (id, photo) =>
       request(endpoint.cars.upload_car_photo(id), "POST", photo),
-    edit_car_photo: (id, photo) =>
-      request(endpoint.cars.edit_car_photo(id), "PUT", photo),
   },
   maintenance_log: {
-    show_all_mlog: (car_id, params = {}) =>
-      request(endpoint.maintenance_log.show_all_mlog(car_id, params)),
+    show_all_mlog: (params = {}) =>
+      request(endpoint.maintenance_log.show_all_mlog(params)),
     show_mlog_by_id: (id) =>
       request(endpoint.maintenance_log.show_mlog_by_id(id)),
     create_mlog: (car_id, data) =>
@@ -152,7 +157,7 @@ export const api = {
     logout: (data) => request(endpoint.users.logout()),
     get_me: () => request(endpoint.users.get_me()),
     change_password: (data) =>
-      request(endpoint.users.change_password(), "PUT", data),
+      request(endpoint.users.change_password(), "PATCH", data),
   },
   fuel_log: {
     get_logs: (car_id, params = {}) => request(endpoint.fuel_log.get_logs(car_id, params)),

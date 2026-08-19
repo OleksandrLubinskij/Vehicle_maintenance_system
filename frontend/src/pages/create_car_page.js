@@ -13,7 +13,7 @@ export class CreateCarPage extends BaseWindow {
     create_add_car_form(fuel_enum, oil_enum, default_values = null) {
         const form = new Form();
         let form_fields = [];
-
+        console.log(default_values);
         const fuel_values = fuel_enum.map(val => val.name);
         const oil_values = oil_enum.map(val => val.name);
         
@@ -21,7 +21,6 @@ export class CreateCarPage extends BaseWindow {
             const extra_class = (field_identificator.LABEL === "VIN") ? "md:col-span-2" : "";
             
             const def_val = default_values ? default_values[field_identificator.ID] : null; 
-            
             const field = form.create_entry(field_identificator.LABEL, field_identificator.ID, "input", extra_class, def_val);
             form_fields.push(field);
         }
@@ -98,9 +97,8 @@ export class CreateCarPage extends BaseWindow {
         try {
             const fuel_enum = await api.enum.get_enums(1);
             const oil_enum = await api.enum.get_enums(2);
-            const car_brand_model = this.id === null ? null : await api.cars.get_car_brand_and_model(this.id);
+            const car_brand_model = this.id === null ? null : await api.cars.show_car_by_id(this.id, {"fields": "brand,model"});
             const default_values = this.id === null ? null : await api.cars.show_car_by_id(this.id);
-            
             const html = this.content(fuel_enum, oil_enum, default_values, car_brand_model);
             super.render(html);
 
@@ -139,11 +137,13 @@ export class CreateCarPage extends BaseWindow {
                             await photo_endpoint(this.id, image_file, PAGE_MODE.EDIT);
                         } else {
                             new_car = await api.cars.create_car(car_data);
+                            console.log("Створена машина:", new_car["id"]);
                             console.log("Машину успішно створено");
-                            await photo_endpoint(new_car["car_id"], image_file, PAGE_MODE.CREATE);
+                            console.log("PHOTO", image_file);
+                            await photo_endpoint(new_car["id"], image_file, PAGE_MODE.CREATE);
                         }
                         
-                        router.navigate("/cars");
+                        router.navigate("GET", "cars");
                     } catch (error) {
                         console.error("Помилка при відправці даних:", error);
                         alert("Не вдалося зберегти дані автомобіля.");
@@ -159,19 +159,15 @@ export class CreateCarPage extends BaseWindow {
     async upload_photo(car_id, image_file, mode) {
         if(image_file && image_file.size > 0 && car_id) {
             const imageFormData = new FormData();
-            imageFormData.append("raw_photo", image_file);
-            const endpoints = {
-                [PAGE_MODE.EDIT]: async (car_id, image) => await api.cars.edit_car_photo(car_id, image),
-                [PAGE_MODE.CREATE]: async (car_id, image) => await api.cars.upload_car_photo(car_id, image),
-            }
+            imageFormData.append("new_car_photo", image_file);
 
             try {
-                await endpoints[mode](car_id, imageFormData);
+                await api.cars.upload_car_photo(car_id, imageFormData);
                 console.log("Фото успішно завантажено");
                 } catch (imgError) {            
                 console.error("Помилка при завантаженні фото:", imgError);
                  alert("Машину збережено, але фото не вдалося завантажити.");
             }
-        }               
+        }          
     }
 }

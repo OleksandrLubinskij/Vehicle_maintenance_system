@@ -66,7 +66,7 @@ export class ShowCarPage extends BaseWindow {
     const textColor = INDICATORS[worstMaintenanceId]["color"];
 
     return `
-        <article data-path="/get_car/${car_data["id"]}" class="car_card_main cursor-pointer border border-gray-200 bg-white flex flex-col md:flex-row items-stretch rounded-xl overflow-hidden shadow-sm m-4 hover:shadow-lg transition-shadow">
+        <article data-method="GET" data-entity="cars" data-id="${car_data["id"]}"  class="car_card_main cursor-pointer border border-gray-200 bg-white flex flex-col md:flex-row items-stretch rounded-xl overflow-hidden shadow-sm m-4 hover:shadow-lg transition-shadow">
             
     <img
         src="${car_data["photo_path"] ? `${car_data["photo_path"]}` : "assets/no_photo.png"}"
@@ -99,7 +99,9 @@ export class ShowCarPage extends BaseWindow {
             this.images.refueling,
             "Заправити",
             "button",
-            `#`, 
+            "POST",
+            "fuel_logs",
+            car_data["id"],
             `${this.visibility} btn-refuel border border-transparent hover:border-[#8c322e] hover:bg-rose-50 rounded-lg lg:px-3 lg:py-1.5 text-gray-700 hover:text-[#8c322e]`,
           )}
 
@@ -107,7 +109,9 @@ export class ShowCarPage extends BaseWindow {
             this.images.edit_car,
             "Редагувати",
             "button",
-            `/edit_car/${car_data["id"]}`,
+            `PATCH`,
+            `cars`,
+            car_data["id"],
             `${this.visibility} border border-transparent hover:border-[#a05228] hover:bg-orange-50 rounded-lg lg:px-3 lg:py-1.5 text-gray-700 hover:text-[#a05228]`,
           )}
 
@@ -115,7 +119,9 @@ export class ShowCarPage extends BaseWindow {
             this.images.add_note_img,
             "Додати ремонт",
             "button",
-            `/create_maintenance_record/${car_data["id"]}`,
+            `POST`,
+            `maintenance_log`,
+            car_data["id"],
             `${this.visibility} border border-transparent hover:border-emerald-500 hover:bg-emerald-50 rounded-lg lg:px-3 lg:py-1.5 text-gray-700 hover:text-emerald-700`,
           )}
       </div>
@@ -255,24 +261,31 @@ export class ShowCarPage extends BaseWindow {
     card_container.addEventListener("click", (event) => {
       const is_button = event.target.closest("button");
       
+      // Обробка кнопки "Заправити" (модалка, без роутингу)
       if (is_button && is_button.classList.contains("btn-refuel")) {
         event.preventDefault();
-        event.stopPropagation();
+        event.stopPropagation(); // Не даємо події дійти до глобального роутера
         
         const card = is_button.closest(".car_card_main");
         if (card) {
-          const car_id = card.getAttribute("data-path").split("/").pop();
+          const car_id = card.getAttribute("data-id");
           this.open_refuel_modal(car_id);
         }
         return;
       }
 
+      // Якщо це інша кнопка (Редагувати, Додати ремонт), 
+      // просто виходимо. Подія "спливе" вгору і її зловить router.js!
       if (is_button) return;
 
+      // Якщо клікнули по самій картці - переходимо на деталі авто
       const card = event.target.closest(".car_card_main");
       if (card) {
-        const target_url = card.getAttribute("data-path");
-        router.navigate(target_url);
+        const method = card.getAttribute("data-method"); // "GET"
+        const entity = card.getAttribute("data-entity"); // "cars"
+        const id = card.getAttribute("data-id");         // ID авто
+        
+        router.navigate(method, entity, id);
       }
     });
   }

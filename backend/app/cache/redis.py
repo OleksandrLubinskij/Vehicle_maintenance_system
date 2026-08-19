@@ -31,3 +31,9 @@ class RedisCache:
     async def get_all_cached(self, key) -> dict:
         data = await self.redis.hgetall(key)
         return {car_id: json.loads(val) for car_id, val in data.items()}
+    
+
+redis_cache_instance = RedisCache()
+
+def get_redis_cache() -> RedisCache:
+    return redis_cache_instance
