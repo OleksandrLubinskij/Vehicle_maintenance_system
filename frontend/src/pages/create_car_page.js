@@ -137,8 +137,10 @@ export class CreateCarPage extends BaseWindow {
                             await photo_endpoint(this.id, image_file, PAGE_MODE.EDIT);
                         } else {
                             new_car = await api.cars.create_car(car_data);
+                            console.log("Створена машина:", new_car["id"]);
                             console.log("Машину успішно створено");
-                            await photo_endpoint(new_car["car_id"], image_file, PAGE_MODE.CREATE);
+                            console.log("PHOTO", image_file);
+                            await photo_endpoint(new_car["id"], image_file, PAGE_MODE.CREATE);
                         }
                         
                         router.navigate("GET", "cars");
@@ -157,19 +159,15 @@ export class CreateCarPage extends BaseWindow {
     async upload_photo(car_id, image_file, mode) {
         if(image_file && image_file.size > 0 && car_id) {
             const imageFormData = new FormData();
-            imageFormData.append("raw_photo", image_file);
-            const endpoints = {
-                [PAGE_MODE.EDIT]: async (car_id, image) => await api.cars.edit_car_photo(car_id, image),
-                [PAGE_MODE.CREATE]: async (car_id, image) => await api.cars.upload_car_photo(car_id, image),
-            }
+            imageFormData.append("new_car_photo", image_file);
 
             try {
-                await endpoints[mode](car_id, imageFormData);
+                await api.cars.upload_car_photo(car_id, imageFormData);
                 console.log("Фото успішно завантажено");
                 } catch (imgError) {            
                 console.error("Помилка при завантаженні фото:", imgError);
                  alert("Машину збережено, але фото не вдалося завантажити.");
             }
-        }               
+        }          
     }
 }
