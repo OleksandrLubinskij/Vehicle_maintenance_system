@@ -147,3 +147,14 @@ export const TABS = {
     MAINTENANCE: "maintenance",
     REFUELING: "refueling"
 }
+
+export const THEMES = {
+    LIGHT: {
+        ID: "light",
+        LABEL: "Світла тема"
+    },
+    DARK: {
+        ID: "dark",
+        LABEL: "Темна тема"
+    }
+}
