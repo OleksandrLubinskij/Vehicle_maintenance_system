@@ -41,7 +41,7 @@ export class ShowCarPage extends BaseWindow {
   <path d="M9.5 0a.5.5 0 0 1 .5.5.5.5 0 0 0 .5.5.5.5 0 0 1 .5.5V2a.5.5 0 0 1-.5.5h-5A.5.5 0 0 1 5 2v-.5a.5.5 0 0 1 .5-.5.5.5 0 0 0 .5-.5.5.5 0 0 1 .5-.5z"/>
   <path d="M3 2.5a.5.5 0 0 1 .5-.5H4a.5.5 0 0 0 0-1h-.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1H12a.5.5 0 0 0 0 1h.5a.5.5 0 0 1 .5.5v12a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5z"/>
   <path d="M10 7a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zm-6 4a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm4-3a1 1 0 0 0-1 1v3a1 1 0 1 0 2 0V9a1 1 0 0 0-1-1"/>
-</svg>`
+</svg>`,
     };
 
     this.info_about_car_keys = [
@@ -49,13 +49,12 @@ export class ShowCarPage extends BaseWindow {
       "engine_capacity",
       "fuel_type",
       "oil_type",
-      "monthly_fuel_consumption"
+      "monthly_fuel_consumption",
     ];
 
     this.cars = [];
     this.visibility =
       localStorage.getItem("role") === ROLE.USER ? "hidden" : "";
-    
   }
 
   render_car_card(car_data) {
@@ -87,9 +86,7 @@ export class ShowCarPage extends BaseWindow {
                 <span>${car_data["service_indicators"]["text_indicator"]}</span>
             </div>
             ${this.info_about_car_keys
-              .map((key) =>
-                icon_value_text(this.images[key], car_data[key]),
-              )
+              .map((key) => icon_value_text(this.images[key], car_data[key]))
               .join("")}
         </div>
 
@@ -142,20 +139,21 @@ export class ShowCarPage extends BaseWindow {
             <div class="mb-4">
               
               ${this.form.create_entry(
-                "Пробіг (км)", 
-                "current_mileage", 
+                "Пробіг (км)",
+                "current_mileage",
                 "input",
-                 "w-full px-3 py-2 outline-none focus:ring-2 focus:ring-[#8c322e]", 
-                null)}
+                "w-full px-3 py-2 outline-none focus:ring-2 focus:ring-[#8c322e]",
+                null,
+              )}
               </div>
             
             <div class="mb-6">
               ${this.form.create_entry(
-                "Літри", 
-                "liters", 
-                "input", 
-                "w-full px-3 py-2 outline-none focus:ring-2 focus:ring-[#8c322e]", 
-                null
+                "Літри",
+                "liters",
+                "input",
+                "w-full px-3 py-2 outline-none focus:ring-2 focus:ring-[#8c322e]",
+                null,
               )}
             </div>
             
@@ -205,6 +203,7 @@ export class ShowCarPage extends BaseWindow {
 
   async get_all_cars() {
     const cars_data = await api.cars.show_all_cars();
+    console.log(cars_data);
     return cars_data;
   }
 
@@ -242,12 +241,15 @@ export class ShowCarPage extends BaseWindow {
         const car_id = document.getElementById("refuel-car-id").value;
         const formData = new FormData(refuelForm);
         const refuel_data = Object.fromEntries(formData.entries());
-        console.log(`Submitting refuel data for car_id ${car_id}:`, refuel_data);
+        console.log(
+          `Submitting refuel data for car_id ${car_id}:`,
+          refuel_data,
+        );
         try {
           await api.fuel_log.create_log(car_id, refuel_data);
           this.close_refuel_modal();
           await this.render();
-        } catch(error) { 
+        } catch (error) {
           console.error(`Помилка при створенні запису про заправку: ${error}`);
         }
       });
@@ -257,15 +259,15 @@ export class ShowCarPage extends BaseWindow {
   button_clicks() {
     const card_container = document.querySelector("#card_container");
     if (!card_container) return;
-    
+
     card_container.addEventListener("click", (event) => {
       const is_button = event.target.closest("button");
-      
+
       // Обробка кнопки "Заправити" (модалка, без роутингу)
       if (is_button && is_button.classList.contains("btn-refuel")) {
         event.preventDefault();
         event.stopPropagation(); // Не даємо події дійти до глобального роутера
-        
+
         const card = is_button.closest(".car_card_main");
         if (card) {
           const car_id = card.getAttribute("data-id");
@@ -274,7 +276,7 @@ export class ShowCarPage extends BaseWindow {
         return;
       }
 
-      // Якщо це інша кнопка (Редагувати, Додати ремонт), 
+      // Якщо це інша кнопка (Редагувати, Додати ремонт),
       // просто виходимо. Подія "спливе" вгору і її зловить router.js!
       if (is_button) return;
 
@@ -283,8 +285,8 @@ export class ShowCarPage extends BaseWindow {
       if (card) {
         const method = card.getAttribute("data-method"); // "GET"
         const entity = card.getAttribute("data-entity"); // "cars"
-        const id = card.getAttribute("data-id");         // ID авто
-        
+        const id = card.getAttribute("data-id"); // ID авто
+
         router.navigate(method, entity, id);
       }
     });
