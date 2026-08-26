@@ -14,7 +14,17 @@
     --color-dropdown-menu-border: var(--theme-dropdown-menu-border);
     --color-dropdown-menu-hover: var(--theme-dropdown-menu-hover);
     --color-dropdown-menu-text-destructive_act: var(--theme-dropdown-menu-text-destructive_act);
-    --color-dropdown-menu-hover-destructive_act: var(--theme-dropdown-menu-hover-destructive_act)
+    --color-dropdown-menu-hover-destructive_act: var(--theme-dropdown-menu-hover-destructive_act);
+
+    --color-form-label: var(--theme-form-label);
+    --color-form-border: var(--theme-form-border);
+    --color-form-focus: var(--theme-form-focus);
+
+    --color-form-cancel-text: var(--theme-form-cancel-text);
+    --color-form-cancel-bg: var(--theme-form-cancel-bg);
+    --color-form-cancel-hover: var(--theme-form-cancel-hover);
+    --color-accept-bg: var(--theme-accept-bg);
+    --color-accept-hover: var(--theme-accept-hover);
 }
 
 :root {
@@ -25,12 +35,24 @@
     --theme-nav-link-hover-text: #047857;
     --theme-nav-link-hover-border: #000000;
 
+    /* dropdown_menus */
     --theme-dropdown-menu-bg: #ffffff;
     --theme-dropdown-menu-text: #454444;
     --theme-dropdown-menu-border: #e4e2e2;
     --theme-dropdown-menu-hover: #f3f4f6;
     --theme-dropdown-menu-text-destructive_act: #dc2626;
     --theme-dropdown-menu-hover-destructive_act: #fef2f2;
+
+    /* forms */
+    --theme-form-label: #374151;
+    --theme-form-border: #d1d5db;
+    --theme-form-focus: #10b981;
+        /*change password buttons*/
+        --theme-form-cancel-text: #171717;
+        --theme-form-cancel-bg: #c9c9c9;
+        --theme-form-cancel-hover: #aeaeb1;
+        --theme-accept-bg: #23965f;
+        --theme-accept-hover: #0c543f;
 }
 
 .dark {
@@ -41,12 +63,24 @@
     --theme-nav-link-hover-text: #0d946e;
     --theme-nav-link-hover-border: #6b7280;
 
+    /* dropdown_menus */
     --theme-dropdown-menu-bg: #424242;
     --theme-dropdown-menu-text: #d4d2d2;
     --theme-dropdown-menu-border: #575757;
     --theme-dropdown-menu-hover: #78787a;
     --theme-dropdown-menu-text-destructive_act: #e63737;
     --theme-dropdown-menu-hover-destructive_act: #686565;
+
+    /* forms */
+    --theme-form-label: #c9c9c9;
+    --theme-form-border: #b1b1b5;
+    --theme-form-focus: #18d69a;
+    /*change password buttons*/
+        --theme-form-cancel-text: #b7babe;
+        --theme-form-cancel-bg: #6a6a6a;
+        --theme-form-cancel-hover: #636364;
+        --theme-accept-bg: #27925e;
+        --theme-accept-hover: #17bf4f;
 }
 
 .car-svg-container svg {
