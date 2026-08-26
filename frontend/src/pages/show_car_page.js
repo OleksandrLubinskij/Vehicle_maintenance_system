@@ -66,7 +66,7 @@ export class ShowCarPage extends BaseWindow {
     const textColor = INDICATORS[worstMaintenanceId]["color"];
 
     return `
-        <article data-method="GET" data-entity="cars" data-id="${car_data["id"]}"  class="car_card_main cursor-pointer border border-gray-200 bg-white flex flex-col md:flex-row items-stretch rounded-xl overflow-hidden shadow-sm m-4 hover:shadow-lg transition-shadow">
+        <article data-method="GET" data-entity="cars" data-id="${car_data["id"]}"  class="car_card_main dark:bg-[#454343] cursor-pointer border border-gray-200 dark:border-gray- bg-white flex flex-col md:flex-row items-stretch rounded-xl overflow-hidden shadow-sm m-4 hover:shadow-lg transition-shadow">
             
     <img
         src="${car_data["photo_path"] ? `${car_data["photo_path"]}` : "assets/no_photo.png"}"
@@ -77,7 +77,7 @@ export class ShowCarPage extends BaseWindow {
     <div class="car_info flex-1 p-5 flex flex-col sm:flex-row justify-between items-stretch gap-6 md:gap-16">
         
         <div class="info_about_car flex flex-col gap-4 w-full">
-            <p class="text-lg md:text-xl lg:text-2xl font-bold">
+            <p class="text-lg md:text-xl lg:text-2xl font-bold dark">
                 ${car_data["brand"]} ${car_data["model"]}
             </p>
             <div class="w-fit flex items-center gap-1.5 px-2 py-1 rounded-md text-[14px] font-bold bg-gray-100 border border-gray-200 uppercase tracking-wide" style="color: ${textColor}"> 

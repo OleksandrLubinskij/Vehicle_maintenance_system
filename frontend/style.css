@@ -1,9 +1,52 @@
 @import "tailwindcss";
-
 @variant dark (&:where(.dark, .dark *));
 
+@theme {
+    --color-main-bg: var(--theme-bg);
+    --color-main-text: var(--theme-text);
+    --color-main-header: var(--theme-header);
+    --color-nav-menu: var(--theme-nav-menu);
+    --color-nav-link-hover-text: var(--theme-nav-link-hover-text);
+    --color-nav-link-hover-border: var(--theme-nav-link-hover-border);
+
+    --color-dropdown-menu-bg: var(--theme-dropdown-menu-bg);
+    --color-dropdown-menu-text: var(--theme-dropdown-menu-text);
+    --color-dropdown-menu-border: var(--theme-dropdown-menu-border);
+    --color-dropdown-menu-hover: var(--theme-dropdown-menu-hover);
+    --color-dropdown-menu-text-destructive_act: var(--theme-dropdown-menu-text-destructive_act);
+    --color-dropdown-menu-hover-destructive_act: var(--theme-dropdown-menu-hover-destructive_act)
+}
+
 :root {
-    --custom-bg: #f1efef;
+    --theme-bg: #f1efef;
+    --theme-text: #1F1B1B;
+    --theme-header: #227b50;
+    --theme-nav-menu: #f1efef;
+    --theme-nav-link-hover-text: #047857;
+    --theme-nav-link-hover-border: #000000;
+
+    --theme-dropdown-menu-bg: #ffffff;
+    --theme-dropdown-menu-text: #454444;
+    --theme-dropdown-menu-border: #e4e2e2;
+    --theme-dropdown-menu-hover: #f3f4f6;
+    --theme-dropdown-menu-text-destructive_act: #dc2626;
+    --theme-dropdown-menu-hover-destructive_act: #fef2f2;
+}
+
+.dark {
+    --theme-bg: #1F1B1B;
+    --theme-text: #f1efef;
+    --theme-header: #2ea96e;
+    --theme-nav-menu: #0D0C0C;
+    --theme-nav-link-hover-text: #0d946e;
+    --theme-nav-link-hover-border: #6b7280;
+
+    --theme-dropdown-menu-bg: #424242;
+    --theme-dropdown-menu-text: #d4d2d2;
+    --theme-dropdown-menu-border: #575757;
+    --theme-dropdown-menu-hover: #78787a;
+    --theme-dropdown-menu-text-destructive_act: #e63737;
+    --theme-dropdown-menu-hover-destructive_act: #686565;
 }
 
 .car-svg-container svg {
