@@ -15,7 +15,7 @@ export function icon_value_text(svg_code,
 
     return `
         <${element} ${method_attr} ${entity_attr} ${id_attr} class="flex gap-2 m-2 cursor-pointer items-center justify-start transition-transform duration-200 hover:scale-105 ${extra_clases}">
-            <div class="${icon_size} shrink-0 flex items-center justify-center car-svg-container" style="color: ${icon_color}" >
+            <div class="${icon_size} shrink-0 flex items-center justify-center car-svg-container ${icon_color}">
                 ${svg_code}
             </div>
             <span class="${text_size} inline-flex items-center font-medium">

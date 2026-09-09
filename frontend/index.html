@@ -6,6 +6,12 @@
     <title>VMS</title>
     <link rel="stylesheet" href="./style.css" />
     <script type="module" src="./src/router.js" defer></script>
+    <script>
+      // Запобігаємо блиманню світлої теми при завантаженні, якщо обрана темна
+      if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
   </head>
   <body class="bg-main-bg text-main-text">
     <header class="main_header bg-main-header p-2">
@@ -27,7 +33,7 @@
       <div class="block md:hidden">
         <button
           id="menu_toggle"
-          class="p-2 hover:bg-gray-200 rounded-md transition-colors duration-200"
+          class="p-2 hover:bg-dropdown-menu-hover rounded-md transition-colors duration-200"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
@@ -62,7 +68,7 @@
           id="settings_btn"
           class="p-1"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-gear hover:text-emerald-700 transition-colors duration-200 text-gray-800 dark:text-white" viewBox="0 0 16 16">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-gear text-main-text hover:text-nav-link-hover-text transition-colors duration-200" viewBox="0 0 16 16">
             <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0"/>
             <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/>
           </svg>
@@ -75,7 +81,7 @@
           <div class="text-left w-full px-3 py-2 text-sm">
             Налаштування
           </div>
-          <hr class="border-gray-100my-1" />
+          <hr class="border-dropdown-menu-border my-1" />
           <button
             id="toggle_theme_btn"
             class="text-left w-full px-3 py-2 text-sm mt-2 hover:bg-dropdown-menu-hover rounded-md transition-colors"
@@ -101,16 +107,16 @@
         class="hidden absolute top-full left-0 bg-dropdown-menu-bg border-t border-dropdown-menu-border flex-col gap-2 p-4 z-50 md:hidden text-sm rounded-lg shadow-xl"
       >
         <div class="text-left w-full px-3 text-sm">Меню</div>
-        <hr class="border-gray-100my-1" />
+        <hr class="border-dropdown-menu-border my-1" />
         <button
-          class="menu_btn text-left hover:text-emerald-700 hover:bg-dropdown-menu-hover transition-colors duration-200 p-2 rounded-md"
+          class="menu_btn text-left hover:text-nav-link-hover-text hover:bg-dropdown-menu-hover transition-colors duration-200 p-2 rounded-md"
           data-method="GET"
           data-entity="cars"
         >
           Переглянути
         </button>
         <button
-          class="menu_btn text-left hover:text-emerald-700 hover:bg-dropdown-menu-hover transition-colors duration-200 p-2 rounded-md"
+          class="menu_btn text-left hover:text-nav-link-hover-text hover:bg-dropdown-menu-hover transition-colors duration-200 p-2 rounded-md"
           data-method="POST"
           data-entity="cars"
         >
@@ -196,7 +202,7 @@
             <button
               type="submit"
               id="change_password_submit_btn"
-              class="px-4 py-2 text-white bg-accept-bg hover:bg-emerald-700 rounded-md transition-colors"
+              class="px-4 py-2 text-white bg-accept-bg hover:bg-accept-hover rounded-md transition-colors"
             >
               Зберегти
             </button>

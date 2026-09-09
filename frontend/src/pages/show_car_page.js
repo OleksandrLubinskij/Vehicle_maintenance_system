@@ -61,12 +61,11 @@ export class ShowCarPage extends BaseWindow {
   render_car_card(car_data) {
     const worstMaintenanceId =
       car_data["service_indicators"]["worst_maintenance"];
-    const indicatorColor = INDICATORS[worstMaintenanceId]["text_color"];
+    const indicatorColor = INDICATORS[worstMaintenanceId]["color"];
     const indicatorImg = INDICATORS[worstMaintenanceId]["img"];
-    const textColor = INDICATORS[worstMaintenanceId]["color"];
-
+    const textColor = INDICATORS[worstMaintenanceId]["text_color"];
     return `
-        <article data-method="GET" data-entity="cars" data-id="${car_data["id"]}"  class="car_card_main dark:bg-[#454343] cursor-pointer border border-gray-200 dark:border-gray- bg-white flex flex-col md:flex-row items-stretch rounded-xl overflow-hidden shadow-sm m-4 hover:shadow-lg transition-shadow">
+        <article data-method="GET" data-entity="cars" data-id="${car_data["id"]}"  class="car_card_main bg-car-card-bg cursor-pointer border border-car-card-border flex flex-col md:flex-row items-stretch rounded-xl overflow-hidden shadow-sm m-4 hover:shadow-lg transition-shadow">
             
     <img
         src="${car_data["photo_path"] ? `${car_data["photo_path"]}` : "assets/no_photo.png"}"
@@ -80,7 +79,7 @@ export class ShowCarPage extends BaseWindow {
             <p class="text-lg md:text-xl lg:text-2xl font-bold dark">
                 ${car_data["brand"]} ${car_data["model"]}
             </p>
-            <div class="w-fit flex items-center gap-1.5 px-2 py-1 rounded-md text-[14px] font-bold bg-gray-100 border border-gray-200 uppercase tracking-wide" style="color: ${textColor}"> 
+            <div class="w-fit flex items-center gap-1.5 px-2 py-1 rounded-md text-[14px] font-bold bg-txt-indicator-bg border border-txt-indicator-border uppercase tracking-wide ${textColor}"> 
                 <div class="h-4 w-4 md:w-5 shrink-0 flex items-center justify-center">
                     ${indicatorImg}
                 </div>
@@ -102,7 +101,7 @@ export class ShowCarPage extends BaseWindow {
             "POST",
             "fuel_logs",
             car_data["id"],
-            `${this.visibility} btn-refuel border border-transparent hover:border-[#8c322e] hover:bg-rose-50 rounded-lg lg:px-3 lg:py-1.5 text-gray-700 hover:text-[#8c322e]`,
+            `${this.visibility} btn-refuel border border-transparent hover:border-fuel-btn-border hover:bg-fuel-btn-bg hover:text-fuel-btn-text rounded-lg lg:px-3 lg:py-1.5 text-v-actions-color`,
           )}
 
           ${icon_value_text(
@@ -112,7 +111,7 @@ export class ShowCarPage extends BaseWindow {
             `PATCH`,
             `cars`,
             car_data["id"],
-            `${this.visibility} border border-transparent hover:border-[#a05228] hover:bg-orange-50 rounded-lg lg:px-3 lg:py-1.5 text-gray-700 hover:text-[#a05228]`,
+            `${this.visibility} border border-transparent hover:border-edit-btn-border hover:bg-edit-btn-bg rounded-lg lg:px-3 lg:py-1.5 text-v-actions-color hover:text-edit-btn-text`,
           )}
 
           ${icon_value_text(
@@ -122,11 +121,11 @@ export class ShowCarPage extends BaseWindow {
             `POST`,
             `maintenance_log`,
             car_data["id"],
-            `${this.visibility} border border-transparent hover:border-emerald-500 hover:bg-emerald-50 rounded-lg lg:px-3 lg:py-1.5 text-gray-700 hover:text-emerald-700`,
+            `${this.visibility} border border-transparent hover:border-add-repair-btn-border hover:bg-add-repair-btn-bg rounded-lg lg:px-3 lg:py-1.5 text-v-actions-color hover:text-add-repair-btn-text`,
           )}
       </div>
     </div>
-    <div class="car_indicator h-9 w-full md:h-auto md:w-16 shrink-0" style="background-color: ${indicatorColor}"></div>
+    <div class="car_indicator h-9 w-full md:h-auto md:w-16 shrink-0 ${indicatorColor}"></div>
 </article>
     `;
   }
@@ -134,8 +133,8 @@ export class ShowCarPage extends BaseWindow {
   render_refuel_modal() {
     return `
       <div id="refuel-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-sm p-6 relative">
-          <h2 class="text-xl font-bold mb-4 text-gray-800">Заправити авто</h2>
+        <div class="bg-refuel-modal-bg rounded-xl shadow-xl w-full max-w-sm p-6 relative">
+          <h2 class="text-xl font-bold mb-4 text-text">Заправити авто</h2>
           <form id="refuel-form">
             <input type="hidden" id="refuel-car-id" value="">
             
@@ -160,10 +159,10 @@ export class ShowCarPage extends BaseWindow {
             </div>
             
             <div class="flex justify-end gap-3">
-              <button type="button" id="btn-cancel-refuel" class="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md font-medium transition-colors">
+              <button type="button" id="btn-cancel-refuel" class="px-4 py-2 text-form-cancle-text bg-form-cancel-bg hover:bg-form-cancel-hover rounded-md font-medium transition-colors">
                 Скасувати
               </button>
-              <button type="submit" class="px-4 py-2 text-white bg-[#8c322e] hover:bg-[#7a2a26] rounded-md font-medium transition-colors">
+              <button type="submit" class="px-4 py-2 text-white bg-accept-bg hover:bg-accept-hover rounded-md font-medium transition-colors">
                 Підтвердити
               </button>
             </div>
