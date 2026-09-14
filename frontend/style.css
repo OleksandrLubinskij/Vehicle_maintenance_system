@@ -66,6 +66,8 @@
     --color-tab-inactive-bg: var(--theme-tab-inactive-bg);
     --color-log-icon-bg: var(--theme-log-icon-bg);
     --color-log-icon-text: var(--theme-log-icon-text);
+    --color-form-bg: var(--theme-form-bg);
+    --color-form-text: var(--theme-form-text);
 }
 
 :root {
@@ -148,6 +150,12 @@
     --theme-tab-inactive-bg: #f3f4f6;
     --theme-log-icon-bg: #ecfdf5;
     --theme-log-icon-text: #047857;
+
+    --theme-form-bg: #ffffff;
+    --theme-form-text: #1F1B1B;
+    --theme-form-label: #374151;
+    --theme-form-border: #d1d5db;
+    --theme-form-focus: #10b981;
 }
 
 .dark {
@@ -227,6 +235,12 @@
     --theme-tab-inactive-bg: #2a2a2a;
     --theme-log-icon-bg: #146c43;
     --theme-log-icon-text: #beebd6;
+
+    --theme-form-bg: #424242;
+    --theme-form-text: #f1efef;
+    --theme-form-label: #c9c9c9;
+    --theme-form-border: #575757;
+    --theme-form-focus: #18d69a;
 }
 
 .car-svg-container svg {

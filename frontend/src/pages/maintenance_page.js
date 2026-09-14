@@ -16,7 +16,7 @@ export class ManageMaintenancePage extends BaseWindow {
         const maintenance_type_values = maintenance_type_enum.map(val => val.name);
         return `
         <form action="/cars" id="manage_maintenance_form" class="max-w-2xl w-full mx-auto mt-5">
-            <div class="border border-gray-200 rounded-2xl bg-white p-8 shadow-md">
+            <div class="border border-car-card-border rounded-2xl bg-car-card-bg p-8 shadow-md">
                 <div class="grid grid-cols-1 md:grid-cols-2 md:gap-x-6">
                     ${form.create_entry(
                         MAINTENANCE_LOG_FIELDS[0].LABEL, 
@@ -45,7 +45,7 @@ export class ManageMaintenancePage extends BaseWindow {
             <input 
                 type="submit" 
                 value="${this.mode === PAGE_MODE.CREATE ? "Додати" : "Зберегти зміни"}"
-                class="w-full py-3 px-6 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 mt-5 cursor-pointer">
+                class="w-full py-3 px-6 text-sm font-medium text-white bg-accept-bg hover:bg-accept-hover active:opacity-80 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 mt-5 cursor-pointer">
         </form>
         `;
     }
@@ -53,14 +53,14 @@ export class ManageMaintenancePage extends BaseWindow {
     content(maintenance_type_enum, actual_mileage=null, default_values = null, car_brand_model=null) {
         return `
             <div class="flex flex-col gap-2 md:gap-4">
-                <h1 class="text-center font-bold text-xl md:text-2xl lg:text-4xl text-gray-800">
+                <h1 class="text-center font-bold text-xl md:text-2xl lg:text-4xl text-main-text">
                     ${this.mode === PAGE_MODE.CREATE ? "Додати ремонт" : "Редагувати ремонт"}
                 </h1>
                 
                 ${car_brand_model ? `
-                    <div class="text-center text-sm md:text-base lg:text-lg font-semibold text-gray-500 tracking-wide uppercase">
+                    <div class="text-center text-sm md:text-base lg:text-lg font-semibold text-text-secondary tracking-wide uppercase">
                         Для автомобіля: 
-                        <span class="text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                        <span class="text-accept-bg font-bold bg-log-icon-bg px-2 py-0.5 rounded-md border border-add-repair-btn-border">
                             ${car_brand_model.brand} ${car_brand_model.model}
                         </span>
                     </div>
@@ -76,6 +76,7 @@ export class ManageMaintenancePage extends BaseWindow {
                 const maintenance_type_enum = await api.enum.get_enums(3);
                 const default_values = this.mode === PAGE_MODE.CREATE ? null : await api.maintenance_log.show_mlog_by_id(this.id);
                 const actual_mileage = this.mode === PAGE_MODE.EDIT ? null : await api.cars.show_car_by_id(this.id, { fields: ["mileage"] });
+                console.log(actual_mileage);
                 const car_brand_model = this.mode === PAGE_MODE.EDIT ? null : await api.cars.show_car_by_id(this.id, { fields: ["brand", "model"] }); 
                 const html = this.content(maintenance_type_enum, actual_mileage.mileage, default_values, car_brand_model);
                 super.render(html);

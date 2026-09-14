@@ -11,7 +11,7 @@ export class Form {
             id="${id}"
             name="${id}"
             value="${default_value===null ? "" : default_value}"
-            class="w-full border border-form-border rounded-lg px-3 py-2 text-base focus:outline-none focus:border-form-focus focus:ring-1 focus:ring-form-focus transition-all"
+            class="w-full bg-form-bg text-form-text border border-form-border rounded-lg px-3 py-2 text-base focus:outline-none focus:border-form-focus focus:ring-1 focus:ring-form-focus transition-all"
           />
         </div>`
     }
@@ -27,7 +27,7 @@ export class Form {
             name="${id}"
             rows=${rows}
             cols=${cols}
-            class="w-full border border-form-border rounded-lg px-3 py-2 text-base focus:outline-none focus:border-form-focus focus:ring-1 focus:ring-form-focus transition-all"
+            class="w-full bg-form-bg text-form-text border border-form-border rounded-lg px-3 py-2 text-base focus:outline-none focus:border-form-focus focus:ring-1 focus:ring-form-focus transition-all"
           >${default_value || ""}</textarea>
         </div>`
     }
@@ -41,7 +41,7 @@ export class Form {
           <select 
             id="${id}" 
             name="${id}" 
-            class="w-full border border-form-border rounded-lg px-3 py-2 focus:outline-none focus:border-form-focus focus:ring-1 focus:ring-form-focus text-base transition-all bg-white"
+            class="w-full bg-form-bg text-form-text border border-form-border rounded-lg px-3 py-2 focus:outline-none focus:border-form-focus focus:ring-1 focus:ring-form-focus text-base transition-all"
           >
             ${this.create_options(values, default_value, show_values)}
           </select>
@@ -50,15 +50,15 @@ export class Form {
     }
 
     create_options(values, default_value, show_values) {
-    const display_arr = show_values ? show_values : values;
+        const display_arr = show_values ? show_values : values;
 
-    const options_arr = display_arr.map((display_val, index) => {
-        const backend_val = show_values ? values[index] : display_val;
-        const isSelected = backend_val === default_value ? "selected" : "";
-        
-        return `<option value="${backend_val}" ${isSelected} class="text-base">${display_val}</option>`;
-    });
+        const options_arr = display_arr.map((display_val, index) => {
+            const backend_val = show_values ? values[index] : display_val;
+            const isSelected = backend_val === default_value ? "selected" : "";
+            
+            return `<option value="${backend_val}" ${isSelected} class="text-base">${display_val}</option>`;
+        });
 
-    return options_arr.join("");        
-}
+        return options_arr.join("");        
+    }
 }
