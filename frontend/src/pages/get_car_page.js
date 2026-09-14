@@ -45,9 +45,9 @@ export class GetCarPage extends BaseWindow {
     let fields = [];
     CAR_CARD_DETAILS.slice(1).forEach((field) => {
       fields.push(`
-                <div class="flex flex-col pr-4 lg:border-r lg:last:border-r-0 lg:border-gray-100 lg:last:pr-0">
-                    <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">${field.LABEL}</span>
-                    <span class="text-xl md:text-2xl font-black text-gray-900 mt-0.5">${this.car[field.ID] || "—"}</span>
+                <div class="flex flex-col pr-4 lg:border-r lg:last:border-r-0 lg:border-car-card-border lg:last:pr-0">
+                    <span class="text-[11px] font-bold text-text-muted uppercase tracking-wider">${field.LABEL}</span>
+                    <span class="text-xl md:text-2xl font-black text-main-text mt-0.5">${this.car[field.ID] || "—"}</span>
                 </div>
             `);
     });
@@ -60,13 +60,18 @@ export class GetCarPage extends BaseWindow {
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="w-full h-full">
             <circle cx="8" cy="8" r="8" fill="currentColor"/>
         </svg>`;
-    console.log(fields);
+
+    const textColorsMap = {
+        "bg-car-ind-col-0": "text-car-ind-txt-0",
+        "bg-car-ind-col-1": "text-car-ind-txt-1",
+        "bg-car-ind-col-2": "text-car-ind-txt-2",
+        "bg-car-ind-col-3": "text-car-ind-txt-3",
+        "bg-car-ind-col-4": "text-car-ind-txt-4"
+    };
     MAINTENANCE_TYPES.forEach((field) => {
-      console.log(this.car);
       const indicatorStatus = this.car.service_indicators[field.ID];
-      console.log(`Indicator for ${field.ID}:`, indicatorStatus);
-      const colorHex = INDICATORS[indicatorStatus]?.color || "#dddddd";
-      
+      const rawColor = INDICATORS[indicatorStatus]?.color || "var(--theme-text-muted)";
+      const textColorClass = textColorsMap[rawColor] || "var(--theme-text-muted)";
       fields.push(`
                 <div class="p-2">
                    ${icon_value_text(
@@ -76,9 +81,9 @@ export class GetCarPage extends BaseWindow {
                      null,
                      null,
                      null,
-                     "text-sm md:text-base font-semibold text-gray-700 m-1",
+                     "text-sm md:text-base font-semibold text-text-secondary m-1",
                      "h-4 w-4 md:h-5 md:w-5",
-                     colorHex,
+                     textColorClass,
                    )}
                 </div>
             `);
@@ -94,12 +99,12 @@ export class GetCarPage extends BaseWindow {
 
     return `
         <div id="delete_modal_overlay" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-            <div class="border-2 border-gray-900 rounded-2xl bg-white w-full max-w-md p-6 shadow-2xl space-y-4">
-                <div class="flex justify-between items-center border-b border-gray-100 pb-2">
-                    <h3 class="text-lg font-black text-gray-900">Підтвердження видалення</h3>
+            <div class="border-2 border-car-card-border rounded-2xl bg-car-card-bg w-full max-w-md p-6 shadow-2xl space-y-4">
+                <div class="flex justify-between items-center border-b border-car-card-border pb-2">
+                    <h3 class="text-lg font-black text-main-text">Підтвердження видалення</h3>
                 </div>
                 
-                <p class="text-sm font-medium text-gray-600 leading-relaxed">
+                <p class="text-sm font-medium text-text-secondary leading-relaxed">
                     Ця дія є незворотною. Уся історія ремонтів автомобіля буде стерта.
                 </p>
 
@@ -112,10 +117,10 @@ export class GetCarPage extends BaseWindow {
                 </div>
 
                 <div class="flex gap-3 pt-2">
-                    <button id="cancel_delete_btn" class="flex-1 py-2 px-4 text-sm font-bold text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
+                    <button id="cancel_delete_btn" class="flex-1 py-2 px-4 text-sm font-bold text-text-secondary bg-txt-indicator-bg hover:opacity-80 rounded-xl transition-opacity">
                         Скасувати
                     </button>
-                    <button id="confirm_delete_btn" class="flex-1 py-2 px-4 text-sm font-bold text-white bg-[#be5651] hover:bg-red-700 active:bg-red-800 rounded-xl transition-colors uppercase">
+                    <button id="confirm_delete_btn" class="flex-1 py-2 px-4 text-sm font-bold text-white bg-btn-delete hover:opacity-80 active:opacity-100 rounded-xl transition-opacity uppercase">
                         Видалити
                     </button>
                 </div>
@@ -123,9 +128,9 @@ export class GetCarPage extends BaseWindow {
         </div>
 
         <div class="max-w-6xl w-full mx-auto p-4 md:p-8 animate-fade-in space-y-8">
-            <article class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row items-stretch gap-6 md:gap-10 p-6 md:p-8">
+            <article class="bg-car-card-bg border border-car-card-border rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row items-stretch gap-6 md:gap-10 p-6 md:p-8">
                 <div class="w-full md:w-1/3 shrink-0 flex flex-col gap-4">
-                    <div class="relative h-full aspect-video md:aspect-square w-full rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
+                    <div class="relative h-full aspect-video md:aspect-square w-full rounded-xl overflow-hidden bg-txt-indicator-bg border border-car-card-border">
                         <img 
                             src="${this.car["photo_path"] ? `${this.car["photo_path"]}` : "assets/no_photo.png"}" 
                             alt="Car Photo" 
@@ -144,41 +149,41 @@ export class GetCarPage extends BaseWindow {
                             : ""
                         }
                     </div>
-                    <button data-method="GET" data-entity="cars" class="w-full py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors text-center text-sm md:text-base">
+                    <button data-method="GET" data-entity="cars" class="w-full py-2.5 px-4 bg-txt-indicator-bg hover:opacity-80 text-text-secondary font-medium rounded-xl transition-opacity text-center text-sm md:text-base">
                         ← Назад до списку
                     </button>
                 </div>
 
                 <div id="car_info" class="flex-1 flex flex-col gap-6 justify-between">
                     <div>
-                        <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-gray-900 mb-2">
+                        <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-main-text mb-2">
                             ${this.car["brand"]} ${this.car["model"]}
                         </h1>
-                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 text-gray-600 rounded-md font-mono text-xs md:text-sm uppercase tracking-wide border border-gray-200">
-                            <span class="text-gray-400 font-sans font-bold">VIN:</span> ${this.car["vin"] || "НЕ ВКАЗАНО"}
+                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-txt-indicator-bg text-text-secondary rounded-md font-mono text-xs md:text-sm uppercase tracking-wide border border-car-card-border">
+                            <span class="text-text-muted font-sans font-bold">VIN:</span> ${this.car["vin"] || "НЕ ВКАЗАНО"}
                         </div>
                     </div>
 
                     <div>
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 mb-3 border-b border-gray-100 pb-2">Характеристики</h3>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-text-muted mb-3 border-b border-car-card-border pb-2">Характеристики</h3>
                         <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             ${this.generate_car_detail().join("")}
                         </div>
                     </div>
 
                     <div>
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 mb-3 border-b border-gray-100 pb-2">Стан</h3>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-text-muted mb-3 border-b border-car-card-border pb-2">Стан</h3>
                         <div class="flex flex-col">
                             ${this.generate_indicators_fields().join("")}
                         </div>
                     </div>
                       <div>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 mb-1 border-b border-gray-100 pb-2">Статистика</h3>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-text-muted mb-1 border-b border-car-card-border pb-2">Статистика</h3>
                     <div class="inline-flex items-center gap-4 rounded-xl w-max">
                         <div class="flex flex-col">
-                            <span class="text-[11px] font-bold text-gray-400 mb-0.5 uppercase tracking-widest">Витрата пального за місяць</span>
+                            <span class="text-[11px] font-bold text-text-muted mb-0.5 uppercase tracking-widest">Витрата пального за місяць</span>
                             <div class="flex items-baseline gap-1">
-                                <span class="text-xl md:text-2xl font-black text-gray-900">${this.car["monthly_fuel_consumption"]}</span>
+                                <span class="text-xl md:text-2xl font-black text-main-text">${this.car["monthly_fuel_consumption"]}</span>
                             </div>
                     </div>
                 </div>
@@ -186,45 +191,45 @@ export class GetCarPage extends BaseWindow {
             </article>
             <div>
               <div id="tabs" class="flex items-end ml-3">
-                <button id="maintenance_tab" class="px-4 py-2 bg-white text-gray-800 font-medium rounded-t-2xl border-t border-l border-r border-gray-200 hover:bg-gray-50 focus:z-10  z-10 relative -mb-px">
+                <button id="maintenance_tab" class="px-4 py-2 bg-tab-active-bg text-main-text font-medium rounded-t-2xl border-t border-l border-r border-car-card-border hover:opacity-80 focus:z-10 z-10 relative -mb-px transition-colors">
                   Ремонти
                 </button>            
 
-                <button id="refueling_tab" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-t-2xl border-t border-l border-r border-transparent hover:bg-gray-200 focus:z-10 transition-colors">
+                <button id="refueling_tab" class="px-4 py-2 bg-tab-inactive-bg text-text-secondary rounded-t-2xl border-t border-l border-r border-transparent hover:opacity-80 focus:z-10 transition-colors">
                   Заправки
                 </button>            
               </div>
 
             
-              <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6 md:p-8 flex flex-col lg:flex-row gap-8 items-start">
-                  <div id="filter" class="w-full lg:w-1/4 shrink-0 bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
-                      <h3 class="text-xl font-black text-gray-900 mb-4">Фільтр</h3>
+              <div class="bg-main-bg border border-car-card-border rounded-2xl p-6 md:p-8 flex flex-col lg:flex-row gap-8 items-start">
+                  <div id="filter" class="w-full lg:w-1/4 shrink-0 bg-car-card-bg p-5 rounded-xl border border-car-card-border shadow-sm">
+                      <h3 class="text-xl font-black text-main-text mb-4">Фільтр</h3>
                       <form id="filter_form" class="space-y-5">
                           <div>
-                              <label class="block text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Види робіт</label>
+                              <label class="block text-sm font-bold text-text-muted uppercase tracking-wider mb-2">Види робіт</label>
                               ${form.create_select(
                                 "",
                                 "maintenance_type",
                                 ["", ...maintenance_type_values],
                                 "",
-                                "w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500",
+                                "w-full bg-car-card-bg border border-car-card-border rounded-lg px-3 py-2 text-sm text-main-text focus:outline-none focus:border-accept-bg",
                                 ["Усі", ...maintenance_type_show_values],
                               )}
                           </div>
                           <fieldset class="border-none p-0 mb-5">
-                              <legend class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Сортування</legend>
+                              <legend class="text-sm font-bold text-text-muted uppercase tracking-wider mb-2">Сортування</legend>
                               <div class="space-y-2.5">
                                   <label class="flex items-center gap-3 cursor-pointer group">
-                                      <input type="radio" name="sort_order" value="desc" checked class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-gray-300">
-                                      <span class="text-sm font-semibold text-gray-700 group-hover:text-gray-900">Спочатку найновіші</span>
+                                      <input type="radio" name="sort_order" value="desc" checked class="w-4 h-4 text-accept-bg focus:ring-accept-bg border-car-card-border">
+                                      <span class="text-sm font-semibold text-text-secondary group-hover:text-main-text">Спочатку найновіші</span>
                                   </label>
                                   <label class="flex items-center gap-3 cursor-pointer group">
-                                      <input type="radio" name="sort_order" value="asc" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-gray-300">
-                                      <span class="text-sm font-semibold text-gray-700 group-hover:text-gray-900">Спочатку найстаріші</span>
+                                      <input type="radio" name="sort_order" value="asc" class="w-4 h-4 text-accept-bg focus:ring-accept-bg border-car-card-border">
+                                      <span class="text-sm font-semibold text-text-secondary group-hover:text-main-text">Спочатку найстаріші</span>
                                   </label>
                               </div>
                           </fieldset>
-                          <input type="submit" value="Підтвердити" class="w-full py-2.5 px-4 text-sm font-bold text-white bg-[#146c43] hover:bg-emerald-700 active:bg-emerald-800 rounded-xl shadow-sm transition-all duration-200 cursor-pointer text-center">
+                          <input type="submit" value="Підтвердити" class="w-full py-2.5 px-4 text-sm font-bold text-white bg-accept-bg hover:opacity-90 active:opacity-100 rounded-xl shadow-sm transition-opacity cursor-pointer text-center">
                       </form>
                   </div>
 
@@ -232,7 +237,7 @@ export class GetCarPage extends BaseWindow {
                     <div id="maintenance_container" class="w-full flex-1 min-w-0">
                       <div id="maintenances" class="w-full min-w-0 space-y-4"></div>
                       <div id="load_more_maintenances_wrapper" class="hidden flex justify-center pt-8 pb-4">
-                          <button id="load_more_maintenances_btn" class="group flex items-center justify-center gap-2 w-full sm:w-auto py-3 px-8 text-sm font-bold text-[#146c43] bg-white hover:bg-emerald-50 border-2 border-[#146c43] rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer active:scale-95 uppercase tracking-wide">
+                          <button id="load_more_maintenances_btn" class="group flex items-center justify-center gap-2 w-full sm:w-auto py-3 px-8 text-sm font-bold text-accept-bg bg-car-card-bg hover:opacity-80 border-2 border-accept-bg rounded-xl shadow-sm transition-opacity cursor-pointer active:scale-95 uppercase tracking-wide">
                               Завантажити ще
                           </button>
                       </div>
@@ -241,7 +246,7 @@ export class GetCarPage extends BaseWindow {
                     <div id="refueling_container" class="w-full hidden">
                         <div id="refuelings" class="w-full space-y-4"></div>
                         <div id="load_more_refuelings_wrapper" class="hidden flex justify-center pt-8 pb-4">
-                            <button id="load_more_refuelings_btn" class="group flex items-center justify-center gap-2 w-full sm:w-auto py-3 px-8 text-sm font-bold text-[#146c43] bg-white hover:bg-emerald-50 border-2 border-[#146c43] rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer active:scale-95 uppercase tracking-wide">
+                            <button id="load_more_refuelings_btn" class="group flex items-center justify-center gap-2 w-full sm:w-auto py-3 px-8 text-sm font-bold text-accept-bg bg-car-card-bg hover:opacity-80 border-2 border-accept-bg rounded-xl shadow-sm transition-opacity cursor-pointer active:scale-95 uppercase tracking-wide">
                                 Завантажити ще
                             </button>
                         </div>
@@ -249,7 +254,7 @@ export class GetCarPage extends BaseWindow {
                   </div>
                 </div>               
             <div class="flex justify-center pt-4">
-                <button id="delete_car" class="${this.visibility} py-2 px-4 text-xs font-bold text-gray-400 hover:text-red-600 border border-gray-300 hover:border-red-200 bg-transparent rounded-lg transition-all duration-200 cursor-pointer text-center uppercase">
+                <button id="delete_car" class="${this.visibility} py-2 px-4 text-xs font-bold text-text-muted hover:text-btn-delete border border-car-card-border hover:border-btn-delete bg-transparent rounded-lg transition-all duration-200 cursor-pointer text-center uppercase">
                     Видалити машину
                 </button>
             </div>
@@ -273,7 +278,7 @@ export class GetCarPage extends BaseWindow {
       if (!isLoadMore) {
         this.offset = 0;
         maintenances.innerHTML =
-          "<div class='text-center p-6 text-gray-400 font-medium'>Завантаження історії...</div>";
+          "<div class='text-center p-6 text-text-muted font-medium'>Завантаження історії...</div>";
       }
       filter_data.car_id = this.id;
       filter_data.offset = this.offset;
@@ -295,7 +300,7 @@ export class GetCarPage extends BaseWindow {
           );
           this.offset += this.limit;
         } else if (!isLoadMore) {
-          maintenances.innerHTML = `<div class="bg-white border border-gray-200 rounded-xl p-8 text-center text-gray-500 font-semibold shadow-sm">Записів про ремонти не знайдено.</div>`;
+          maintenances.innerHTML = `<div class="bg-car-card-bg border border-car-card-border rounded-xl p-8 text-center text-text-muted font-semibold shadow-sm">Записів про ремонти не знайдено.</div>`;
         }
 
         if (!maintenance_logs || maintenance_logs.length < this.limit) {
@@ -309,7 +314,7 @@ export class GetCarPage extends BaseWindow {
         console.error("Помилка завантаження логів:", error);
         if (!isLoadMore)
           maintenances.innerHTML =
-            "<div class='text-center p-6 text-red-500 font-medium'>Помилка завантаження</div>";
+            "<div class='text-center p-6 text-btn-delete font-medium'>Помилка завантаження</div>";
       }
     };
 
@@ -367,7 +372,7 @@ export class GetCarPage extends BaseWindow {
       if (!isLoadMore) {
         this.refueling_offset = 0;
         refuelings.innerHTML =
-          "<div class='text-center p-6 text-gray-400 font-medium'>Завантаження історії...</div>";
+          "<div class='text-center p-6 text-text-muted font-medium'>Завантаження історії...</div>";
       }
 
       try {
@@ -393,7 +398,7 @@ export class GetCarPage extends BaseWindow {
           );
           this.refueling_offset += this.refueling_limit;
         } else if (!isLoadMore) {
-          refuelings.innerHTML = `<div class="bg-white border border-gray-200 rounded-xl p-8 text-center text-gray-500 font-semibold shadow-sm">Записів про заправки не знайдено.</div>`;
+          refuelings.innerHTML = `<div class="bg-car-card-bg border border-car-card-border rounded-xl p-8 text-center text-text-muted font-semibold shadow-sm">Записів про заправки не знайдено.</div>`;
         }
 
         if (!refueling_logs || refueling_logs.length < this.refueling_limit) {
@@ -405,7 +410,7 @@ export class GetCarPage extends BaseWindow {
         console.error("Помилка завантаження логів:", error);
         if (!isLoadMore) {
           refuelings.innerHTML =
-            "<div class='text-center p-6 text-red-500 font-medium'>Помилка завантаження</div>";
+            "<div class='text-center p-6 text-btn-delete font-medium'>Помилка завантаження</div>";
         }
       }
     };
@@ -448,7 +453,7 @@ export class GetCarPage extends BaseWindow {
 
   render_maintenance_log(logs) {
     if (!logs || logs.length === 0) {
-      return `<div class="bg-white border border-gray-200 rounded-xl p-8 text-center text-gray-500 font-semibold shadow-sm">Записів про ремонти не знайдено.</div>`;
+      return `<div class="bg-car-card-bg border border-car-card-border rounded-xl p-8 text-center text-text-muted font-semibold shadow-sm">Записів про ремонти не знайдено.</div>`;
     }
 
     const result = logs.map((log) => {
@@ -464,41 +469,41 @@ export class GetCarPage extends BaseWindow {
 
       return `
     <div class="maintenance-item w-full flex flex-col mb-3">
-    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col lg:flex-row items-stretch shadow-sm hover:shadow-md transition-all relative z-10">
+    <div class="bg-car-card-bg border border-car-card-border rounded-xl overflow-hidden flex flex-col lg:flex-row items-stretch shadow-sm hover:shadow-md transition-all relative z-10">
         
         <div class="flex-1 flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-3 gap-2 sm:gap-4 min-h-[4rem]">
             
-            <div class="flex-1 min-w-0 flex items-center gap-1.5 px-1.5 py-1 rounded-lg font-bold text-sm md:text-base">
+            <div class="flex-1 min-w-0 flex items-center gap-1.5 px-1.5 py-1 rounded-lg font-bold text-sm md:text-base text-main-text">
                 <span class="break-words w-full">${log.maintenance_type}</span>
             </div>
             
             <div class="flex flex-row w-full sm:w-auto justify-between sm:justify-end gap-4 text-sm md:text-base px-1 sm:px-0">
-                <div class="text-gray-700 font-medium whitespace-nowrap shrink-0">
+                <div class="text-text-secondary font-medium whitespace-nowrap shrink-0">
                     ${log.mileage_on_maintain} км
                 </div>
-                <div class="text-gray-500 font-mono whitespace-nowrap shrink-0">
+                <div class="text-text-muted font-mono whitespace-nowrap shrink-0">
                     ${formatted_date}
                 </div>
             </div>
         </div>
 
-        <div class="flex flex-row w-full lg:w-auto shrink-0 border-t lg:border-t-0 lg:border-l border-gray-200">
-            <button class="show_description_btn flex-1 lg:flex-none px-4 py-2.5 lg:py-0 bg-white hover:bg-gray-50 text-gray-600 transition-colors flex items-center justify-center">
+        <div class="flex flex-row w-full lg:w-auto shrink-0 border-t lg:border-t-0 lg:border-l border-car-card-border">
+            <button class="show_description_btn flex-1 lg:flex-none px-4 py-2.5 lg:py-0 bg-car-card-bg hover:opacity-80 text-text-secondary transition-colors flex items-center justify-center">
                 ${this.images.arrow}
             </button>
-            <button id="edit_log" data-method="PATCH" data-entity="maintenance_log" data-id="${log.id}" class="${this.visibility} bg-[#db8956] flex-1 lg:flex-none px-4 py-2.5 lg:py-0 hover:bg-orange-400 text-black transition-colors flex items-center justify-center" title="Редагувати">
+            <button id="edit_log" data-method="PATCH" data-entity="maintenance_log" data-id="${log.id}" class="${this.visibility} bg-btn-edit flex-1 lg:flex-none px-4 py-2.5 lg:py-0 hover:opacity-80 text-white transition-colors flex items-center justify-center" title="Редагувати">
                 ${this.images.edit}
             </button>
-            <button id="delete_log" class="${this.visibility} bg-[#be5651] flex-1 lg:flex-none px-4 py-2.5 lg:py-0 hover:bg-red-600 text-white transition-colors flex items-center justify-center" title="Видалити" data-id=${log.id}>
+            <button id="delete_log" class="${this.visibility} bg-btn-delete flex-1 lg:flex-none px-4 py-2.5 lg:py-0 hover:opacity-80 text-white transition-colors flex items-center justify-center" title="Видалити" data-id=${log.id}>
                 ${this.images.delete}
             </button>
         </div>
     </div>
 
     <div class="description_block hidden px-0 sm:px-4 mt-2">
-        <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 w-full shadow-inner">
-            <h4 class="font-bold text-gray-800 text-sm sm:text-base mb-1">Опис</h4>
-            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed whitespace-pre-line break-words">
+        <div class="bg-txt-indicator-bg border border-car-card-border rounded-xl p-4 w-full shadow-inner">
+            <h4 class="font-bold text-main-text text-sm sm:text-base mb-1">Опис</h4>
+            <p class="text-xs sm:text-sm text-text-secondary leading-relaxed whitespace-pre-line break-words">
                 ${log.description || "Опис відсутній для цього запису."}
             </p>
         </div>
@@ -511,7 +516,7 @@ export class GetCarPage extends BaseWindow {
 
   render_refueling_log(logs) {
     if (!logs || logs.length === 0) {
-      return `<div class="bg-white border border-gray-200 rounded-xl p-8 text-center text-gray-500 font-semibold shadow-sm">Записів про заправки не знайдено.</div>`;
+      return `<div class="bg-car-card-bg border border-car-card-border rounded-xl p-8 text-center text-text-muted font-semibold shadow-sm">Записів про заправки не знайдено.</div>`;
     }
 
     const result = logs.map((log) => {
@@ -527,23 +532,23 @@ export class GetCarPage extends BaseWindow {
 
       return `
         <div class="refueling-item w-full flex flex-col mb-3">
-    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-3 sm:px-5 sm:py-4 shadow-sm hover:shadow-md transition-all gap-2 sm:gap-0 relative z-10">
+    <div class="bg-car-card-bg border border-car-card-border rounded-xl overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-3 sm:px-5 sm:py-4 shadow-sm hover:shadow-md transition-all gap-2 sm:gap-0 relative z-10">
         
         <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-6 md:gap-8">
             
-            <div class="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg font-bold text-sm md:text-lg">
+            <div class="flex items-center gap-1.5 bg-log-icon-bg text-log-icon-text px-3 py-1.5 rounded-lg font-bold text-sm md:text-lg">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-droplet-fill shrink-0" viewBox="0 0 16 16">
                     <path d="M8 16a6 6 0 0 0 6-6c0-1.655-1.122-2.904-2.432-4.362C10.254 4.176 8.75 2.503 8 0c-.75 2.503-2.254 4.176-3.568 5.638C3.122 7.096 2 8.345 2 10a6 6 0 0 0 6 6z"/>
                 </svg>
                 <span>${log.liters} л</span>
             </div>
             
-            <div class="text-gray-700 font-medium text-sm md:text-base px-1 sm:px-0">
+            <div class="text-text-secondary font-medium text-sm md:text-base px-1 sm:px-0">
                 ${log.current_mileage} км
             </div>
         </div>
         
-        <div class="text-gray-500 font-mono text-sm md:text-base px-1 sm:px-0">
+        <div class="text-text-muted font-mono text-sm md:text-base px-1 sm:px-0">
             ${formatted_date}
         </div>
         
@@ -556,7 +561,7 @@ export class GetCarPage extends BaseWindow {
 
   async render() {
     super.render(
-      "<div class='text-center p-10 font-bold text-xl text-gray-500'>Завантаження інформації про автомобіль...</div>",
+      "<div class='text-center p-10 font-bold text-xl text-text-muted'>Завантаження інформації про автомобіль...</div>",
     );
     try {
       this.car = await api.cars.show_car_by_id(this.id);
@@ -615,7 +620,7 @@ export class GetCarPage extends BaseWindow {
     } catch (error) {
       console.log(`Error with car loading: ${error}`);
       super.render(
-        "<div class='text-center p-10 text-red-500 font-bold'>Не вдалося завантажити дані автомобіля.</div>",
+        "<div class='text-center p-10 text-btn-delete font-bold'>Не вдалося завантажити дані автомобіля.</div>",
       );
     }
   }
@@ -628,11 +633,11 @@ export class GetCarPage extends BaseWindow {
     const filter_form = document.querySelector("#filter");
 
     const set_active_tab = (active_tab, inactive_tab) => {
-      active_tab.classList.add("bg-white", "text-gray-800");
-      active_tab.classList.remove("bg-gray-100", "text-gray-600");
+      active_tab.classList.add("bg-tab-active-bg", "text-main-text", "border-car-card-border");
+      active_tab.classList.remove("bg-tab-inactive-bg", "text-text-secondary", "border-transparent");
 
-      inactive_tab.classList.add("bg-gray-100", "text-gray-600");
-      inactive_tab.classList.remove("bg-white", "text-gray-800");
+      inactive_tab.classList.add("bg-tab-inactive-bg", "text-text-secondary", "border-transparent");
+      inactive_tab.classList.remove("bg-tab-active-bg", "text-main-text", "border-car-card-border");
     };
     if (maintenance_tab && refueling_tab && maintenances && refuelings) {
       maintenance_tab.addEventListener("click", () => {

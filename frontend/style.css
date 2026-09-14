@@ -57,6 +57,15 @@
     --color-car-ind-txt-4: var(--theme-car-ind-txt-4);
 
     --color-refuel-modal-bg: var(--theme-refuel-modal-bg);
+
+    --color-text-secondary: var(--theme-text-secondary);
+    --color-text-muted: var(--theme-text-muted);
+    --color-btn-delete: var(--theme-btn-delete);
+    --color-btn-edit: var(--theme-btn-edit);
+    --color-tab-active-bg: var(--theme-tab-active-bg);
+    --color-tab-inactive-bg: var(--theme-tab-inactive-bg);
+    --color-log-icon-bg: var(--theme-log-icon-bg);
+    --color-log-icon-text: var(--theme-log-icon-text);
 }
 
 :root {
@@ -126,6 +135,19 @@
 
     /* refuel modal */
     --theme-refuel-modal-bg: #ffffff;
+
+    /* get car page */
+    --theme-car-detail-label-text: #9ca3af;
+    --theme-car-detail-value-text: #111827;
+
+    --theme-text-secondary: #4b5563;
+    --theme-text-muted: #9ca3af;
+    --theme-btn-delete: #be5651;
+    --theme-btn-edit: #db8956;
+    --theme-tab-active-bg: #ffffff;
+    --theme-tab-inactive-bg: #f3f4f6;
+    --theme-log-icon-bg: #ecfdf5;
+    --theme-log-icon-text: #047857;
 }
 
 .dark {
@@ -157,12 +179,12 @@
         --theme-accept-hover: #16a746;
     
     /* text indicator */
-    --theme-txt-indicator-bg: #464748;
+    --theme-txt-indicator-bg: #595a5b;
     --theme-txt-indicator-border: #1F1B1B;
 
     /* car card */
     --theme-car-card-bg: #454343;
-    --theme-car-card-border: #1F1B1B;
+    --theme-car-card-border: #4b4545;
 
     /* vehicle actions */
     --theme-v-actions-color: #ffffff;
@@ -197,6 +219,14 @@
     /* refuel modal */
     --theme-refuel-modal-bg: #453f3f;
 
+    --theme-text-secondary: #d1d5db;
+    --theme-text-muted: #9ca3af;
+    --theme-btn-delete: #c43131;
+    --theme-btn-edit: #b2771e; 
+    --theme-tab-active-bg: #454343;
+    --theme-tab-inactive-bg: #2a2a2a;
+    --theme-log-icon-bg: #146c43;
+    --theme-log-icon-text: #beebd6;
 }
 
 .car-svg-container svg {
