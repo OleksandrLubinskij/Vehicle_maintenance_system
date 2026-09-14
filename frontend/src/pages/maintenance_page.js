@@ -78,7 +78,7 @@ export class ManageMaintenancePage extends BaseWindow {
                 const actual_mileage = this.mode === PAGE_MODE.EDIT ? null : await api.cars.show_car_by_id(this.id, { fields: ["mileage"] });
                 console.log(actual_mileage);
                 const car_brand_model = this.mode === PAGE_MODE.EDIT ? null : await api.cars.show_car_by_id(this.id, { fields: ["brand", "model"] }); 
-                const html = this.content(maintenance_type_enum, actual_mileage.mileage, default_values, car_brand_model);
+                const html = this.content(maintenance_type_enum, actual_mileage?.mileage, default_values, car_brand_model);
                 super.render(html);
     
                 const manage_maintenance_form = document.querySelector("#manage_maintenance_form");
