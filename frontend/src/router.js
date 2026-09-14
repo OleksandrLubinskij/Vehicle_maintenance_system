@@ -10,7 +10,7 @@ import { updateActiveNavLink } from "./utils/update_active_nav_link.js";
 import "./components/navbar_burger_menu.js";
 import "./utils/settings_floating_window.js";
 import "./utils/change_password_scripts.js"
-
+import "./utils/change_theme.js"
 class Router {
     constructor() {
         // this.routes = {

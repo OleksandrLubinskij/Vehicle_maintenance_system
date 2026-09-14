@@ -6,9 +6,15 @@
     <title>VMS</title>
     <link rel="stylesheet" href="./style.css" />
     <script type="module" src="./src/router.js" defer></script>
+    <script>
+      // Запобігаємо блиманню світлої теми при завантаженні, якщо обрана темна
+      if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
   </head>
-  <body class="bg-[#f5f5f5]">
-    <header class="main_header bg-[#227b50] p-2">
+  <body class="bg-main-bg text-main-text">
+    <header class="main_header bg-main-header p-2">
       <div class="logo_and_name flex flex-row items-center gap-4">
         <img
           src="assets/logo_car.png"
@@ -22,24 +28,26 @@
     </header>
     <nav
       id="nav_menu"
-      class="main_nav bg-[#f1efef] flex justify-between items-center py-2 px-6 md:px-8 relative"
+      class="main_nav bg-nav-menu flex justify-between items-center py-2 px-6 md:px-8 relative"
     >
       <div class="block md:hidden">
         <button
           id="menu_toggle"
-          class="p-2 hover:bg-gray-200 rounded-md transition-colors duration-200"
+          class="p-2 hover:bg-dropdown-menu-hover rounded-md transition-colors duration-200"
         >
-          <img src="assets/list.svg" alt="" class="h-8 w-8" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+          </svg>
         </button>
       </div>
 
       <div
         id="inner_nav_menu"
-        class="hidden absolute top-full left-0 w-full bg-[#f1efef] flex-col gap-2 p-4 shadow-md z-50 md:static md:flex md:flex-row md:w-auto md:p-0 md:shadow-none md:gap-12 lg:gap-24 text-base md:text-lg lg:text-xl font-medium"
+        class="hidden absolute top-full left-0 w-full bg-nav-menu flex-col gap-2 p-4 shadow-md z-50 md:static md:flex md:flex-row md:w-auto md:p-0 md:shadow-none md:gap-12 lg:gap-24 text-base md:text-lg lg:text-xl font-medium"
       >
         <button
           id="nav-view"
-          class="text-left md:text-center hover:text-emerald-700 transition-colors duration-200 border-b-2 border-transparent hover:border-black p-1"
+          class="text-left md:text-center hover:text-nav-link-hover-text hover:border-nav-link-hover-border transition-colors duration-200 border-b-2 border-transparent p-1"
           data-method="GET"
           data-entity="cars"
         >
@@ -47,7 +55,7 @@
         </button>
         <button
           id="nav-create"
-          class="hidden text-left md:text-center hover:text-emerald-700 transition-colors duration-200 border-b-2 border-transparent hover:border-black p-1"
+          class="hidden text-left md:text-center hover:text-nav-link-hover-text hover:border-nav-link-hover-border duration-200 border-b-2 border-transparent p-1"
           data-method="POST"
           data-entity="cars"
         >
@@ -58,33 +66,37 @@
       <div class="secondary_section">
         <button
           id="settings_btn"
-          class="p-1 hover:bg-gray-200 rounded-full transition-colors duration-300 shrink-0"
+          class="p-1"
         >
-          <img src="assets/gear.svg" alt="Налаштування" class="h-7 w-7" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-gear text-main-text hover:text-nav-link-hover-text transition-colors duration-200" viewBox="0 0 16 16">
+            <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0"/>
+            <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/>
+          </svg>
         </button>
 
         <div
           id="settings_dropdown"
-          class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-xl z-50 p-2 flex flex-col gap-1"
+          class="hidden absolute right-0 mt-2 w-48 bg-dropdown-menu-bg border border-dropdown-menu-border text-dropdown-menu-text rounded-lg shadow-xl z-50 p-2 flex flex-col gap-1"
         >
-          <div class="text-left w-full px-3 py-2 text-sm text-gray-700">
+          <div class="text-left w-full px-3 py-2 text-sm">
             Налаштування
           </div>
-          <hr class="border-gray-100my-1" />
+          <hr class="border-dropdown-menu-border my-1" />
           <button
-            class="text-left w-full px-3 py-2 text-sm mt-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+            id="toggle_theme_btn"
+            class="text-left w-full px-3 py-2 text-sm mt-2 hover:bg-dropdown-menu-hover rounded-md transition-colors"
           >
             Світла тема
           </button>
           <button
             id="change_password_menu_btn"
-            class="text-left w-full px-3 py-2 text-sm mt-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+            class="text-left w-full px-3 py-2 text-sm mt-2 hover:bg-dropdown-menu-hover rounded-md transition-colors"
           >
             Змінити пароль
           </button>
           <button
             id="logout_btn"
-            class="text-left w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+            class="text-left w-full px-3 py-2 text-sm text-dropdown-menu-text-destructive_act hover:bg-dropdown-menu-hover-destructive_act rounded-md transition-colors"
           >
             Вийти
           </button>
@@ -92,19 +104,19 @@
       </div>
       <div
         id="mobile_dropdown_menu"
-        class="hidden absolute top-full left-0 bg-white border-t border-gray-300 flex-col gap-2 p-4 z-50 md:hidden text-sm rounded-lg shadow-xl"
+        class="hidden absolute top-full left-0 bg-dropdown-menu-bg border-t border-dropdown-menu-border flex-col gap-2 p-4 z-50 md:hidden text-sm rounded-lg shadow-xl"
       >
-        <div class="text-left w-full px-3 text-sm text-gray-700">Меню</div>
-        <hr class="border-gray-100my-1" />
+        <div class="text-left w-full px-3 text-sm">Меню</div>
+        <hr class="border-dropdown-menu-border my-1" />
         <button
-          class="menu_btn text-left hover:text-emerald-700 hover:bg-gray-200 transition-colors duration-200 p-2 rounded-md"
+          class="menu_btn text-left hover:text-nav-link-hover-text hover:bg-dropdown-menu-hover transition-colors duration-200 p-2 rounded-md"
           data-method="GET"
           data-entity="cars"
         >
           Переглянути
         </button>
         <button
-          class="menu_btn text-left hover:text-emerald-700 hover:bg-gray-200 transition-colors duration-200 p-2 rounded-md"
+          class="menu_btn text-left hover:text-nav-link-hover-text hover:bg-dropdown-menu-hover transition-colors duration-200 p-2 rounded-md"
           data-method="POST"
           data-entity="cars"
         >
@@ -117,66 +129,86 @@
       class="app w-full min-h-[calc(100vh-120px)] mx-auto p-6 flex flex-col"
     ></div>
 
-    <div id="change_password_modal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex justify-center items-center p-4">
-  <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
-      Зміна паролю
-    </h2>
-    <form id="change_password_form" class="flex flex-col gap-4">
-      
-      <div class="flex flex-col">
-        <label for="old_password" class="block text-base font-bold text-slate-700 mb-1">Поточний пароль:</label>
-        <span id="old_password_error" class="text-red-500 text-sm mb-1 hidden"></span>
-        <input
-          type="password"
-          id="old_password"
-          name="old_password"
-          required
-          class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
-        />
-      </div>
+    <div
+      id="change_password_modal"
+      class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex justify-center items-center p-4"
+    >
+      <div class="bg-main-bg rounded-lg shadow-xl w-full max-w-md p-6 relative">
+        <h2 class="text-2xl font-bold text-form-label mb-6 text-center">
+          Зміна паролю
+        </h2>
+        <form id="change_password_form" class="flex flex-col gap-4">
+          <div class="flex flex-col">
+            <label
+              for="old_password"
+              class="block text-base font-bold text-form-label mb-1"
+              >Поточний пароль:</label
+            >
+            <span
+              id="old_password_error"
+              class="text-red-500 text-sm mb-1 hidden"
+            ></span>
+            <input
+              type="password"
+              id="old_password"
+              name="old_password"
+              required
+              class="w-full border border-form-border bg-transparent text-main-text rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-form-focus transition-colors"
+            />
+          </div>
 
-      <div class="flex flex-col">
-        <label for="new_password" class="block text-base font-bold text-slate-700 mb-1">Новий пароль:</label>
-        <input
-          type="password"
-          id="new_password"
-          name="new_password"
-          required
-          class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
-        />
-      </div>
-      
-      <div class="flex flex-col">
-        <label for="confirm_password" class="block text-base font-bold text-slate-700 mb-1">Підтвердіть новий пароль:</label>
-        <span id="confirm_password_error" class="text-red-500 text-sm mb-1 hidden"></span>
-        <input
-          type="password"
-          id="confirm_password"
-          name="confirm_password"
-          required
-          class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
-        />
-      </div>
+          <div class="flex flex-col">
+            <label
+              for="new_password"
+              class="block text-base font-bold text-form-label mb-1"
+              >Новий пароль:</label
+            >
+            <input
+              type="password"
+              id="new_password"
+              name="new_password"
+              required
+              class="w-full border border-form-border bg-transparent text-main-text rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-form-focus transition-colors"
+            />
+          </div>
 
-      <div class="flex justify-end gap-3 mt-4">
-        <button
-          type="button"
-          id="cancel_password_btn"
-          class="px-4 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors"
-        >
-          Скасувати
-        </button>
-        <button
-          type="submit"
-          id="change_password_submit_btn"
-          class="px-4 py-2 text-white bg-[#227b50] hover:bg-emerald-700 rounded-md transition-colors"
-        >
-          Зберегти 
-        </button>
+          <div class="flex flex-col">
+            <label
+              for="confirm_password"
+              class="block text-base font-bold text-form-label mb-1"
+              >Підтвердіть новий пароль:</label
+            >
+            <span
+              id="confirm_password_error"
+              class="text-red-500 text-sm mb-1 hidden"
+            ></span>
+            <input
+              type="password"
+              id="confirm_password"
+              name="confirm_password"
+              required
+              class="w-full border border-form-border bg-transparent text-main-text rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-form-focus transition-colors"
+            />
+          </div>
+
+          <div class="flex justify-end gap-3 mt-4">
+            <button
+              type="button"
+              id="cancel_password_btn"
+              class="px-4 py-2 text-form-cancel-text bg-form-cancel-bg hover:bg-form-cancel-hover rounded-md transition-colors"
+            >
+              Скасувати
+            </button>
+            <button
+              type="submit"
+              id="change_password_submit_btn"
+              class="px-4 py-2 text-white bg-accept-bg hover:bg-accept-hover rounded-md transition-colors"
+            >
+              Зберегти
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
-</div>
+    </div>
   </body>
 </html>
