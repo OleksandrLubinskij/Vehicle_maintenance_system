@@ -7,6 +7,7 @@ class CarModel(BaseModel):
     model: str
     mileage: int
     engine_capacity: float
+    production_year: int
     fuel_type: FuelType
     oil_type: OilType
 
@@ -21,16 +22,19 @@ class UserLogin(BaseModel):
 class UserResponce(BaseModel):
     login: str
     role: str
+
 class MaintainenceLogModel(BaseModel):
     mileage_on_maintain: int
     maintenance_type: MaintenanceType
     description: str
+    
 class CarUpdate(BaseModel):
     vin: Optional[str] = None
     brand: Optional[str] = None
     model: Optional[str] = None
     mileage: Optional[int] = None
     engine_capacity: Optional[float] = None
+    production_year: Optional[int] = None
     fuel_type: Optional[FuelType] = None
     oil_type: Optional[OilType] = None
 
@@ -48,6 +52,7 @@ class CarResponce(BaseModel):
     model: str
     mileage: int
     engine_capacity:float
+    production_year: int
     fuel_type: str
     oil_type: str
     service_indicators: Dict[str, Any] = {}
