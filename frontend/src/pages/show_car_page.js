@@ -63,6 +63,8 @@ export class ShowCarPage extends BaseWindow {
     const indicatorColor = INDICATORS[worstMaintenanceId]["color"];
     const indicatorImg = INDICATORS[worstMaintenanceId]["img"];
     const textColor = INDICATORS[worstMaintenanceId]["text_color"];
+    const production_year_output = car_data["production_year"] != null ? ` | ${car_data["production_year"]}` : "";
+
     return `
         <article data-method="GET" data-entity="cars" data-id="${car_data["id"]}"  class="car_card_main bg-car-card-bg cursor-pointer border border-car-card-border flex flex-col md:flex-row items-stretch rounded-xl overflow-hidden shadow-sm m-4 hover:shadow-lg transition-shadow">
             
@@ -76,7 +78,7 @@ export class ShowCarPage extends BaseWindow {
         
         <div class="info_about_car flex flex-col gap-4 w-full">
             <p class="text-lg md:text-xl lg:text-2xl font-bold dark">
-                ${car_data["brand"]} ${car_data["model"]}
+                ${car_data["brand"]} ${car_data["model"]} ${production_year_output}
             </p>
             <div class="w-fit flex items-center gap-1.5 px-2 py-1 rounded-md text-[14px] font-bold bg-txt-indicator-bg border border-txt-indicator-border uppercase tracking-wide ${textColor}"> 
                 <div class="h-4 w-4 md:w-5 shrink-0 flex items-center justify-center">
