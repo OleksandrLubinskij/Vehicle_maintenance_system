@@ -57,7 +57,7 @@ class CarResponce(BaseModel):
     oil_type: str
     service_indicators: Dict[str, Any] = {}
     photo_path: str | None
-    # monthly_fuel_consumption: float | None = 0.0
+    monthly_fuel_consumption: float | None = 0.0
 
 class ResetPassword(BaseModel):
     old_password: str
