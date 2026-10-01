@@ -16,6 +16,7 @@ class Car(Base):
     model: Mapped[str] = mapped_column(nullable=False)
     mileage: Mapped[int] = mapped_column(nullable=False)
     engine_capacity: Mapped[float] = mapped_column(nullable=False)
+    production_year: Mapped[int] = mapped_column(nullable=True)
     fuel_type: Mapped[FuelType] = mapped_column(Enum(FuelType))
     oil_type: Mapped[OilType] = mapped_column(Enum(OilType))
     photo_path: Mapped[str | None] = mapped_column(nullable=True)

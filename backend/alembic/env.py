@@ -7,14 +7,16 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 import app.models as models
+from dotenv import load_dotenv
 
 config = context.config
 fileConfig(config.config_file_name)
 target_metadata = models.Base.metadata
 
+load_dotenv()
 
 def run_migrations_offline() -> None:
-    url = os.getenv("DATABASE_URL", config.get_main_option("sqlalchemy.url"))
+    url = os.getenv("DB_URL", config.get_main_option("sqlalchemy.url"))
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -46,10 +48,6 @@ def run_migrations_online() -> None:
         configuration,
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
-    #     connect_args={
-    #     "server_settings": {"statement_cache_size": "0"},
-    #     # "prepared_statement_cache_size": 0
-    # },
     )
 
     async def run_async_migrations():
