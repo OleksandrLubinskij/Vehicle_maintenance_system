@@ -9,8 +9,8 @@ from services.dashboard_facade import DashboardFacade
 router = APIRouter()
 allow_admin_only = RoleChecker(["Admin"])
 
-# @router.get("/", response_model=Dict[int, CarResponce])
-@router.get("/")
+@router.get("/", response_model=Dict[int, CarResponce])
+# @router.get("/")
 async def read_all_cars(vehicle_service: VehicleService = Depends(get_vehicle_service),
                         dashboard_facade: DashboardFacade = Depends()):
     car_data = await vehicle_service.fetchVehicles()

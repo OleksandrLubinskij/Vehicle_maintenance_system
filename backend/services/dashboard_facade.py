@@ -39,6 +39,7 @@ class DashboardFacade:
                 "model": car.model, 
                 "mileage": car.mileage,
                 "engine_capacity": car.engine_capacity,
+                "production_year": car.production_year,
                 "fuel_type": car.fuel_type,
                 "oil_type": car.oil_type,
                 "photo_path": car.photo_path,

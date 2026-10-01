@@ -27,7 +27,7 @@ class MaintainenceLogModel(BaseModel):
     mileage_on_maintain: int
     maintenance_type: MaintenanceType
     description: str
-    
+
 class CarUpdate(BaseModel):
     vin: Optional[str] = None
     brand: Optional[str] = None
@@ -52,7 +52,7 @@ class CarResponce(BaseModel):
     model: str
     mileage: int
     engine_capacity:float
-    production_year: int
+    production_year: int | None
     fuel_type: str
     oil_type: str
     service_indicators: Dict[str, Any] = {}
