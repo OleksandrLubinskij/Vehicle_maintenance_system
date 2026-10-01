@@ -37,6 +37,10 @@ export const CAR_TEXT_FIELDS = [
         ID:"model"
     },
     {
+        LABEL:"Рік випуску",
+        ID:"production_year"
+    },
+    {
         LABEL:"Пробіг",
         ID:"mileage"
     },

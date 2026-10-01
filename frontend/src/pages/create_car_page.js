@@ -18,7 +18,7 @@ export class CreateCarPage extends BaseWindow {
         const oil_values = oil_enum.map(val => val.name);
         
         for (const field_identificator of CAR_TEXT_FIELDS) {
-            const extra_class = (field_identificator.LABEL === "VIN") ? "md:col-span-2" : "";
+            const extra_class = (field_identificator.ID === "vin" || field_identificator.ID === "production_year") ? "md:col-span-2" : "";
             
             const def_val = default_values ? default_values[field_identificator.ID] : null; 
             const field = form.create_entry(field_identificator.LABEL, field_identificator.ID, "input", extra_class, def_val);
